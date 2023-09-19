@@ -1,0 +1,54 @@
+.modal-check-documents-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgb(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 100;
+}
+
+.modal-check-documents-main-container {
+    width: 60em;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    margin-left: 2em;
+    background: #E4E9F7;
+    position: absolute;
+    right: 0;
+    border-radius: .2em;
+    overflow: hidden;
+}
+
+.modal-check-documents-header {
+    top: 0px;
+    position: sticky;
+    padding: .2em;
+    font-weight: bold;
+    text-align: center;
+    background-color: #a3bcff;
+    font-size: 1.3em;
+}
+
+.documents-container {
+    overflow: auto;
+}
+
+.document-upload-date {
+    margin-top: 1em;
+    display: block;
+    text-align: center;
+    font-weight: bold;
+    font-size: 1.3em;
+}
+
+.document-preview {
+    margin: 0em auto 1em auto;
+    display: block;
+    height: 50em;
+    width: 50em;
+}

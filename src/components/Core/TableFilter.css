@@ -1,0 +1,72 @@
+.table-filter-object {
+    cursor: pointer;
+}
+
+.filter-button {
+    margin-left: .8em;
+    font-weight: bold;
+    background: none;
+    border: none;
+    cursor: pointer;
+    outline: none;
+}
+
+.filter-button:hover {
+    color: #ff5100;
+}
+
+.filter-button-inactive {
+    color: #1d3062;
+}
+
+.filter-button-active {
+    color: #ff5100;
+}
+
+.table-filter-container {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    max-height: 85vh;
+    overflow-y: auto;
+    overflow-x: hidden;
+    min-width: 5em;
+    top: 1.8em;
+    left: 0em;
+    background: rgb(255, 255, 255);
+    padding: .2em .4em .4em .4em;
+    gap: .2em;
+    border: 1px solid rgb(199, 198, 198);
+}
+
+.check-all-button {
+    min-width: 8em;
+    width: 100%;
+    font-weight: bold;
+    border: none;
+    background-color: #ff510036;
+    cursor: pointer;
+    border-radius: .2em;
+    outline: none;
+}
+
+.check-all-button:hover {
+    color: #fff;
+    background-color: #ff5100;
+}
+
+.table-filter-container-row {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
+
+.table-filter-container-row input {
+    cursor: pointer;
+}
+
+.table-filter-container-row label {
+    padding-left: .3em;
+    user-select: none;
+    cursor: pointer;
+}

@@ -1,0 +1,19 @@
+#participantsContainer {
+    width: 100%;
+    padding-bottom: 1em;
+    overflow: auto;
+}
+
+.filter-note {
+    display: block;
+    font-weight: bold;
+    font-style: italic;
+    margin: 0.5em 1em;
+}
+
+.all-participants {
+    display: flex;
+    flex-direction: column;
+    gap: 1em;
+    text-align: left;
+}

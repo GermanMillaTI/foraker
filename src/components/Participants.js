@@ -1,0 +1,110 @@
+import { auth, realtimeDb } from '../firebase/config';
+import { useState, useEffect, useReducer } from 'react';
+import Swal from 'sweetalert2';
+
+import './Participants.css';
+import Constants from './Constants';
+import ParticipantCard from './ParticipantCard';
+import BookSession2 from './BookSession2';
+import ParticipantFilter from './ParticipantFilter';
+import { CSVLink } from 'react-csv';
+
+
+function Participants({ database, updateSession, setUpdateSession, checkDocuments, setCheckDocuments, filterDataFromStats, setFilterDataFromStats }) {
+  const [showBookSession2, setShowBookSession2] = useState("");
+  const [shownParticipants, setShownParticipants] = useState([]);
+  const [pptCsvData, SetPptCsvData] = useState([[]]);
+
+  useEffect(() => {
+    if (checkDocuments || showBookSession2 || updateSession) {
+      document.body.classList.add('blocked-scrolling');
+    } else {
+      document.body.classList.remove('blocked-scrolling');
+    }
+  }, [checkDocuments, showBookSession2, updateSession])
+
+  function getCSVdata(){
+    let output = [['ID', 'First Name', 'Last Name', 'Email', 'Age-Range', 'Demo Bins', 'Ethnicities', 'Date', 'DOB','Target of Sessions', 'Phone', 'Status', 'Document Approval', 'vision_correction', 'Sessions No.']];
+    
+    var data = Object.keys(database['participants']).filter(pid => shownParticipants.includes(pid)).sort((a, b) => {
+      return a < b ? -1 : 1;
+    }).map((key) =>[
+      key, 
+      database['participants'][key]['first_name'],
+      database['participants'][key]['last_name'],
+      database['participants'][key]['email'],
+      database['participants'][key]['age_range'],
+      database['participants'][key]['demo_bin'],
+      database['participants'][key]['ethnicities'],
+      new Date(database['participants'][key]['date']).toISOString().split("T")[0],
+      new Date(database['participants'][key]['date_of_birth']).toISOString().split("T")[0],
+      database['participants'][key]['multiple_times'],
+      database['participants'][key]['phone'],
+      database['participants'][key]['status'],
+      database['participants'][key]['document_approval'],
+      database['participants'][key]['vision_correction'],
+      typeof database['participants'][key]['sessions'] === 'object' ? 
+        Object.keys(database['participants'][key]['sessions']).length
+        : "0",
+      //typeof database['participants'][key]['sessions'] === 'object' ?
+        //Object.keys(database['participants'][key]['sessions'])
+        //: "-"
+    ])    
+
+    console.log(database['participants'])
+    for (var i in data){
+      output.push(data[i])
+      
+    }
+
+    SetPptCsvData(output);
+    return output;
+    
+  }
+
+  return (
+    <div id="participantsContainer">
+      {showBookSession2 && <BookSession2 database={database} setShowBookSession2={setShowBookSession2} participantId={showBookSession2} />}
+
+      <ParticipantFilter
+        database={database}
+        setShownParticipants={setShownParticipants}
+        filterDataFromStats={filterDataFromStats}
+        setFilterDataFromStats={setFilterDataFromStats}
+      />
+
+      <span className="filter-note">Filtered participants: {shownParticipants.length}
+        {shownParticipants.length > 100 && <span> (The list is cropped at 100)</span>}
+        <CSVLink
+        className="download-csv-button"
+        target="_blank"
+        asyncOnClick={true}
+        onClick={getCSVdata}
+        filename={"denali-participants_"+ new Date().toISOString().split("T")[0]+".csv"}
+        data={pptCsvData}
+        >Download Filtered Results</CSVLink>
+
+      </span>
+      {Object.keys(database['participants'])
+        .filter(pid => shownParticipants.includes(pid))
+        .sort((a, b) => {
+          return a < b ? -1 : 1;
+        })
+        .map((key, index) => (
+          index < 100 && (
+            <ParticipantCard
+              key={"participant-card" + key}
+              database={database}
+              participantId={key}
+              index={index}
+              setShowBookSession2={setShowBookSession2}
+              setCheckDocuments={setCheckDocuments}
+              setUpdateSession={setUpdateSession}
+            />
+          )
+        ))}
+    </div>
+  );
+}
+
+export default Participants;

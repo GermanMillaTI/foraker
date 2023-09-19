@@ -1,0 +1,159 @@
+.modal-book-update-session-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgb(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 100;
+}
+
+.modal-book-update-session-main-container {
+    height: 100%;
+    min-width: 50%;
+    display: flex;
+    flex-direction: column;
+    margin-left: 2em;
+    background: #E4E9F7;
+    position: absolute;
+    border-radius: .2em;
+    overflow: hidden;
+}
+
+.modal-book-update-session-header {
+    top: 0px;
+    position: sticky;
+    padding: .2em;
+    font-weight: bold;
+    text-align: center;
+    background-color: #a3bcff;
+    font-size: 1.3em;
+}
+
+.modal-book-update-session-sub-header {
+    top: 0px;
+    position: sticky;
+    padding: .2em;
+    font-weight: bold;
+    text-align: center;
+    background-color: #a3bcff;
+}
+
+.update-session-container {
+    height: 100%;
+    display: flex;
+    flex-direction: row;
+    padding: 0 1em;
+    gap: 5em;
+    overflow-y: auto;
+}
+
+.participant-table {
+    display: inline-block;
+    border-collapse: collapse;
+}
+
+.participant-table-left {
+    padding: .2em 1em .2em .2em;
+    font-weight: bold;
+}
+
+.participant-table-right {
+    padding: .1em;
+    max-width: 30em;
+}
+
+.sub-header {
+    text-align: center;
+    font-weight: bold;
+    padding: .5em;
+}
+
+.ppt-comment {
+    font-size: 1em;
+    width: 25em;
+    border-radius: .3em;
+    padding: .3em;
+    resize: vertical;
+    min-height: 3em;
+    box-shadow: 1px 2px 5px rgba(0, 0, 0, .31);
+    outline: none;
+}
+
+.session-comment {
+    font-size: 1em;
+    width: 25em;
+    border-radius: .3em;
+    padding: .3em;
+    resize: vertical;
+    min-height: 8em;
+    box-shadow: 1px 2px 5px rgba(0, 0, 0, .31);
+    outline: none;
+}
+
+.cancel-button-row {
+    text-align: center;
+}
+
+.session-data-selector {
+    min-width: 7em;
+    font-size: 1em;
+    border-radius: .3em;
+    padding: 0em .3em;
+    box-shadow: 1px 2px 5px rgba(0, 0, 0, .31);
+    outline: none;
+}
+
+.external-id-button {
+    cursor: pointer;
+    width: 8.2em;
+    font-size: 1em;
+    border-radius: .3em;
+    padding: 0em .3em;
+    box-shadow: 1px 2px 5px rgba(0, 0, 0, .31);
+    border: none;
+    outline: none;
+    font-weight: bold;
+    background: #a3bcff;
+}
+
+.cancel-session-button {
+    padding: 0em .6em;
+    border: none;
+    font-weight: bold;
+    box-shadow: 1px 2px 5px rgba(0, 0, 0, .31);
+    cursor: pointer;
+    outline: none;
+    border-radius: .2em;
+    color: #fff;
+    background: #c20a6f;
+}
+
+.update-ethnicity-row {
+    display: flex;
+    flex-direction: row;
+}
+
+.update-ethnicity-row label {
+    padding: .1em .3em;
+    cursor: pointer;
+    user-select: none;
+}
+
+.update-ethnicity-row input[type=checkbox] {
+    cursor: pointer;
+}
+
+.update-ethnicity-row2 {
+    display: flex;
+    flex-direction: row;
+}
+
+.bonus-container input,
+.bonus-container label {
+    cursor: pointer;
+    user-select: none;
+}

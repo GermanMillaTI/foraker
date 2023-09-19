@@ -1,0 +1,32 @@
+.navbar {
+  position: sticky;
+  z-index: 20;
+  top: 0px;
+  right: 0px;
+  display: flex;
+  flex-direction: row;
+  justify-content: right;
+  padding: .2em;
+  gap: 1em;
+  background: transparent;
+  border-radius: 1em 0em 0em 1em;
+  margin-right: 1.1em;
+}
+
+.navbar-button {
+  padding: .2em 1em;
+  border-radius: 2em;
+  border: none;
+  background: #9dafe2;
+  color: #1d3062;
+  font-weight: bold;
+  font-size: .9em;
+  box-shadow: 1px 2px 5px rgba(0, 0, 0, .31);
+  outline: none;
+  user-select: none;
+  white-space: nowrap;
+}
+
+.navbar-button:hover {
+  cursor: pointer;
+}

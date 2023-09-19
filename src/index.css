@@ -1,0 +1,44 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Poppins', sans-serif;
+}
+
+:root {
+  /* ===== Colors ===== */
+  --body-color: #E4E9F7;
+  --font-color: #1d3062;
+
+  /* ====== Fontsize ====== */
+  --font-size: 13px;
+}
+
+body {
+  background-color: var(--body-color);
+}
+
+#root {
+  position: absolute;
+  top: 0;
+  min-width: 1280px;
+  width: 100%;
+  height: 100%;
+}
+
+body,
+div,
+h1,
+form,
+input,
+p {
+  padding: 0;
+  margin: 0;
+  outline: none;
+  font-size: var(--font-size);
+  color: var(--font-color);
+}
+
+.no-wrap {
+  white-space: nowrap;
+}

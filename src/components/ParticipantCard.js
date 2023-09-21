@@ -1,5 +1,6 @@
 import { auth, realtimeDb } from '../firebase/config';
 import React from 'react';
+import { useState } from 'react';
 import Swal from 'sweetalert2';
 import md5 from 'md5';
 import Tooltip, { tooltipClasses } from '@mui/material/Tooltip';
@@ -9,6 +10,7 @@ import Constants from './Constants';
 import LogEvent from './Core/LogEvent';
 
 function ParticipantCard({ database, participantId, index, setShowBookSession2, setCheckDocuments, setUpdateSession }) {
+    const [tempParticipants, setTempParticipants] = useState([]);
     let participantInfo = database['participants'][participantId];
     let timeslotsOfParticipant = Object.values(database['timeslots']).filter(timeslot => participantId == timeslot['participant_id']);
 
@@ -377,10 +379,10 @@ function ParticipantCard({ database, participantId, index, setShowBookSession2, 
                             updateValue("/participants/" + participantId, { phase: e.currentTarget.value });
 
                             //update target of sessions to be 1 in case "Phase 2" gets selected
-                            if(e.currentTarget.value.toString() === "2"){
-                                updateValue("participants/"+participantId, {multiple_times: 1})
+                            if (e.currentTarget.value.toString() === "2") {
+                                updateValue("participants/" + participantId, { multiple_times: 1 })
                             }
-                            
+
                             LogEvent({
                                 pid: participantId,
                                 action: "Phase: '" + (e.currentTarget.value || "Blank") + "'"
@@ -403,9 +405,11 @@ function ParticipantCard({ database, participantId, index, setShowBookSession2, 
                     !["Rejected", "Withdrawn", "Not Selected"].includes(participantInfo['status']) &&
                     <div className="participant-attribute-container">
                         <span className="field-label">Communication</span>
-                        {participantInfo['open_demo_bin'] === true ?
+                        {(participantInfo['open_demo_bin'] === true || tempParticipants.includes(participantId)) ?
                             <button className="email-button icf-reminder-button" onClick={() => sendMail(participantId, "ICF Reminder", "")}>ICF Reminder</button>
-                            : <span><b>Closed demo bin!</b></span>
+                            : <span><b>Closed demo bin!</b>
+                                {participantInfo['status'] == "Contacted" && <label className="copy-email-link fas fa-eye" onClick={() => setTempParticipants([participantId, ...tempParticipants])}></label>}
+                            </span>
                         }
                     </div>
                 }
@@ -415,9 +419,11 @@ function ParticipantCard({ database, participantId, index, setShowBookSession2, 
                     !["Contacted", "Rejected", "Withdrawn", "Completed", "Not Selected"].includes(participantInfo['status']) &&
                     <div className="participant-attribute-container">
                         <span className="field-label">Communication</span>
-                        {participantInfo['open_demo_bin'] === true ?
+                        {(participantInfo['open_demo_bin'] === true || tempParticipants.includes(participantId)) ?
                             <button className="email-button document-request-button" onClick={() => sendMail(participantId, "Document Request", "")}>Document Request</button>
-                            : <span><b>Closed demo bin!</b></span>
+                            : <span><b>Closed demo bin!</b>
+                                {participantInfo['status'] == "Contacted" && <label className="copy-email-link fas fa-eye" onClick={() => setTempParticipants([participantId, ...tempParticipants])}></label>}
+                            </span>
                         }
                     </div>
                 }
@@ -427,7 +433,7 @@ function ParticipantCard({ database, participantId, index, setShowBookSession2, 
                     !["Rejected", "Withdrawn", "Completed", "Not Selected"].includes(participantInfo['status']) &&
                     <div className="participant-attribute-container">
                         <span className="field-label">Communication</span>
-                        {participantInfo['open_demo_bin'] === true ?
+                        {(participantInfo['open_demo_bin'] === true || tempParticipants.includes(participantId)) ?
                             <>
                                 <button className="email-button handoff-button" onClick={() => sendMail(participantId, "Handoff")}>Send handoff email</button>
                                 <a className="copy-booking-link fas fa-copy" onClick={(e) => {
@@ -448,7 +454,9 @@ function ParticipantCard({ database, participantId, index, setShowBookSession2, 
                                     })
                                 }} target="_blank" />
                             </>
-                            : <span><b>Closed demo bin!</b></span>
+                            : <span><b>Closed demo bin!</b>
+                                {participantInfo['status'] == "Contacted" && <label className="copy-email-link fas fa-eye" onClick={() => setTempParticipants([participantId, ...tempParticipants])}></label>}
+                            </span>
                         }
                     </div>
                 }

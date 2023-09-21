@@ -92,7 +92,7 @@ function MainPage() {
           if (demoBinOpen && ['Female', 'Male'].includes(gender)) {
             let tempEth = Constants['bonusEthnicities'][ethnicity.trim()];
             if (!tempEth) {
-              demoBinOpen = false;
+              demoBinOpen = true;
             } else {
               if (temp['bins'][gender][tempEth][ageRange] === false) demoBinOpen = false;
             }

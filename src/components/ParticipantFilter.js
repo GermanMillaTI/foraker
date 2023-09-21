@@ -16,6 +16,7 @@ const filterReducer = (state, event) => {
       statuses: ["Blank", ...Constants['participantStatuses']],
       icfs: ['Yes', 'No'],
       phases: Constants['phases'],
+      demoBinStatuses: Constants['demoBinStatuses'],
       sources: Object.keys(Constants['sources']),
       documentStatuses: ["Blank", ...Constants['documentStatuses']],
       visionCorrections: Constants['visionCorrections'],
@@ -75,6 +76,7 @@ function ParticipantFilter({ database, setShownParticipants, filterDataFromStats
     statuses: ["Blank", ...Constants['participantStatuses']],
     icfs: ['Yes', 'No'],
     phases: Constants['phases'],
+    demoBinStatuses: Constants['demoBinStatuses'],
     sources: Object.keys(Constants['sources']),
     documentStatuses: ["Blank", ...Constants['documentStatuses']],
     visionCorrections: Constants['visionCorrections'],
@@ -98,6 +100,7 @@ function ParticipantFilter({ database, setShownParticipants, filterDataFromStats
       statuses: Object.assign({}, ...Constants['participantStatuses'].map(k => ({ [k || "Blank"]: 0 }))),
       icfs: { Yes: 0, No: 0 },
       phases: Object.assign({}, ...Constants['phases'].map(k => ({ [k]: 0 }))),
+      demoBinStatuses: Object.assign({}, ...Constants['demoBinStatuses'].map(k => ({ [k]: 0 }))),
       sources: Object.assign({}, ...Object.keys(Constants['sources']).map(k => ({ [k]: 0 }))),
       documentStatuses: Object.assign({}, ...Constants['documentStatuses'].map(k => ({ [k || "Blank"]: 0 }))),
       visionCorrections: Object.assign({}, ...Constants['visionCorrections'].map(k => ({ [k]: 0 }))),
@@ -123,6 +126,7 @@ function ParticipantFilter({ database, setShownParticipants, filterDataFromStats
     let ipAddress = participantInfo['ip_address'];
     let phase = participantInfo['phase'] ? "Phase " + participantInfo['phase'] : 'Blank';
     let source = participantInfo['source'] || 'Other';
+    let demoBinStatus = participantInfo['open_demo_bin'] ? 'Open' : 'Closed';
 
     let ageRange = participantInfo['age_range'];
 
@@ -167,6 +171,7 @@ function ParticipantFilter({ database, setShownParticipants, filterDataFromStats
       icfSignedIsOk &&
       filterData['statuses'].includes(status) &&
       filterData['phases'].includes(phase) &&
+      filterData['demoBinStatuses'].includes(demoBinStatus) &&
       filterData['sources'].includes(source) &&
       filterData['documentStatuses'].includes(documentStatus) &&
       filterData['parentRegistered'].includes(parentRegistered) &&
@@ -196,6 +201,7 @@ function ParticipantFilter({ database, setShownParticipants, filterDataFromStats
       let parentRegistered = participantInfo['parent_first_name'] ? "Yes" : "No";
       let hasNewDocument = participantInfo['documents']['pending'] ? "Yes" : "No";
       let phase = participantInfo['phase'] ? "Phase " + participantInfo['phase'] : 'Blank';
+      let demoBinStatus = participantInfo['open_demo_bin'] ? 'Open' : 'Closed';
       let source = participantInfo['source'] || 'Other';
 
       let ethnicities = participantInfo['ethnicities'].split(',');
@@ -209,6 +215,7 @@ function ParticipantFilter({ database, setShownParticipants, filterDataFromStats
 
       output['genders'][gender]++;
       output['phases'][phase]++;
+      output['demoBinStatuses'][demoBinStatus]++;
       output['sources'][source]++;
       output['visionCorrections'][visionCorrection]++;
       output['ageRanges'][ageRange]++;
@@ -371,6 +378,17 @@ function ParticipantFilter({ database, setShownParticipants, filterDataFromStats
           <label htmlFor="filter-phases-phase-2">Phase 2 ({filterStats['phases']['Phase 2']})</label>
           <button name="Phase 2" alt="phases" className="filter-this-button" onClick={setFilterData}>!</button>
         </div>
+      </div>
+
+      <div className="filter-element gap">
+        <span className="filter-container-header">Demo bin status</span>
+        {Constants['demoBinStatuses'].map((val, i) => {
+          return <div key={"filter-demo-bin-status" + i} className="filter-object">
+            <input id={"filter-demo-bin-status-" + val} name={val} type="checkbox" alt="demoBinStatuses" onChange={setFilterData} checked={filterData['demoBinStatuses'].includes(val)} />
+            <label htmlFor={"filter-demo-bin-status-" + val}>{val + " (" + filterStats['demoBinStatuses'][val] + ")"}</label>
+            <button name={val} alt="demoBinStatuses" className="filter-this-button" onClick={setFilterData}>!</button>
+          </div>
+        })}
       </div>
     </div>
 

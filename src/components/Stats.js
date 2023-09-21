@@ -55,6 +55,7 @@ function Stats({ database, setActivePage, setShowStats, setFilterDataFromStats }
             statuses: statuses,
             icfs: ['Yes', 'No'],
             phases: filterData['phases'],
+            demoBinStatuses: Constants['demoBinStatuses'],
             sources: goodWorkOnly ? ['goodwork'] : Object.keys(Constants['sources']),
             documentStatuses: ["Blank", ...Constants['documentStatuses']],
             visionCorrections: Constants['visionCorrections'],

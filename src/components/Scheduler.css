@@ -121,6 +121,17 @@
     background: rgba(255, 0, 255, 0.445);
 }
 
+.extra-info {
+    cursor: pointer;
+    margin-left: .5em;
+    text-decoration: none;
+    color: #1d3062;
+}
+
+.extra-info:hover {
+    color: #ff5100;
+}
+
 
 @-webkit-keyframes target-fade {
     from {

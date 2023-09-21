@@ -1,9 +1,6 @@
-import { auth, realtimeDb } from '../firebase/config';
-import { useState, useEffect, useReducer } from 'react';
-import Swal from 'sweetalert2';
+import { useState, useEffect } from 'react';
 
 import './Participants.css';
-import Constants from './Constants';
 import ParticipantCard from './ParticipantCard';
 import BookSession2 from './BookSession2';
 import ParticipantFilter from './ParticipantFilter';
@@ -13,7 +10,7 @@ import { CSVLink } from 'react-csv';
 function Participants({ database, updateSession, setUpdateSession, checkDocuments, setCheckDocuments, filterDataFromStats, setFilterDataFromStats }) {
   const [showBookSession2, setShowBookSession2] = useState("");
   const [shownParticipants, setShownParticipants] = useState([]);
-  const [pptCsvData, SetPptCsvData] = useState([[]]);
+  const [pptCsvData, setPptCsvData] = useState([[]]);
 
   useEffect(() => {
     if (checkDocuments || showBookSession2 || updateSession) {
@@ -23,13 +20,13 @@ function Participants({ database, updateSession, setUpdateSession, checkDocument
     }
   }, [checkDocuments, showBookSession2, updateSession])
 
-  function getCSVdata(){
-    let output = [['ID', 'First Name', 'Last Name', 'Email', 'Age-Range', 'Demo Bins', 'Ethnicities', 'Date', 'DOB','Target of Sessions', 'Phone', 'Status', 'Document Approval', 'vision_correction', 'Sessions No.']];
-    
+  function getCSVdata() {
+    let output = [['ID', 'First Name', 'Last Name', 'Email', 'Age-Range', 'Demo Bins', 'Ethnicities', 'Date', 'DOB', 'Target of Sessions', 'Phone', 'Status', 'Document Approval', 'Vision Correction', 'Sessions No.']];
+
     var data = Object.keys(database['participants']).filter(pid => shownParticipants.includes(pid)).sort((a, b) => {
       return a < b ? -1 : 1;
-    }).map((key) =>[
-      key, 
+    }).map((key) => [
+      key,
       database['participants'][key]['first_name'],
       database['participants'][key]['last_name'],
       database['participants'][key]['email'],
@@ -43,23 +40,23 @@ function Participants({ database, updateSession, setUpdateSession, checkDocument
       database['participants'][key]['status'],
       database['participants'][key]['document_approval'],
       database['participants'][key]['vision_correction'],
-      typeof database['participants'][key]['sessions'] === 'object' ? 
+      typeof database['participants'][key]['sessions'] === 'object' ?
         Object.keys(database['participants'][key]['sessions']).length
         : "0",
       //typeof database['participants'][key]['sessions'] === 'object' ?
-        //Object.keys(database['participants'][key]['sessions'])
-        //: "-"
-    ])    
+      //Object.keys(database['participants'][key]['sessions'])
+      //: "-"
+    ])
 
     console.log(database['participants'])
-    for (var i in data){
+    for (var i in data) {
       output.push(data[i])
-      
+
     }
 
-    SetPptCsvData(output);
+    setPptCsvData(output);
     return output;
-    
+
   }
 
   return (
@@ -76,12 +73,12 @@ function Participants({ database, updateSession, setUpdateSession, checkDocument
       <span className="filter-note">Filtered participants: {shownParticipants.length}
         {shownParticipants.length > 100 && <span> (The list is cropped at 100)</span>}
         <CSVLink
-        className="download-csv-button"
-        target="_blank"
-        asyncOnClick={true}
-        onClick={getCSVdata}
-        filename={"denali-participants_"+ new Date().toISOString().split("T")[0]+".csv"}
-        data={pptCsvData}
+          className="download-csv-button"
+          target="_blank"
+          asyncOnClick={true}
+          onClick={getCSVdata}
+          filename={"denali-participants_" + new Date().toISOString().split("T")[0] + ".csv"}
+          data={pptCsvData}
         >Download Filtered Results</CSVLink>
 
       </span>

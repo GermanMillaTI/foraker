@@ -274,7 +274,11 @@ const Constants = {
     "Latin / S. Amer": "LatinSAmer",
     "South Asian": "SouthAsian",
     "N. European": "NEuropean"
-  }
+  },
+  demoBinStatuses: [
+    'Open',
+    'Closed'
+  ]
 }
 
 export default Constants;

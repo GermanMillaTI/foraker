@@ -37,6 +37,7 @@ function UpdateSession({ database, updateSession, setUpdateSession, setCheckDocu
                     status: "",
                     glasses: false,
                     confirmed: "",
+                    booked_today: false,
                     remind: false,
                     delayed: false,
                     comments: ""

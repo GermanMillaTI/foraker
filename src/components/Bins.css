@@ -63,9 +63,9 @@
 }
 
 .open-demo-bin {
-    background: rgb(120, 240, 120) !important;
+    background: rgba(120, 240, 120, 0.5) !important;
 }
 
 .closed-demo-bin {
-    background: rgb(247, 156, 114) !important;
+    background: rgb(247, 156, 114, 0.5) !important;
 }

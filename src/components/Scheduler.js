@@ -109,6 +109,7 @@ function Scheduler({ database, setUpdateSession }) {
           status: "",
           glasses: false,
           confirmed: "",
+          booked_today: false,
           remind: false,
           delayed: false,
           comments: ""
@@ -235,6 +236,19 @@ function Scheduler({ database, setUpdateSession }) {
                   <tr key={"schedule-row-" + index} className={(justBookedSession == key ? "highlighted-session-row" : "") + (index < array.length - 1 ? (key.substring(0, 13) != array[index + 1].substring(0, 13) ? " day-separator" : "") : "")}>
                     <td className="center-tag no-wrap">
                       {key.substring(0, 4) + "-" + key.substring(4, 6) + "-" + key.substring(6, 8) + " " + Constants['bookingDictionary'][key.substring(9, 11) + ":" + key.substring(11, 13)]}
+                      {database['timeslots'][key]['booked_today'] && format(new Date(), "yyyyMMdd") == key.substring(0, 8) &&
+                        <Tooltip
+                          disableInteractive
+                          TransitionProps={{ timeout: 100 }}
+                          componentsProps={{ tooltip: { sx: { fontSize: '1em' }, } }}
+                          title={
+                            <b><span>The participant booked the session today!</span></b>
+                          }
+                        >
+                          <label className="extra-info fas fa-info-circle" />
+                        </Tooltip>
+                      }
+
                     </td>
                     <td className={"center-tag no-wrap" + (database['timeslots'][key]['backup'] ? " backup-timeslot" : "")}>
                       {(database['timeslots'][key]['backup'] ? "Backup" : ("St. " + key.substring(14)))}

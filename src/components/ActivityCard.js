@@ -101,15 +101,7 @@ function ActivityCard({ participantId, database, togglePopup }) {
               style={{ width: "50vw", marginTop: "2vw" }}
             >
               <thead>
-                <th>
-                  <TableFilter
-                    filterName="Date"
-                    alt="date"
-                    values={days}
-                    filterData={filterData}
-                    setFilterData={setFilterData}
-                  />
-                </th>
+                <th>Date</th>
                 <th>Timeslot</th>
                 <th>Station</th>
                 <th>Participant</th>

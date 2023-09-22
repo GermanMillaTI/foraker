@@ -2,6 +2,7 @@ import './Scheduler.css';
 
 import { CSVLink } from 'react-csv';
 import { useState } from 'react';
+import FormattingFunctions from './Core/FormattingFunctions';
 
 
 function ActivityLog({ database }){
@@ -56,11 +57,12 @@ function ActivityLog({ database }){
             <div className="scheduler-table-container">
                 <table className="scheduler-table">
                     <thead>
-                        <th>User</th>
                         <th>Date</th>
-                        <th>Action</th>
-                        <th>Participant</th>
                         <th>Timeslot</th>
+                        <th>Station</th>
+                        <th>Participant</th>
+                        <th>Action</th>
+                        <th>User</th>
                     </thead>
                     <tbody>
                         {Object.keys(database['log'])
@@ -69,14 +71,14 @@ function ActivityLog({ database }){
 
                             return (
                                 <tr>
-
-                                    <td className="center-tag no-wrap">{database['log'][key]['user']}</td>
-                                    <td className="center-tag no-wrap">{
-                                        formatDate(key)
-                                    }</td>
-                                    <td className="">{database['log'][key]['action']}</td>
+                                    <td className="center-tag no-wrap">{FormattingFunctions.DateFromLog(key)}</td>
+                                    <td className="center-tag no-wrap">{FormattingFunctions.TimeSlotFormat(database['log'][key]['timeslot'])}</td>
+                                    <td className="center-tag no-wrap">{FormattingFunctions.StationFromSlot(database['log'][key]['timeslot'])}</td>
                                     <td className="center-tag no-wrap">{database['log'][key]['pid']}</td>
-                                    <td className="center-tag no-wrap">{database['log'][key]['timeslot']}</td>
+
+                                    <td className="">{database['log'][key]['action']}</td>
+                                    <td className="center-tag no-wrap">{database['log'][key]['user']}</td>
+                                    
                                 </tr>
                             )
                         })}

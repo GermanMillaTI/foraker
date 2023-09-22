@@ -16,6 +16,7 @@ import Constants from './Constants';
 import StatsSessions from './StatsSessions';
 import Bonuses from './Bonuses';
 import Bins from './Bins';
+import ActivityLog from './ActivityLog';
 
 function MainPage() {
   const [database, setDatabase] = useState({});
@@ -209,6 +210,7 @@ function MainPage() {
           />
         )}
         {activePage == "Scheduler" && (<Scheduler database={database} setUpdateSession={setUpdateSession} />)}
+        {activePage == "ActivityLog" && (<ActivityLog database={database} />)}
         {activePage == "Scheduler Overview" && (<SchedulerOverview database={database} />)}
         {activePage == "Scheduler External" && (<SchedulerExternal database={database} />)}
         {activePage == "External" && (<External database={database} setCheckDocuments />)}

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { auth } from '../firebase/config'
 import { signOut } from 'firebase/auth';
+import Constants from './Constants';
 
 import './Navbar.css';
 
@@ -23,14 +24,10 @@ function Navbar({ database, setActivePage, setShowStats, setShowStatsSessions, s
       {(role == "admin" || role == "external") && <button className="navbar-button" onClick={() => setActivePage("Scheduler Overview")}>Scheduler overview</button>}
       <button className="navbar-button" onClick={() => setShowStats(true)}>Participant stats</button>
       <button className="navbar-button" onClick={() => setShowStatsSessions(true)}>Session stats</button>
-      {[
-        'zoltan.bathori@telusinternational.com',
-        'german.milla01@telusinternational.com',
-        'sari.kiiskinen@telusinternational.com',
-        'axel.romeo@telusinternational.com',
-        'jessica.tucker@telusinternational.com',
-        'sheiby.molina@telusinternational.com'
-      ].includes(auth.currentUser.email) && <button className="navbar-button" onClick={() => setShowBins(true)}>Demo bins</button>}
+      {Constants.superAdmins.includes(auth.currentUser.email) && <button className="navbar-button" onClick={() => setShowBins(true)}>Demo bins</button>}
+
+      {Constants.superAdmins.includes(auth.currentUser.email) && <button className='navbar-button' onClick={() => setActivePage("ActivityLog")}>Activity Log</button>}
+      
       {['zoltan.bathori@telusinternational.com', 'sari.kiiskinen@telusinternational.com'].includes(auth.currentUser.email) && <button className="navbar-button" onClick={() => setShowBonuses(true)}>Bonus $</button>}
       {(role == "admin" || role == "goodwork") && <button className="navbar-button" onClick={() => setActivePage("Goodwork")}>Goodwork participants</button>}
       {(role == "admin" || role == "external") && <button className="navbar-button" onClick={() => setActivePage("Scheduler External")}>Scheduler external</button>}

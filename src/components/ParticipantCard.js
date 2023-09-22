@@ -9,10 +9,20 @@ import './ParticipantCard.css';
 import Constants from './Constants';
 import LogEvent from './Core/LogEvent';
 
+import ActivityCard from "./ActivityCard";
+
+
 function ParticipantCard({ database, participantId, index, setShowBookSession2, setCheckDocuments, setUpdateSession }) {
     const [tempParticipants, setTempParticipants] = useState([]);
+    const [isPopupOpen, setIsPopupOpen] = useState(false);
+
     let participantInfo = database['participants'][participantId];
     let timeslotsOfParticipant = Object.values(database['timeslots']).filter(timeslot => participantId == timeslot['participant_id']);
+
+    const togglePopup = () => {
+        setIsPopupOpen(!isPopupOpen);
+      };
+    
 
     // Update value in DB
     function updateValue(path, newValue) {
@@ -138,7 +148,21 @@ function ParticipantCard({ database, participantId, index, setShowBookSession2, 
                 }
                 <div className="participant-attribute-container">
                     <span className="field-label"># {participantId}</span>
-                    <span>{participantInfo['first_name'] + " " + participantInfo['last_name']}</span>
+                    <span>{participantInfo['first_name'] + " " + participantInfo['last_name']}
+                    <a
+                        className="copy-email-link fas fa-file-export"
+                        title="Open log"
+                        onClick={togglePopup}
+                    ></a>
+                    {isPopupOpen &&
+                        Constants.superAdmins.includes(auth.currentUser.email) && (
+                        <ActivityCard
+                            participantId={participantId}
+                            database={database}
+                            togglePopup={togglePopup}
+                        />
+                    )}
+                    </span>
                 </div>
                 {participantInfo['registered_as'] != 'parent' &&
                     <>

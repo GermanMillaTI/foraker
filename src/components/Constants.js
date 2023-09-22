@@ -278,6 +278,15 @@ const Constants = {
   demoBinStatuses: [
     'Open',
     'Closed'
+  ],
+
+  superAdmins: [
+    'zoltan.bathori@telusinternational.com',
+    'german.milla01@telusinternational.com',
+    'sari.kiiskinen@telusinternational.com',
+    'axel.romeo@telusinternational.com',
+    'jessica.tucker@telusinternational.com',
+    'sheiby.molina@telusinternational.com'
   ]
 }
 

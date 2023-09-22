@@ -49,6 +49,8 @@ function ActivityCard({ participantId, database, togglePopup }) {
     }
   }
 
+  console.log(result)
+
   useMemo(() => {
     let temp = [];
     let usersTemp = [];
@@ -62,8 +64,7 @@ function ActivityCard({ participantId, database, togglePopup }) {
         timestampId.substring(4, 6);
       if (!temp.includes(timestampDate)) temp.push(timestampDate);
 
-      if (!usersTemp.includes(result[timestampId].user))
-        usersTemp.push(result[timestampId].user);
+
     }
 
     setDays(temp);
@@ -110,7 +111,6 @@ function ActivityCard({ participantId, database, togglePopup }) {
               </thead>
               <tbody>
                 {Object.keys(result)
-                  .filter((id) => filterFunction(id))
                   .map((key) => {
                     return (
                       <tr>

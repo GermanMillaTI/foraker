@@ -140,144 +140,76 @@ function Stats({ database, setActivePage, setShowStats, setFilterDataFromStats }
                 </div>
 
                 <div className="modal-stats-content">
-                    <table className="table-of-stats">
-                        <thead>
-                            <tr>
-                                <th>
-                                    Male
-                                </th>
-                                {Object.keys(Constants['columnsOfStats']).map(eth => {
-                                    return <th>{eth}</th>
+                    {['Male', 'Female'].map(gender => {
+                        return <table className="table-of-stats">
+                            <thead>
+                                <tr>
+                                    <th>
+                                        {gender}
+                                    </th>
+                                    {Object.keys(Constants['columnsOfStats']).map(eth => {
+                                        return <th>{eth}</th>
+                                    })}
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {Constants['listOfAgeRanges'].map(ageRange => {
+                                    return <tr>
+                                        <th>{ageRange}</th>
+                                        {Object.keys(Constants['columnsOfStats']).map(columnName => {
+                                            let eth = Constants['columnsOfStats'][columnName];
+                                            let output = eth.reduce((a, b) => {
+                                                return filterData['statuses'].reduce((x, y) => {
+                                                    return stats[b][ageRange][gender][y] + x
+                                                }, 0) + a
+                                            }, 0);
+                                            let output2 = eth.reduce((a, b) => {
+                                                return filterData['statuses2'].reduce((x, y) => {
+                                                    return stats[b][ageRange][gender][y] + x
+                                                }, 0) + a
+                                            }, 0);
+                                            output = parseFloat(output.toFixed(1));
+                                            output2 = parseFloat(output2.toFixed(1));
+
+                                            let binClassTag = "";
+                                            if (columnName != "Total") {
+                                                binClassTag = "demo-bin-" + database['demo_bins'][gender][Constants['bonusEthnicities2'][columnName]][ageRange];
+                                            }
+
+                                            return <td className={"stats-demo-bin-cell " + (binClassTag)}>
+                                                <span className="first-number" onClick={() => selectDemoBin(filterData['statuses'], eth, [ageRange], gender)}>{output}</span>
+                                                <span className="second-number" onClick={() => selectDemoBin(filterData['statuses2'], eth, [ageRange], gender)}>{output2}</span>
+                                                {columnName != "Total" && <label className="stats-demo-bin">{Constants['demoBinsEthnicities'][eth[0]] + Constants['demoBinsAgeRanges'][ageRange] + Constants['demoBinsGenders'][gender]}</label>}
+                                            </td>
+                                        })}
+                                    </tr>
                                 })}
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {Constants['listOfAgeRanges'].map(ageRange => {
-                                return <tr>
-                                    <th>{ageRange}</th>
+                                <tr>
+                                    <th className="stats-total-row">Total</th>
                                     {Object.keys(Constants['columnsOfStats']).map(columnName => {
                                         let eth = Constants['columnsOfStats'][columnName];
                                         let output = eth.reduce((a, b) => {
                                             return filterData['statuses'].reduce((x, y) => {
-                                                return stats[b][ageRange]['Male'][y] + x
+                                                return Constants['listOfAgeRanges'].reduce((q, w) => { return stats[b][w][gender][y] + q }, 0) + x
                                             }, 0) + a
                                         }, 0);
                                         let output2 = eth.reduce((a, b) => {
                                             return filterData['statuses2'].reduce((x, y) => {
-                                                return stats[b][ageRange]['Male'][y] + x
+                                                return Constants['listOfAgeRanges'].reduce((q, w) => { return stats[b][w][gender][y] + q }, 0) + x
                                             }, 0) + a
                                         }, 0);
                                         output = parseFloat(output.toFixed(1));
                                         output2 = parseFloat(output2.toFixed(1));
 
-                                        let binClassTag = "";
-                                        if (columnName != "Total") {
-                                            binClassTag = database['bins']['Male'][Constants['bonusEthnicities2'][columnName]][ageRange] ? "open-demo-bin" : "closed-demo-bin";
-                                        }
-
-                                        return <td className={"stats-demo-bin-cell " + (binClassTag)}>
-                                            <span className="first-number" onClick={() => selectDemoBin(filterData['statuses'], eth, [ageRange], "Male")}>{output}</span>
-                                            <span className="second-number" onClick={() => selectDemoBin(filterData['statuses2'], eth, [ageRange], "Male")}>{output2}</span>
-                                            {columnName != "Total" && <label className="stats-demo-bin">{Constants['demoBinsEthnicities'][eth[0]] + Constants['demoBinsAgeRanges'][ageRange] + Constants['demoBinsGenders']['Male']}</label>}
+                                        return <td className="stats-demo-bin-cell stats-total-row">
+                                            <span className="first-number" onClick={() => selectDemoBin(filterData['statuses'], eth, Constants['listOfAgeRanges'], gender)}>{output}</span>
+                                            <span className="second-number" onClick={() => selectDemoBin(filterData['statuses2'], eth, Constants['listOfAgeRanges'], gender)}>{output2}</span>
                                         </td>
                                     })}
                                 </tr>
-                            })}
-                            <tr>
-                                <th className="stats-total-row">Total</th>
-                                {Object.keys(Constants['columnsOfStats']).map(columnName => {
-                                    let eth = Constants['columnsOfStats'][columnName];
-                                    let output = eth.reduce((a, b) => {
-                                        return filterData['statuses'].reduce((x, y) => {
-                                            return Constants['listOfAgeRanges'].reduce((q, w) => { return stats[b][w]['Male'][y] + q }, 0) + x
-                                        }, 0) + a
-                                    }, 0);
-                                    let output2 = eth.reduce((a, b) => {
-                                        return filterData['statuses2'].reduce((x, y) => {
-                                            return Constants['listOfAgeRanges'].reduce((q, w) => { return stats[b][w]['Male'][y] + q }, 0) + x
-                                        }, 0) + a
-                                    }, 0);
-                                    output = parseFloat(output.toFixed(1));
-                                    output2 = parseFloat(output2.toFixed(1));
-
-                                    return <td className="stats-demo-bin-cell stats-total-row">
-                                        <span className="first-number" onClick={() => selectDemoBin(filterData['statuses'], eth, Constants['listOfAgeRanges'], "Male")}>{output}</span>
-                                        <span className="second-number" onClick={() => selectDemoBin(filterData['statuses2'], eth, Constants['listOfAgeRanges'], "Male")}>{output2}</span>
-                                    </td>
-                                })}
-                            </tr>
-                        </tbody>
-                    </table>
-
-
-                    <table className="table-of-stats">
-                        <thead>
-                            <tr>
-                                <th>
-                                    Female
-                                </th>
-                                {Object.keys(Constants['columnsOfStats']).map(eth => {
-                                    return <th>{eth}</th>
-                                })}
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {Constants['listOfAgeRanges'].map(ageRange => {
-                                return <tr>
-                                    <th>{ageRange}</th>
-                                    {Object.keys(Constants['columnsOfStats']).map(columnName => {
-                                        let eth = Constants['columnsOfStats'][columnName];
-                                        let output = eth.reduce((a, b) => {
-                                            return filterData['statuses'].reduce((x, y) => {
-                                                return stats[b][ageRange]['Female'][y] + x
-                                            }, 0) + a
-                                        }, 0);
-                                        let output2 = eth.reduce((a, b) => {
-                                            return filterData['statuses2'].reduce((x, y) => {
-                                                return stats[b][ageRange]['Female'][y] + x
-                                            }, 0) + a
-                                        }, 0);
-                                        output = parseFloat(output.toFixed(1));
-                                        output2 = parseFloat(output2.toFixed(1));
-
-                                        let binClassTag = "";
-                                        if (columnName != "Total") {
-                                            binClassTag = database['bins']['Female'][Constants['bonusEthnicities2'][columnName]][ageRange] ? "open-demo-bin" : "closed-demo-bin";
-                                        }
-
-                                        return <td className={"stats-demo-bin-cell " + binClassTag}>
-                                            <span className="first-number" onClick={() => selectDemoBin(filterData['statuses'], eth, [ageRange], "Female")}>{output}</span>
-                                            <span className="second-number" onClick={() => selectDemoBin(filterData['statuses2'], eth, [ageRange], "Female")}>{output2}</span>
-                                            {columnName != "Total" && <label className="stats-demo-bin">{Constants['demoBinsEthnicities'][eth[0]] + Constants['demoBinsAgeRanges'][ageRange] + Constants['demoBinsGenders']['Female']}</label>}
-                                        </td>
-                                    })}
-                                </tr>
-                            })}
-                            <tr>
-                                <th className="stats-total-row">Total</th>
-                                {Object.keys(Constants['columnsOfStats']).map(columnName => {
-                                    let eth = Constants['columnsOfStats'][columnName];
-                                    let output = eth.reduce((a, b) => {
-                                        return filterData['statuses'].reduce((x, y) => {
-                                            return Constants['listOfAgeRanges'].reduce((q, w) => { return stats[b][w]['Female'][y] + q }, 0) + x
-                                        }, 0) + a
-                                    }, 0);
-                                    let output2 = eth.reduce((a, b) => {
-                                        return filterData['statuses2'].reduce((x, y) => {
-                                            return Constants['listOfAgeRanges'].reduce((q, w) => { return stats[b][w]['Female'][y] + q }, 0) + x
-                                        }, 0) + a
-                                    }, 0);
-                                    output = parseFloat(output.toFixed(1));
-                                    output2 = parseFloat(output2.toFixed(1));
-
-                                    return <td className="stats-demo-bin-cell stats-total-row">
-                                        <span className="first-number" onClick={() => selectDemoBin(filterData['statuses'], eth, Constants['listOfAgeRanges'], "Female")}>{output}</span>
-                                        <span className="second-number" onClick={() => selectDemoBin(filterData['statuses2'], eth, Constants['listOfAgeRanges'], "Female")}>{output2}</span>
-                                    </td>
-                                })}
-                            </tr>
-                        </tbody>
-                    </table>
+                            </tbody>
+                        </table>
+                    })}
                 </div>
             </div>
         </div>

@@ -95,7 +95,7 @@ function MainPage() {
             if (!tempEth) {
               demoBinOpen = true;
             } else {
-              if (temp['bins'][gender][tempEth][ageRange] === false) demoBinOpen = false;
+              if (temp['demo_bins'][gender][tempEth][ageRange] === 1 || temp['demo_bins'][gender][tempEth][ageRange] === 2) demoBinOpen = false;
             }
           }
         })

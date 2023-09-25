@@ -239,7 +239,7 @@ function StatsSessions({ database, setActivePage, setShowStatsSessions, setFilte
 
                                         let binClassTag = "";
                                         if (columnName != "Total") {
-                                            binClassTag = database['bins']['Male'][Constants['bonusEthnicities2'][columnName]][ageRange] ? "open-demo-bin" : "closed-demo-bin";
+                                            binClassTag = "demo-bin-" + database['demo_bins']['Male'][Constants['bonusEthnicities2'][columnName]][ageRange];
                                         }
 
                                         return <td className={"stats-demo-bin-cell " + binClassTag}>
@@ -325,7 +325,7 @@ function StatsSessions({ database, setActivePage, setShowStatsSessions, setFilte
 
                                         let binClassTag = "";
                                         if (columnName != "Total") {
-                                            binClassTag = database['bins']['Female'][Constants['bonusEthnicities2'][columnName]][ageRange] ? "open-demo-bin" : "closed-demo-bin";
+                                            binClassTag = "demo-bin-" + database['demo_bins']['Female'][Constants['bonusEthnicities2'][columnName]][ageRange];
                                         }
 
                                         return <td className={"stats-demo-bin-cell " + binClassTag}>

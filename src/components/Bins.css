@@ -62,10 +62,17 @@
     cursor: pointer;
 }
 
-.open-demo-bin {
+.demo-bin-0 {
+    user-select: none;
     background: rgba(120, 240, 120, 0.5) !important;
 }
 
-.closed-demo-bin {
-    background: rgb(247, 156, 114, 0.5) !important;
+.demo-bin-1 {
+    user-select: none;
+    background: rgba(250, 164, 4, 0.747) !important;
+}
+
+.demo-bin-2 {
+    user-select: none;
+    background: rgba(253, 55, 55, 0.555) !important;
 }

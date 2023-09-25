@@ -23,70 +23,39 @@ function Bins({ database, setShowBins }) {
                 </div>
 
                 <div className="modal-bins-content">
-                    <table className="table-of-bins">
-                        <thead>
-                            <tr>
-                                <th>
-                                    Male
-                                </th>
-                                {Object.keys(Constants['columnsOfStats']).filter(columnName => columnName != "Total").map(eth => {
-                                    return <th>{eth}</th>
-                                })}
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {Constants['listOfAgeRanges'].map(ageRange => {
-                                return <tr>
-                                    <th>{ageRange}</th>
-                                    {Object.keys(Constants['columnsOfStats']).filter(columnName => columnName != "Total").map(columnName => {
-                                        let eth = columnName.replaceAll(" ", "").replaceAll(".", "").replaceAll("-", "").replaceAll("/", "");
-                                        let eth2 = Constants['columnsOfStats'][columnName];
-                                        let open = database['bins']['Male'][eth][ageRange];
-                                        return <td className={"stats-demo-bin-cell" + (open ? " open-demo-bin" : " closed-demo-bin")} onClick={() => updateValue("/bins/" + "Male/" + eth, { [ageRange]: !open })}>
-
-                                            <>
-                                                {open ? "Open" : "Closed"}
-                                                {columnName != "Total" && <label className="stats-demo-bin">{Constants['demoBinsEthnicities'][eth2[0]] + Constants['demoBinsAgeRanges'][ageRange] + Constants['demoBinsGenders']['Male']}</label>}
-                                            </>
-                                        </td>
+                    {['Male', 'Female'].map(gender => {
+                        return <table className="table-of-bins">
+                            <thead>
+                                <tr>
+                                    <th>
+                                        {gender}
+                                    </th>
+                                    {Object.keys(Constants['columnsOfStats']).filter(columnName => columnName != "Total").map(eth => {
+                                        return <th>{eth}</th>
                                     })}
                                 </tr>
-                            })}
-                        </tbody>
-                    </table>
+                            </thead>
+                            <tbody>
+                                {Constants['listOfAgeRanges'].map(ageRange => {
+                                    return <tr>
+                                        <th>{ageRange}</th>
+                                        {Object.keys(Constants['columnsOfStats']).filter(columnName => columnName != "Total").map(columnName => {
+                                            let eth = columnName.replaceAll(" ", "").replaceAll(".", "").replaceAll("-", "").replaceAll("/", "");
+                                            let eth2 = Constants['columnsOfStats'][columnName];
+                                            let currentValue = database['demo_bins'][gender][eth][ageRange];
+                                            return <td className={"stats-demo-bin-cell + demo-bin-" + currentValue.toString()} onClick={() => updateValue("/demo_bins/" + gender + "/" + eth, { [ageRange]: (currentValue === 2 ? 0 : currentValue + 1) })}>
 
-                    <table className="table-of-bins">
-                        <thead>
-                            <tr>
-                                <th>
-                                    Female
-                                </th>
-                                {Object.keys(Constants['columnsOfStats']).filter(columnName => columnName != "Total").map(eth => {
-                                    return <th>{eth}</th>
+                                                <>
+                                                    {Constants['demoBinStatusDictionary'][currentValue]}
+                                                    {columnName != "Total" && <label className="stats-demo-bin">{Constants['demoBinsEthnicities'][eth2[0]] + Constants['demoBinsAgeRanges'][ageRange] + Constants['demoBinsGenders'][gender]}</label>}
+                                                </>
+                                            </td>
+                                        })}
+                                    </tr>
                                 })}
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {Constants['listOfAgeRanges'].map(ageRange => {
-                                return <tr>
-                                    <th>{ageRange}</th>
-                                    {Object.keys(Constants['columnsOfStats']).filter(columnName => columnName != "Total").map(columnName => {
-                                        let eth = columnName.replaceAll(" ", "").replaceAll(".", "").replaceAll("-", "").replaceAll("/", "");
-                                        let eth2 = Constants['columnsOfStats'][columnName];
-                                        let open = database['bins']['Female'][eth][ageRange];
-                                        return <td className={"stats-demo-bin-cell" + (open ? " open-demo-bin" : " closed-demo-bin")} onClick={() => updateValue("/bins/" + "Female/" + eth, { [ageRange]: !open })}>
-                                            <>
-                                                {open ? "Open" : "Closed"}
-                                                {columnName != "Total" && <label className="stats-demo-bin">{Constants['demoBinsEthnicities'][eth2[0]] + Constants['demoBinsAgeRanges'][ageRange] + Constants['demoBinsGenders']['Female']}</label>}
-                                            </>
-                                        </td>
-                                    })}
-                                </tr>
-                            })}
-                        </tbody>
-                    </table>
-
-
+                            </tbody>
+                        </table>
+                    })}
                 </div>
             </div>
         </div>

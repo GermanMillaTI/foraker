@@ -681,7 +681,7 @@ function UpdateSession({ database, updateSession, setUpdateSession, setCheckDocu
                                 {participantInfo['bonus_amount'] &&
                                     <tr>
                                         <td className="participant-table-right bonus-container" colspan="2">
-                                            <input type="checkbox" checked disabled />
+                                            <input type="checkbox" checked={['Scheduled', 'Checked In', 'Completed'].includes(database['timeslots'][updateSession]['status'])} disabled />
                                             <label> Extra bonus ($ {participantInfo['bonus_amount']}) <i>Offered during the handoff</i></label>
                                         </td>
                                     </tr>

@@ -279,7 +279,11 @@ const Constants = {
     'Open',
     'Closed'
   ],
-
+  demoBinStatusDictionary: {
+    0: 'Open',
+    1: 'Closed',
+    2: 'Closed'
+  },
   superAdmins: [
     'zoltan.bathori@telusinternational.com',
     'german.milla01@telusinternational.com',

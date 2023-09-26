@@ -1,10 +1,12 @@
-import { useState, useReducer, useMemo } from "react";
+import React, { useState, useReducer, useMemo } from "react";
 import ReactDOM from "react-dom";
 import { format } from "date-fns";
 import FormattingFunctions from "./Core/FormattingFunctions";
 import TableFilter from "./Core/TableFilter";
 
 import "./UpdateSession.css";
+
+import './Scheduler.css';
 
 const filterReducer = (state, event) => {
   let newState = JSON.parse(JSON.stringify(state));
@@ -31,7 +33,7 @@ const filterReducer = (state, event) => {
   return newState;
 };
 
-function ActivityCard({ participantId, database, togglePopup }) {
+function ActivityCard({ participantId, database, togglePopup, isPopup }) {
   const [days, setDays] = useState([]);
   const [users, setUsers] = useState([]);
 
@@ -43,13 +45,19 @@ function ActivityCard({ participantId, database, togglePopup }) {
   let data = database["log"];
 
   let result = {};
-  for (const key in data) {
-    if (data[key].pid === participantId) {
-      result[key] = data[key];
+
+  if(isPopup){
+    for (const key in data) {
+      if (data[key].pid === participantId) {
+        result[key] = data[key];
+      }
     }
+  } else {
+    result = database['log'];
   }
 
-  console.log(result)
+
+  
 
   useMemo(() => {
     let temp = [];
@@ -82,7 +90,7 @@ function ActivityCard({ participantId, database, togglePopup }) {
     return filterData["date"].includes(timeslotDate);
   }
 
-  return ReactDOM.createPortal(
+  const renderElement = (
     <div
       className="modal-book-update-session-backdrop"
       onClick={(e) => {
@@ -91,12 +99,11 @@ function ActivityCard({ participantId, database, togglePopup }) {
       }}
     >
       <div className="modal-book-update-session-main-container">
-        <div className="modal-book-update-session-header">
-          Log for ID: {participantId}
-        </div>
+          {isPopup ? <div className="modal-book-update-session-header"> Activity log for ID: {participantId}</div> : <div className="modal-book-update-session-header">Activity Log</div> }
 
-        <div className="" style={{ width: "55vw" }}>
+        <div className="schedulerContainer" style={{ width: "55vw" }}>
           {Object.keys(result).length > 0 ? (
+          <div className="scheduler-table-container">
             <table
               className="scheduler-table"
               style={{ width: "50vw", marginTop: "2vw" }}
@@ -139,6 +146,7 @@ function ActivityCard({ participantId, database, togglePopup }) {
                   })}
               </tbody>
             </table>
+          </div>
           ) : (
             <h2 className="center-tag no-wrap" style={{ marginTop: "1vw" }}>
               No records found
@@ -146,10 +154,17 @@ function ActivityCard({ participantId, database, togglePopup }) {
           )}
         </div>
       </div>
-    </div>,
-
-    document.body
+    </div>
   );
+
+            
+
+  return isPopup
+  ? ReactDOM.createPortal(
+      renderElement,
+      document.body
+    )
+  : renderElement;
 }
 
 export default ActivityCard;

@@ -1,11 +1,11 @@
-import './Scheduler.css';
+import './ActvityLog.css'
 
 import { CSVLink } from 'react-csv';
 import { useState, useReducer, useMemo } from 'react';
 import FormattingFunctions from './Core/FormattingFunctions';
 import { format } from "date-fns";
 import TableFilter from './Core/TableFilter';
-
+import ReactDOM from 'react-dom';
 
 const filterReducer = (state, event) => {
     let newState = JSON.parse(JSON.stringify(state));
@@ -34,18 +34,32 @@ const filterReducer = (state, event) => {
   
 
 
-function ActivityLog({ database }){
+function ActivityLog({ database, setActivityLog, participantId }){
     const [logCsvData, setLogCsvData] = useState([[]]);
     const [days, setDays] = useState([]);
 
     const [filterData, setFilterData] = useReducer(filterReducer, {
         date: [format(new Date(), "yyyy-MM-dd")],
     });
+
+    let result = {}
+
+    if(!participantId){
+        result = database['log'];
+    } else {
+        for (const key in database['log']){
+            if (database['log'][key].pid === participantId){
+                result[key] = database['log'][key];
+            }
+        }
+
+        
+    }
+
       
 
     useMemo(() => {
         let temp = [];
-        let usersTemp = [];
         for (var timestampId in database['log']) {
           let timestampDate =
             "20" +
@@ -58,7 +72,7 @@ function ActivityLog({ database }){
     
         }
         setDays(temp);
-    }, [Object.keys(database['log']).length]);
+    }, [Object.keys(result).length]);
 
     function filterFunction(timeslotId) {
         
@@ -96,60 +110,103 @@ function ActivityLog({ database }){
       
         setLogCsvData(output);
         return output
-    } 
-
-    return (
-        <div id="schedulerContainer">
-            <CSVLink
-            className="download-csv-button"
-            target="_blank"
-            asyncOnClick={true}
-            onClick={getCSVdata}
-            filename={"denali-logs_"+ new Date().toISOString().split("T")[0]+".csv"}
-            data={logCsvData}
-        >Download CSV</CSVLink>
-            <div className="scheduler-table-container">
-                <table className="scheduler-table">
-                    <thead>
-                        <th>
-                            <TableFilter 
-                                filterName="Date"
-                                alt="date"
-                                values={days}
-                                filterData={filterData}
-                                setFilterData={setFilterData}
-                            />
-                        </th>
-                        <th>Timeslot</th>
-                        <th>Station</th>
-                        <th>Participant</th>
-                        <th>Action</th>
-                        <th>User</th>
-                    </thead>
-                    <tbody>
-                        {Object.keys(database['log'])
-                        .filter((id) =>filterFunction(id))
-                        .map((key, index, array) => {
+    }
 
 
-                            return (
-                                <tr>
-                                    <td className="center-tag no-wrap">{FormattingFunctions.DateFromLog(key)}</td>
-                                    <td className="center-tag no-wrap">{FormattingFunctions.TimeSlotFormat(database['log'][key]['timeslot'])}</td>
-                                    <td className="center-tag no-wrap">{FormattingFunctions.StationFromSlot(database['log'][key]['timeslot'])}</td>
-                                    <td className="center-tag no-wrap">{database['log'][key]['pid']}</td>
+    return ReactDOM.createPortal((
+        <div
+        className="modal-book-update-session-backdrop"
+        onClick={(e) => {
+          if (e.target.className == "modal-book-update-session-backdrop")
+            setActivityLog(false);
+        }}
+      >
+        <div className="modal-book-update-session-main-container">
+            <div className="modal-book-update-session-header">Activity Log</div>
+             {!participantId ?
+             <CSVLink
+                    className="download-csv-button"
+                    target="_blank"
+                    asyncOnClick={true}
+                    onClick={getCSVdata}
+                    filename={"denali-logs_"+ new Date().toISOString().split("T")[0]+".csv"}
+                    data={logCsvData}
+                >Download CSV</CSVLink> : ""
+                }
 
-                                    <td className="">{database['log'][key]['action']}</td>
-                                    <td className="center-tag no-wrap">{database['log'][key]['user']}</td>
-                                    
-                                </tr>
-                            )
-                        })}
-                    </tbody>
-                </table>
+  
+          <div className="schedulerContainer" style={{ width: "55vw", height : "auto" }}>
+            {Object.keys(result).length > 0 ? (
+            <div className="scrollable-content" style={{ maxHeight: "90vh", overflowY: "auto" }}>
+            <div className="">
+              <table
+                className="scheduler-table"
+                style={{ width: "50vw", marginTop: "2vw" }}
+              >
+                <thead>
+                    <th>
+                        {!participantId ? <TableFilter 
+                        filterName="Date"
+                        alt="date"
+                        values={days}
+                        filterData={filterData}
+                        setFilterData={setFilterData}
+                    /> : <div>Date</div>}
+
+                    </th>
+                  <th>Timeslot</th>
+                  <th>Station</th>
+                  <th>Participant</th>
+                  <th>Action</th>
+                  <th>User</th>
+                </thead>
+                <tbody>
+                  {Object.keys(result)
+                    .filter((id) => {
+                        if(!participantId){
+                            return filterFunction(id);
+                        }
+                        return true;
+                    })
+                    .map((key) => {
+                      return (
+                        <tr>
+                          <td className="center-tag no-wrap">
+                            {FormattingFunctions.DateFromLog(key)}
+                          </td>
+                          <td className="center-tag no-wrap">
+                            {FormattingFunctions.TimeSlotFormat(
+                              result[key]["timeslot"]
+                            )}
+                          </td>
+                          <td className="center-tag no-wrap">
+                            {FormattingFunctions.StationFromSlot(
+                               result[key]["timeslot"]
+                            )}
+                          </td>
+                          <td className="center-tag no-wrap" >
+                            {result[key]["pid"]}
+                          </td>
+                          <td className="white-space-wrap">{result[key]["action"]}</td>
+                          <td className="center-tag no-wrap">
+                            {result[key]["user"]}
+                          </td>
+                        </tr>
+                      );
+                    })}
+                </tbody>
+              </table>
             </div>
         </div>
-    )
+            ) : (
+              <h2 className="center-tag no-wrap" style={{ marginTop: "1vw" }}>
+                No records found
+              </h2>
+            )}
+          </div>
+        </div>
+      </div>
+    ), document.body);
 }
 
 export default ActivityLog;

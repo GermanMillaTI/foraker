@@ -28,6 +28,7 @@ function MainPage() {
   const [filterDataFromStats, setFilterDataFromStats] = useState(false);
   const [showBonuses, setShowBonuses] = useState(false);
   const [showBins, setShowBins] = useState(false);
+  const [activityLog, setActivityLog] = useState(false);
 
   useEffect(() => {
     realtimeDb.ref('/').on('value', snapshot => {
@@ -193,6 +194,7 @@ function MainPage() {
           setShowStatsSessions={setShowStatsSessions}
           setShowBonuses={setShowBonuses}
           setShowBins={setShowBins}
+          setActivityLog={setActivityLog}
         />
       )}
 
@@ -207,10 +209,11 @@ function MainPage() {
             setCheckDocuments={setCheckDocuments}
             filterDataFromStats={filterDataFromStats}
             setFilterDataFromStats={setFilterDataFromStats}
+            setActivityLog={setActivityLog}
           />
         )}
         {activePage == "Scheduler" && (<Scheduler database={database} setUpdateSession={setUpdateSession} />)}
-        {activePage == "ActivityLog" && (<ActivityLog database={database} />)}
+        {activityLog && <ActivityLog database={database} setActivityLog={setActivityLog}/>}
         {activePage == "Scheduler Overview" && (<SchedulerOverview database={database} />)}
         {activePage == "Scheduler External" && (<SchedulerExternal database={database} />)}
         {activePage == "External" && (<External database={database} setCheckDocuments />)}

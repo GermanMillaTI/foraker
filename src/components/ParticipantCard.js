@@ -9,20 +9,16 @@ import './ParticipantCard.css';
 import Constants from './Constants';
 import LogEvent from './Core/LogEvent';
 
-import ActivityCard from "./ActivityCard";
+import ActivityLog from './ActivityLog';
 
 
-function ParticipantCard({ database, participantId, index, setShowBookSession2, setCheckDocuments, setUpdateSession }) {
+function ParticipantCard({ database, participantId, index, setShowBookSession2, setCheckDocuments, setUpdateSession, setActivityLog, activityLog }) {
     const [tempParticipants, setTempParticipants] = useState([]);
-    const [isPopupOpen, setIsPopupOpen] = useState(false);
+    const [idforLog, setIdForLog] = useState();
 
     let participantInfo = database['participants'][participantId];
     let timeslotsOfParticipant = Object.values(database['timeslots']).filter(timeslot => participantId == timeslot['participant_id']);
 
-    const togglePopup = () => {
-        setIsPopupOpen(!isPopupOpen);
-      };
-    
 
     // Update value in DB
     function updateValue(path, newValue) {
@@ -140,6 +136,8 @@ function ParticipantCard({ database, participantId, index, setShowBookSession2, 
         )
     }
 
+
+
     return (
         <div className={"participant-card " + (index % 2 == 0 ? "row1" : "row2")}>
             <div className="participant-card-column column-1">
@@ -152,16 +150,19 @@ function ParticipantCard({ database, participantId, index, setShowBookSession2, 
                     <a
                         className="copy-email-link fas fa-file-export"
                         title="Open log"
-                        onClick={togglePopup}
+                        onClick={() => {
+                            setActivityLog(true);
+                        }}
                     ></a>
-                    {isPopupOpen &&
-                        Constants.superAdmins.includes(auth.currentUser.email) && (
-                        <ActivityCard
-                            participantId={participantId}
+                    {activityLog &&
+                        Constants.superAdmins.includes(auth.currentUser.email) ? (
+                        <ActivityLog
+                            key={participantId}
                             database={database}
-                            togglePopup={togglePopup}
+                            participantId={participantId}
+                            setActivityLog={setActivityLog}
                         />
-                    )}
+                    ) : null}
                     </span>
                 </div>
                 {participantInfo['registered_as'] != 'parent' &&

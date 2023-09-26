@@ -7,7 +7,7 @@ import ParticipantFilter from './ParticipantFilter';
 import { CSVLink } from 'react-csv';
 
 
-function Participants({ database, updateSession, setUpdateSession, checkDocuments, setCheckDocuments, filterDataFromStats, setFilterDataFromStats }) {
+function Participants({ database, updateSession, setUpdateSession, checkDocuments, setCheckDocuments, filterDataFromStats, setFilterDataFromStats, setActivityLog, activityLog }) {
   const [showBookSession2, setShowBookSession2] = useState("");
   const [shownParticipants, setShownParticipants] = useState([]);
   const [pptCsvData, setPptCsvData] = useState([[]]);
@@ -21,7 +21,7 @@ function Participants({ database, updateSession, setUpdateSession, checkDocument
   }, [checkDocuments, showBookSession2, updateSession])
 
   function getCSVdata() {
-    let output = [['ID', 'First Name', 'Last Name', 'Email', 'Age-Range', 'Demo Bins', 'Ethnicities', 'Date', 'DOB', 'Target of Sessions', 'Phone', 'Status', 'Document Approval', 'Vision Correction', 'Sessions No.']];
+    let output = [['ID', 'First Name', 'Last Name', 'Email', 'Age-Range', 'Demo Bins', 'Ethnicities', 'Date', 'DOB', 'Target of Sessions', 'External ID', 'Phone', 'Status', 'Document Approval', 'Vision Correction', 'Sessions No.']];
 
     var data = Object.keys(database['participants']).filter(pid => shownParticipants.includes(pid)).sort((a, b) => {
       return a < b ? -1 : 1;
@@ -36,6 +36,7 @@ function Participants({ database, updateSession, setUpdateSession, checkDocument
       new Date(database['participants'][key]['date']).toISOString().split("T")[0],
       new Date(database['participants'][key]['date_of_birth']).toISOString().split("T")[0],
       database['participants'][key]['multiple_times'],
+      database['participants'][key]['external_id'],
       database['participants'][key]['phone'],
       database['participants'][key]['status'],
       database['participants'][key]['document_approval'],
@@ -97,6 +98,7 @@ function Participants({ database, updateSession, setUpdateSession, checkDocument
               setShowBookSession2={setShowBookSession2}
               setCheckDocuments={setCheckDocuments}
               setUpdateSession={setUpdateSession}
+              setActivityLog={setActivityLog}
             />
           )
         ))}

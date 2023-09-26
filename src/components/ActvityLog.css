@@ -1,0 +1,190 @@
+#schedulerContainer {
+    position: absolute;
+    top: 0;
+    width: 100%;
+    height: 100vh;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.scheduler-table-container {
+    height: 100%;
+    width: 100%;
+    overflow-y: scroll;
+}
+
+.scheduler-table {
+    margin: 0 auto 2.5em auto;
+    width: 95vw;
+    border-collapse: collapse;
+    box-shadow: 1px 2px 5px rgba(0, 0, 0, .31);
+}
+
+.center-tag {
+    text-align: center;
+}
+
+.scheduler-table th {
+    white-space: nowrap;
+    min-width: 5em;
+    position: sticky;
+    top: -1px;
+    background-color: #e1e2e4;
+    padding: .3em .3em;
+    border: 1px solid rgb(199, 198, 198);
+    background: #fff;
+    cursor: default;
+}
+
+.scheduler-table td {
+    max-width: 20em;
+    padding: .2em .3em;
+    border: 1px solid rgb(199, 198, 198);
+    cursor: default;
+}
+
+.white-space-wrap {
+    white-space: break-spaces;
+    /* This allows long URLs/text to wrap */
+    word-break: break-word;
+    /* This breaks long words and URLs */
+    overflow-wrap: break-word;
+    /* This also helps with word breaking */
+    max-width: 100%;
+    /* Ensure the content doesn't exceed the cell's width */
+}
+
+
+.scheduler-table tr:nth-child(even) {
+    background: rgba(255, 255, 255, 0.644);
+}
+
+.scheduler-table tr:hover {
+    background: #224bd436;
+}
+
+.day-separator {
+    border-bottom: .2em solid black;
+}
+
+.buttons-of-timeslot {
+    width: 16.8em;
+    display: flex;
+    margin: 0 auto;
+    gap: .5em;
+}
+
+.update-timeslot-button {
+    width: 5.5em;
+    border: none;
+    font-weight: bold;
+    box-shadow: 1px 2px 5px rgba(0, 0, 0, .31);
+    cursor: pointer;
+    outline: none;
+    border-radius: .2em;
+}
+
+.book-button {
+    color: #fff;
+    background: #0096a4;
+}
+
+.remind-button {
+    color: #fff;
+    background: #d116d4;
+}
+
+.update-button {
+    color: #fff;
+    background: #264e82;
+}
+
+.cancel-button {
+    color: #fff;
+    background: #c20a6f;
+}
+
+.pinfo-popup {
+    display: flex;
+    flex-direction: column;
+    gap: .2em;
+}
+
+.pinfo-popup-object {
+    display: flex;
+    flex-direction: row;
+    font-size: .9em;
+    color: #fff;
+}
+
+.pinfo-popup-title {
+    font-weight: bold;
+    min-width: 8em;
+}
+
+
+.highlighted-session-row {
+    animation: target-fade 10s;
+}
+
+.glasses-highlighted {
+    background: rgba(255, 0, 255, 0.445);
+}
+
+.extra-info {
+    cursor: pointer;
+    margin-left: .5em;
+    text-decoration: none;
+    color: #1d3062;
+}
+
+.extra-info:hover {
+    color: #ff5100;
+}
+
+
+@-webkit-keyframes target-fade {
+    from {
+        background-color: yellow;
+    }
+
+    to {
+        background-color: transparent;
+    }
+}
+
+@-moz-keyframes target-fade {
+    from {
+        background-color: yellow;
+    }
+
+    to {
+        background-color: transparent;
+    }
+}
+
+@-o-keyframes target-fade {
+    from {
+        background-color: yellow;
+    }
+
+    to {
+        background-color: transparent;
+    }
+}
+
+@keyframes target-fade {
+    from {
+        background-color: yellow;
+    }
+
+    to {
+        background-color: transparent;
+    }
+}
+
+.backup-timeslot {
+    background: yellow;
+}

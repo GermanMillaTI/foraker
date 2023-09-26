@@ -5,7 +5,7 @@ import Constants from './Constants';
 
 import './Navbar.css';
 
-function Navbar({ database, setActivePage, setShowStats, setShowStatsSessions, setShowBonuses, setShowBins }) {
+function Navbar({ database, setActivePage, setShowStats, setShowStatsSessions, setShowBonuses, setShowBins, setActivityLog }) {
   const [role, setRole] = useState(database['users'][auth.currentUser.uid]);
 
   // Logout
@@ -26,7 +26,7 @@ function Navbar({ database, setActivePage, setShowStats, setShowStatsSessions, s
       <button className="navbar-button" onClick={() => setShowStatsSessions(true)}>Session stats</button>
       {Constants.superAdmins.includes(auth.currentUser.email) && <button className="navbar-button" onClick={() => setShowBins(true)}>Demo bins</button>}
 
-      {Constants.superAdmins.includes(auth.currentUser.email) && <button className='navbar-button' onClick={() => setActivePage("ActivityLog")}>Activity log</button>}
+      {Constants.superAdmins.includes(auth.currentUser.email) && <button className='navbar-button' onClick={() => setActivityLog(true)}>Activity log</button>}
 
       {['zoltan.bathori@telusinternational.com', 'sari.kiiskinen@telusinternational.com'].includes(auth.currentUser.email) && <button className="navbar-button" onClick={() => setShowBonuses(true)}>Bonus $</button>}
       {(role == "admin" || role == "goodwork") && <button className="navbar-button" onClick={() => setActivePage("Goodwork")}>Goodwork</button>}

@@ -26,7 +26,7 @@ function Navbar({ database, setActivePage, setShowStats, setShowStatsSessions, s
 
   return (
     <div className="navbar">
-      {hostedVersion === appInfo.version ? <div> App version {appInfo.version}</div> : <div>version {appInfo.version} <a href='#' onClick={()=>{
+      {hostedVersion === appInfo.version ? <div>version {appInfo.version} (up-to-date)</div> : <div>version {appInfo.version} <a href='#' onClick={()=>{
         refreshApp();
       }}>Refresh Browser</a></div>}
       {role == "admin" && <button className="navbar-button" onClick={() => setActivePage("Participants")}>Participants</button>}

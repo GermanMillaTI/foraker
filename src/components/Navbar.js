@@ -20,11 +20,15 @@ function Navbar({ database, setActivePage, setShowStats, setShowStatsSessions, s
 
   let hostedVersion = database['settings']['app_version']
 
-  
+  function refreshApp(){
+    window.location.reload();
+  }
 
   return (
     <div className="navbar">
-      {hostedVersion === appInfo.version ? <div>version {appInfo.version}</div> : <div>version {appInfo.version}<a> (update required) </a></div>}
+      {hostedVersion === appInfo.version ? <div> App version {appInfo.version}</div> : <div>version {appInfo.version} <a href='#' onClick={()=>{
+        refreshApp();
+      }}>Refresh Browser</a></div>}
       {role == "admin" && <button className="navbar-button" onClick={() => setActivePage("Participants")}>Participants</button>}
       {role == "admin" && <button className="navbar-button" onClick={() => setActivePage("Scheduler")}>Scheduler</button>}
       {(role == "admin" || role == "external") && <button className="navbar-button" onClick={() => setActivePage("Scheduler Overview")}>Scheduler overview</button>}

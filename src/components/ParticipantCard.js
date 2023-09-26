@@ -12,9 +12,8 @@ import LogEvent from './Core/LogEvent';
 import ActivityLog from './ActivityLog';
 
 
-function ParticipantCard({ database, participantId, index, setShowBookSession2, setCheckDocuments, setUpdateSession, setActivityLog, activityLog }) {
+function ParticipantCard({ database, participantId, index, setShowBookSession2, setCheckDocuments, setUpdateSession, setActivityLog, activityLog, idforLog, setIdForLog }) {
     const [tempParticipants, setTempParticipants] = useState([]);
-    const [idforLog, setIdForLog] = useState();
 
     let participantInfo = database['participants'][participantId];
     let timeslotsOfParticipant = Object.values(database['timeslots']).filter(timeslot => participantId == timeslot['participant_id']);
@@ -152,14 +151,14 @@ function ParticipantCard({ database, participantId, index, setShowBookSession2, 
                         title="Open log"
                         onClick={() => {
                             setActivityLog(true);
+                            setIdForLog(participantId)
                         }}
                     ></a>
                     {activityLog &&
                         Constants.superAdmins.includes(auth.currentUser.email) ? (
                         <ActivityLog
-                            key={participantId}
                             database={database}
-                            participantId={participantId}
+                            participantId={idforLog}
                             setActivityLog={setActivityLog}
                         />
                     ) : null}

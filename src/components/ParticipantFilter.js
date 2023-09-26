@@ -21,7 +21,8 @@ const filterReducer = (state, event) => {
       documentStatuses: ["Blank", ...Constants['documentStatuses']],
       visionCorrections: Constants['visionCorrections'],
       parentRegistered: ['Yes', 'No'],
-      newDocuments: ['Yes', 'No']
+      newDocuments: ['Yes', 'No'],
+      highlighted: ['Yes', 'No']
     }
   }
 
@@ -81,7 +82,8 @@ function ParticipantFilter({ database, setShownParticipants, filterDataFromStats
     documentStatuses: ["Blank", ...Constants['documentStatuses']],
     visionCorrections: Constants['visionCorrections'],
     parentRegistered: ['Yes', 'No'],
-    newDocuments: ['Yes', 'No']
+    newDocuments: ['Yes', 'No'],
+    highlighted: ['Yes', 'No']
   });
 
   useEffect(() => {
@@ -105,7 +107,8 @@ function ParticipantFilter({ database, setShownParticipants, filterDataFromStats
       documentStatuses: Object.assign({}, ...Constants['documentStatuses'].map(k => ({ [k || "Blank"]: 0 }))),
       visionCorrections: Object.assign({}, ...Constants['visionCorrections'].map(k => ({ [k]: 0 }))),
       parentRegistered: { Yes: 0, No: 0 },
-      newDocuments: { Yes: 0, No: 0 }
+      newDocuments: { Yes: 0, No: 0 },
+      highlighted: { 'Yes': 0, 'No': 0 }
     }
   }
 
@@ -127,6 +130,7 @@ function ParticipantFilter({ database, setShownParticipants, filterDataFromStats
     let phase = participantInfo['phase'] ? "Phase " + participantInfo['phase'] : 'Blank';
     let source = participantInfo['source'] || 'Other';
     let demoBinStatus = participantInfo['open_demo_bin'] ? 'Open' : 'Closed';
+    let highlighted = participantInfo['highlighted'] ? 'Yes' : 'No';
 
     let ageRange = participantInfo['age_range'];
 
@@ -176,6 +180,7 @@ function ParticipantFilter({ database, setShownParticipants, filterDataFromStats
       filterData['documentStatuses'].includes(documentStatus) &&
       filterData['parentRegistered'].includes(parentRegistered) &&
       filterData['newDocuments'].includes(hasNewDocument) &&
+      filterData['highlighted'].includes(highlighted) &&
       (!filterData['participantId'] || participantId.includes(filterData['participantId'])) &&
       (!filterData['firstName'] || firstName.includes(filterData['firstName'].trim())) &&
       (!filterData['lastName'] || lastName.includes(filterData['lastName'].trim())) &&
@@ -203,6 +208,7 @@ function ParticipantFilter({ database, setShownParticipants, filterDataFromStats
       let phase = participantInfo['phase'] ? "Phase " + participantInfo['phase'] : 'Blank';
       let demoBinStatus = participantInfo['open_demo_bin'] ? 'Open' : 'Closed';
       let source = participantInfo['source'] || 'Other';
+      let highlighted = participantInfo['highlighted'] ? 'Yes' : 'No';
 
       let ethnicities = participantInfo['ethnicities'].split(',');
       ethnicities.map((eth) => {
@@ -224,6 +230,7 @@ function ParticipantFilter({ database, setShownParticipants, filterDataFromStats
       output['documentStatuses'][documentStatus]++;
       output['parentRegistered'][parentRegistered]++;
       output['newDocuments'][hasNewDocument]++;
+      output['highlighted'][highlighted]++;
     })
     setFilterStats(output);
   }, [filterData])
@@ -414,6 +421,18 @@ function ParticipantFilter({ database, setShownParticipants, filterDataFromStats
         <div className="filter-object">
           <input id="filter-icf-no" name="No" type="checkbox" alt="icfs" onChange={setFilterData} checked={filterData['icfs'].includes('No')} />
           <label htmlFor="filter-icf-no">No ({filterStats['icfs']['No']})</label>
+        </div>
+      </div>
+
+      <div className="filter-element gap">
+        <span className="filter-container-header">Highlighted participant</span>
+        <div className="filter-object">
+          <input id="filter-highlighted-yes" name="Yes" type="checkbox" alt="highlighted" onChange={setFilterData} checked={filterData['highlighted'].includes('Yes')} />
+          <label htmlFor="filter-highlighted-yes">Yes ({filterStats['highlighted']['Yes']})</label>
+        </div>
+        <div className="filter-object">
+          <input id="filter-highlighted-no" name="No" type="checkbox" alt="highlighted" onChange={setFilterData} checked={filterData['highlighted'].includes('No')} />
+          <label htmlFor="filter-highlighted-no">No ({filterStats['highlighted']['No']})</label>
         </div>
       </div>
     </div>

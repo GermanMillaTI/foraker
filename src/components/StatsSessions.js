@@ -61,7 +61,8 @@ function StatsSessions({ database, setActivePage, setShowStatsSessions, setFilte
             documentStatuses: ["Blank", ...Constants['documentStatuses']],
             visionCorrections: Constants['visionCorrections'],
             parentRegistered: ['Yes', 'No'],
-            newDocuments: ['Yes', 'No']
+            newDocuments: ['Yes', 'No'],
+            highlighted: ['Yes', 'No']
         });
 
         setActivePage("Participants");

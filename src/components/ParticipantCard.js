@@ -146,22 +146,31 @@ function ParticipantCard({ database, participantId, index, setShowBookSession2, 
                 <div className="participant-attribute-container">
                     <span className="field-label"># {participantId}</span>
                     <span>{participantInfo['first_name'] + " " + participantInfo['last_name']}
-                    <a
-                        className="copy-email-link fas fa-file-export"
-                        title="Open log"
-                        onClick={() => {
-                            setActivityLog(true);
-                            setIdForLog(participantId)
-                        }}
-                    ></a>
-                    {activityLog &&
-                        Constants.superAdmins.includes(auth.currentUser.email) ? (
-                        <ActivityLog
-                            database={database}
-                            participantId={idforLog}
-                            setActivityLog={setActivityLog}
-                        />
-                    ) : null}
+                        <a
+                            className="copy-email-link fas fa-file-export"
+                            title="Open log"
+                            onClick={() => {
+                                setActivityLog(true);
+                                setIdForLog(participantId)
+                            }}
+                        ></a>
+                        {activityLog && Constants.superAdmins.includes(auth.currentUser.email) &&
+                            <ActivityLog
+                                database={database}
+                                participantId={idforLog}
+                                setActivityLog={setActivityLog}
+                            />
+                        }
+                        {participantInfo['highlighted'] && <Tooltip
+                            disableInteractive
+                            TransitionProps={{ timeout: 100 }}
+                            componentsProps={{ tooltip: { sx: { width: '30em', minHeight: '3em', fontSize: '1.2em' }, } }}
+                            title={
+                                <span>{participantInfo['highlight_reason']}</span>
+                            }
+                        >
+                            <span className="highlighted-participant-button fas fa-exclamation-circle" />
+                        </Tooltip>}
                     </span>
                 </div>
                 {participantInfo['registered_as'] != 'parent' &&
@@ -170,22 +179,24 @@ function ParticipantCard({ database, participantId, index, setShowBookSession2, 
                             <span className="field-label">E-mail</span>
                             <span className={participantInfo['email_counter'] > 1 ? "highlighted-span" : ""}>
                                 {participantInfo['email']}
-                                <a className="copy-email-link fas fa-copy" onClick={(e) => {
-                                    e.preventDefault();
-                                    let email = participantInfo['email'];
-                                    navigator.clipboard.writeText(email);
+                                <a className="copy-email-link fas fa-copy"
+                                    title="Copy email"
+                                    onClick={(e) => {
+                                        e.preventDefault();
+                                        let email = participantInfo['email'];
+                                        navigator.clipboard.writeText(email);
 
-                                    Swal.fire({
-                                        toast: true,
-                                        icon: 'success',
-                                        title: 'Copied: ' + email,
-                                        animation: false,
-                                        position: 'bottom',
-                                        width: 'unset',
-                                        showConfirmButton: false,
-                                        timer: 2000
-                                    })
-                                }} target="_blank" />
+                                        Swal.fire({
+                                            toast: true,
+                                            icon: 'success',
+                                            title: 'Copied: ' + email,
+                                            animation: false,
+                                            position: 'bottom',
+                                            width: 'unset',
+                                            showConfirmButton: false,
+                                            timer: 2000
+                                        })
+                                    }} target="_blank" />
                             </span>
                         </div>
                         <div className="participant-attribute-container">
@@ -273,22 +284,24 @@ function ParticipantCard({ database, participantId, index, setShowBookSession2, 
                             <span className="field-label">Parent E-mail</span>
                             <span className={participantInfo['email_counter'] > 1 ? "highlighted-span" : ""}>
                                 {participantInfo['email']}
-                                <a className="copy-email-link fas fa-copy" onClick={(e) => {
-                                    e.preventDefault();
-                                    let email = participantInfo['email'];
-                                    navigator.clipboard.writeText(email);
+                                <a className="copy-email-link fas fa-copy"
+                                    title="Copy email"
+                                    onClick={(e) => {
+                                        e.preventDefault();
+                                        let email = participantInfo['email'];
+                                        navigator.clipboard.writeText(email);
 
-                                    Swal.fire({
-                                        toast: true,
-                                        icon: 'success',
-                                        title: 'Copied: ' + email,
-                                        animation: false,
-                                        position: 'bottom',
-                                        width: 'unset',
-                                        showConfirmButton: false,
-                                        timer: 2000
-                                    })
-                                }} target="_blank" />
+                                        Swal.fire({
+                                            toast: true,
+                                            icon: 'success',
+                                            title: 'Copied: ' + email,
+                                            animation: false,
+                                            position: 'bottom',
+                                            width: 'unset',
+                                            showConfirmButton: false,
+                                            timer: 2000
+                                        })
+                                    }} target="_blank" />
                             </span>
                         </div>
                         <div className="participant-attribute-container">

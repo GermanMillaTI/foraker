@@ -31,7 +31,7 @@ function MainPage() {
   const [activityLog, setActivityLog] = useState(false);
   const [idforLog, setIdForLog] = useState("")
 
-  
+
 
   useEffect(() => {
     realtimeDb.ref('/').on('value', snapshot => {
@@ -119,6 +119,13 @@ function MainPage() {
         if (history) {
           let bonusEmails = Object.values(history).filter(em => em['title'].includes('Handoff and Bonus'));
           if (Object.keys(bonusEmails).length > 0) temp['participants'][participantId]['bonus_amount'] = parseInt(bonusEmails.pop()['title'].replace('Handoff and Bonus (', '').replace(')', ''));
+        }
+
+
+        // it needs to be updated
+        if (participant['document_approval'] != "Pass" && ["Contacted", "Scheduled", "Completed"].includes(participant['status'])) {
+          temp['participants'][participantId]['highlight_reason'] = "Wrong document status";
+          temp['participants'][participantId]['highlighted'] = true;
         }
 
       }
@@ -219,7 +226,7 @@ function MainPage() {
           />
         )}
         {activePage == "Scheduler" && (<Scheduler database={database} setUpdateSession={setUpdateSession} />)}
-        {activityLog && <ActivityLog database={database} setActivityLog={setActivityLog} participantId={idforLog}/>}
+        {activityLog && <ActivityLog database={database} setActivityLog={setActivityLog} participantId={idforLog} />}
         {activePage == "Scheduler Overview" && (<SchedulerOverview database={database} />)}
         {activePage == "Scheduler External" && (<SchedulerExternal database={database} />)}
         {activePage == "External" && (<External database={database} setCheckDocuments />)}

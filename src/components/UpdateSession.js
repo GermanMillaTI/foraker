@@ -197,22 +197,24 @@ function UpdateSession({ database, updateSession, setUpdateSession, setCheckDocu
                                     <td className="participant-table-left">E-mail</td>
                                     <td className="participant-table-right">
                                         {participantInfo['email']}
-                                        <a className="copy-email-link fas fa-copy" onClick={(e) => {
-                                            e.preventDefault();
-                                            let email = participantInfo['email'];
-                                            navigator.clipboard.writeText(email);
+                                        <a className="copy-email-link fas fa-copy"
+                                            title="Copy email"
+                                            onClick={(e) => {
+                                                e.preventDefault();
+                                                let email = participantInfo['email'];
+                                                navigator.clipboard.writeText(email);
 
-                                            Swal.fire({
-                                                toast: true,
-                                                icon: 'success',
-                                                title: 'Copied: ' + email,
-                                                animation: false,
-                                                position: 'bottom',
-                                                width: 'unset',
-                                                showConfirmButton: false,
-                                                timer: 2000
-                                            })
-                                        }} target="_blank" />
+                                                Swal.fire({
+                                                    toast: true,
+                                                    icon: 'success',
+                                                    title: 'Copied: ' + email,
+                                                    animation: false,
+                                                    position: 'bottom',
+                                                    width: 'unset',
+                                                    showConfirmButton: false,
+                                                    timer: 2000
+                                                })
+                                            }} target="_blank" />
                                     </td>
                                 </tr>
                                 <tr>
@@ -329,6 +331,7 @@ function UpdateSession({ database, updateSession, setUpdateSession, setCheckDocu
                                     <td className="participant-table-right">
                                         {participantInfo['ethnicities']}
                                         <a className="copy-email-link fas fa-edit"
+                                            title="Update ethnicity"
                                             onClick={(e) => {
                                                 e.preventDefault();
                                                 if (hasCompletedSession) return;

@@ -2,10 +2,11 @@ import React, { useState } from 'react';
 import { auth } from '../firebase/config'
 import { signOut } from 'firebase/auth';
 import Constants from './Constants';
+import appInfo from '../../package.json';
 
 import './Navbar.css';
 
-function Navbar({ database, setActivePage, setShowStats, setShowStatsSessions, setShowBonuses, setShowBins, setActivityLog, setIdForLog }) {
+function Navbar({ database, setActivePage, setShowStats, setShowStatsSessions, setShowBonuses, setShowBins, setActivityLog, setIdForLog, setTimeslotforLog }) {
   const [role, setRole] = useState(database['users'][auth.currentUser.uid]);
 
   // Logout
@@ -17,8 +18,13 @@ function Navbar({ database, setActivePage, setShowStats, setShowStatsSessions, s
     }
   };
 
+  let hostedVersion = database['settings']['app_version']
+
+  
+
   return (
     <div className="navbar">
+      {hostedVersion === appInfo.version ? <div>version {appInfo.version}</div> : <div>version {appInfo.version}<a> (update required) </a></div>}
       {role == "admin" && <button className="navbar-button" onClick={() => setActivePage("Participants")}>Participants</button>}
       {role == "admin" && <button className="navbar-button" onClick={() => setActivePage("Scheduler")}>Scheduler</button>}
       {(role == "admin" || role == "external") && <button className="navbar-button" onClick={() => setActivePage("Scheduler Overview")}>Scheduler overview</button>}
@@ -29,6 +35,7 @@ function Navbar({ database, setActivePage, setShowStats, setShowStatsSessions, s
       {Constants.superAdmins.includes(auth.currentUser.email) && <button className='navbar-button' onClick={() => {
         setActivityLog(true);
         setIdForLog("");
+        setTimeslotforLog("");
         }}>Activity log</button>}
 
       {['zoltan.bathori@telusinternational.com', 'sari.kiiskinen@telusinternational.com'].includes(auth.currentUser.email) && <button className="navbar-button" onClick={() => setShowBonuses(true)}>Bonus $</button>}

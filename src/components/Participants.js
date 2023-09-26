@@ -7,7 +7,20 @@ import ParticipantFilter from './ParticipantFilter';
 import { CSVLink } from 'react-csv';
 
 
-function Participants({ database, updateSession, setUpdateSession, checkDocuments, setCheckDocuments, filterDataFromStats, setFilterDataFromStats, setActivityLog, idforLog, setIdForLog }) {
+function Participants({ 
+  database, 
+  updateSession, 
+  setUpdateSession, 
+  checkDocuments, 
+  setCheckDocuments, 
+  filterDataFromStats, 
+  setFilterDataFromStats, 
+  setActivityLog, 
+  idforLog, 
+  setIdForLog,
+  setTimeslotforLog,
+  timeslotforLog
+ }) {
   const [showBookSession2, setShowBookSession2] = useState("");
   const [shownParticipants, setShownParticipants] = useState([]);
   const [pptCsvData, setPptCsvData] = useState([[]]);
@@ -101,6 +114,8 @@ function Participants({ database, updateSession, setUpdateSession, checkDocument
               setActivityLog={setActivityLog}
               setIdForLog={setIdForLog}
               idforLog={idforLog}
+              setTimeslotforLog={setTimeslotforLog}
+              timeslotforLog={timeslotforLog}
             />
           )
         ))}

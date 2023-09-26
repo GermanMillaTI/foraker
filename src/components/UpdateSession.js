@@ -8,8 +8,9 @@ import format from 'date-fns/format';
 import './UpdateSession.css';
 import Constants from './Constants';
 import LogEvent from './Core/LogEvent';
+import ActivityLog from './ActivityLog';
 
-function UpdateSession({ database, updateSession, setUpdateSession, setCheckDocuments }) {
+function UpdateSession({ database, updateSession, setUpdateSession, setCheckDocuments, setActivityLog, setIdForLog, setTimeslotforLog, timeslotforLog }) {
     const [participantId, setParticipantId] = useState(database['timeslots'][updateSession]['participant_id']);
     const [sessionInfo, setSessionInfo] = useState(database['timeslots'][updateSession]);
     const [hasCompletedSession] = useState(
@@ -17,11 +18,12 @@ function UpdateSession({ database, updateSession, setUpdateSession, setCheckDocu
     );
 
     let participantInfo = database['participants'][participantId];
-
+    
     // Update value in DB
     function updateValue(path, newValue) {
         realtimeDb.ref(path).update(newValue);
     }
+
 
     function cancelSession(sessionId) {
         Swal.fire({
@@ -191,6 +193,17 @@ function UpdateSession({ database, updateSession, setUpdateSession, setCheckDocu
                                 <tr>
                                     <td className="participant-table-left">{"# " + participantId}</td>
                                     <td className="participant-table-right">{participantInfo['first_name'] + " " + participantInfo['last_name']}
+                                        <a
+                                            className="copy-email-link fas fa-file-export"
+                                            title="Open log"
+                                            onClick={() => {
+                                                setActivityLog(true);
+                                                setIdForLog(participantId);
+                                                
+                                                
+                                                
+                                            }}
+                                        ></a>
                                     </td>
                                 </tr>
                                 <tr>

@@ -34,7 +34,7 @@ const filterReducer = (state, event) => {
   
 
 
-function ActivityLog({ database, setActivityLog, participantId }){
+function ActivityLog({ database, setActivityLog, participantId, timeslotforLog }){
     const [logCsvData, setLogCsvData] = useState([[]]);
     const [days, setDays] = useState([]);
 
@@ -56,6 +56,18 @@ function ActivityLog({ database, setActivityLog, participantId }){
         
     }
 
+    let filteredResult = result;
+
+    if(timeslotforLog){
+      result = {};
+      for (const key in filteredResult){
+        
+        if (typeof filteredResult[key]['timeslot'] !== 'undefined' && filteredResult[key]['timeslot']===timeslotforLog){
+          result[key] = filteredResult[key];
+        }
+      }
+    }
+
       
 
     useMemo(() => {
@@ -75,17 +87,16 @@ function ActivityLog({ database, setActivityLog, participantId }){
     }, [Object.keys(result).length]);
 
     function filterFunction(timeslotId) {
+      let timeslotDate ="20" + `${timeslotId.substring(0, 2)}-${timeslotId.substring(2, 4)}-${timeslotId.substring(4, 6)}T${timeslotId.substring(6, 8)}:${timeslotId.substring(8, 10)}`;
+      const parsedDate = new Date(timeslotDate);
         
-        let timeslotDate ="20" + `${timeslotId.substring(0, 2)}-${timeslotId.substring(2, 4)}-${timeslotId.substring(4, 6)}T${timeslotId.substring(6, 8)}:${timeslotId.substring(8, 10)}`;
-        const parsedDate = new Date(timeslotDate);
-        
-        parsedDate.setHours(parsedDate.getHours()-7);
-        //converting date to LA time so the data matches the filtered date
-        let adjustedDate = format(parsedDate, "yyyy-MM-dd")
+      parsedDate.setHours(parsedDate.getHours()-7);
+      //converting date to LA time so the data matches the filtered date
+      let adjustedDate = format(parsedDate, "yyyy-MM-dd")
 
-        return filterData["date"].includes(adjustedDate);
-      }
-    
+      return filterData["date"].includes(adjustedDate);
+    }
+
     
     
     
@@ -115,14 +126,14 @@ function ActivityLog({ database, setActivityLog, participantId }){
 
     return ReactDOM.createPortal((
         <div
-        className="modal-book-update-session-backdrop"
+        className="modal-activitylog-backdrop"
         onClick={(e) => {
-          if (e.target.className == "modal-book-update-session-backdrop")
+          if (e.target.className == "modal-activitylog-backdrop")
             setActivityLog(false);
         }}
       >
-        <div className="modal-book-update-session-main-container">
-            <div className="modal-book-update-session-header">Activity Log</div>
+        <div className="modal-activitylog-main-container">
+            <div className="modal-activitylog-header">Activity Log</div>
              {!participantId ?
              <CSVLink
                     className="download-csv-button"
@@ -135,12 +146,12 @@ function ActivityLog({ database, setActivityLog, participantId }){
                 }
 
   
-          <div className="schedulerContainer" style={{ width: "55vw", height : "auto" }}>
+          <div className="activityLogContainer" style={{ width: "55vw", height : "auto" }}>
             {Object.keys(result).length > 0 ? (
             <div className="scrollable-content" style={{ maxHeight: "90vh", overflowY: "auto" }}>
             <div className="">
               <table
-                className="scheduler-table"
+                className="activityLog-table"
                 style={{ width: "50vw", marginTop: "2vw" }}
               >
                 <thead>

@@ -1,6 +1,9 @@
 import { realtimeDb } from '../firebase/config';
 import { useState, useEffect } from 'react';
 
+
+
+
 import './MainPage.css';
 import Navbar from './Navbar';
 import Participants from './Participants';
@@ -30,6 +33,7 @@ function MainPage() {
   const [showBins, setShowBins] = useState(false);
   const [activityLog, setActivityLog] = useState(false);
   const [idforLog, setIdForLog] = useState("")
+  const [timeslotforLog, setTimeslotforLog] = useState("")
 
 
 
@@ -194,6 +198,8 @@ function MainPage() {
     return ageRange;
   }
 
+
+
   return (
     <div>
       {Object.keys(database).length != 0 && (
@@ -206,10 +212,12 @@ function MainPage() {
           setShowBins={setShowBins}
           setActivityLog={setActivityLog}
           setIdForLog={setIdForLog}
+          setTimeslotforLog={setTimeslotforLog}
         />
       )}
 
       <div id="mainContainer">
+      
 
         {activePage == "Participants" && (
           <Participants
@@ -223,16 +231,18 @@ function MainPage() {
             setActivityLog={setActivityLog}
             setIdForLog={setIdForLog}
             idforLog={idforLog}
+            timeslotforLog={timeslotforLog}
+            setTimeslotforLog={setTimeslotforLog}
           />
         )}
         {activePage == "Scheduler" && (<Scheduler database={database} setUpdateSession={setUpdateSession} />)}
-        {activityLog && <ActivityLog database={database} setActivityLog={setActivityLog} participantId={idforLog} />}
+        {activityLog && <ActivityLog database={database} setActivityLog={setActivityLog} participantId={idforLog} timeslotforLog={timeslotforLog} setTimeslotforLog={setTimeslotforLog} />}
         {activePage == "Scheduler Overview" && (<SchedulerOverview database={database} />)}
         {activePage == "Scheduler External" && (<SchedulerExternal database={database} />)}
         {activePage == "External" && (<External database={database} setCheckDocuments />)}
         {activePage == "Goodwork" && (<Goodwork database={database} />)}
         {checkDocuments && <CheckDocuments database={database} checkDocuments={checkDocuments} setCheckDocuments={setCheckDocuments} />}
-        {updateSession && <UpdateSession database={database} updateSession={updateSession} setUpdateSession={setUpdateSession} checkDocuments={checkDocuments} setCheckDocuments={setCheckDocuments} />}
+        {updateSession && <UpdateSession database={database} updateSession={updateSession} setUpdateSession={setUpdateSession} checkDocuments={checkDocuments} setCheckDocuments={setCheckDocuments} setActivityLog={setActivityLog} setIdForLog={setIdForLog} setTimeslotforLog={setTimeslotforLog} timeslotforLog={timeslotforLog}/>}
         {showStats && <Stats database={database} setActivePage={setActivePage} setShowStats={setShowStats} setFilterDataFromStats={setFilterDataFromStats} />}
         {showBins && <Bins database={database} setShowBins={setShowBins} />}
         {showBonuses && <Bonuses database={database} setShowBonuses={setShowBonuses} />}

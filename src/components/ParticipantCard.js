@@ -12,7 +12,7 @@ import LogEvent from './Core/LogEvent';
 import ActivityLog from './ActivityLog';
 
 
-function ParticipantCard({ database, participantId, index, setShowBookSession2, setCheckDocuments, setUpdateSession, setActivityLog, activityLog, idforLog, setIdForLog }) {
+function ParticipantCard({ database, participantId, index, setShowBookSession2, setCheckDocuments, setUpdateSession, setActivityLog, activityLog, idforLog, setIdForLog, setTimeslotforLog, timeslotforLog }) {
     const [tempParticipants, setTempParticipants] = useState([]);
 
     let participantInfo = database['participants'][participantId];
@@ -152,6 +152,7 @@ function ParticipantCard({ database, participantId, index, setShowBookSession2, 
                             onClick={() => {
                                 setActivityLog(true);
                                 setIdForLog(participantId)
+                                setTimeslotforLog("");
                             }}
                         ></a>
                         {activityLog && Constants.superAdmins.includes(auth.currentUser.email) &&
@@ -537,7 +538,12 @@ function ParticipantCard({ database, participantId, index, setShowBookSession2, 
                             <button
                                 key={"session" + timeslotId}
                                 className={"session-button" + (sessionString.includes('Full') ? " full-session" : " lite-session")}
-                                onClick={() => setUpdateSession(timeslotId)}
+                                onClick={
+                                    () => {
+                                        setUpdateSession(timeslotId);
+                                        setTimeslotforLog(timeslotId);
+                                    }
+                                }
                             >
                                 {sessionString + ": " + session['status']}
                             </button>

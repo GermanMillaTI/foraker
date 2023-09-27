@@ -567,6 +567,13 @@ function ParticipantCard({ database, participantId, index, setShowBookSession2, 
                     {participantInfo['history'] && Object.keys(participantInfo['history']).map((t) => {
                         let emailTitle = participantInfo['history'][t]['title'].replace("Document Request:", "DR:");
                         let appointmentTime = "";
+                        console.log(participantInfo);
+                        let uploadURL = `https://fs30.formsite.com/LB2014/pegzfrigaw/index?fill&id16=${participantInfo['first_name']}&id17=${participantInfo['last_name']}&id20=${auth.currentUser.email}&id434=${
+                            emailTitle === "DR: ID" ? 1 
+                                : emailTitle === "DR: Vision Correction" ? 2 
+                                    : emailTitle === "DR: ID & Vision Correction" ? 0
+                                        : ""
+                        }&id435=${participantId}`;
                         if (emailTitle.startsWith('Confirmation') && emailTitle.length > 15) {
                             appointmentTime = emailTitle.substring(13, 17) + "-" +
                                 emailTitle.substring(17, 19) + "-" +
@@ -585,8 +592,12 @@ function ParticipantCard({ database, participantId, index, setShowBookSession2, 
                         return <div key={participantId + t} className="participant-attribute-container">
                             <span className="field-label">{t.substring(0, 16).replaceAll('_', ' ')}</span>
                             <span className="email-history-content">
-                                <span>{emailTitle}</span>
-                                {appointmentTime && <span>{appointmentTime}</span>}
+                                <span>{emailTitle} {emailTitle.includes("DR: ") && ['zoltan.bathori@telusinternational.com', 'german.milla01@telusinternational.com'].includes(auth.currentUser.email) && participantInfo['document_approval'] !== "Pass" ? 
+                                    <a className='copy-email-link fas fa-link' 
+                                        title='open upload link' 
+                                        href={uploadURL}
+                                        target="_blank"></a> : ""} </span>
+                                {appointmentTime && <span>{appointmentTime}</span>} 
                             </span>
                         </div>
                     })}

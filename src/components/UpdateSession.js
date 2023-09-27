@@ -16,9 +16,14 @@ function UpdateSession({ database, updateSession, setUpdateSession, setCheckDocu
     const [hasCompletedSession] = useState(
         ['sari.kiiskinen@telusinternational.com', 'axel.romeo@telusinternational.com'].includes(auth.currentUser.email) ? false : Object.keys(database['timeslots']).filter(timeslotId => participantId == database['timeslots'][timeslotId]['participant_id'] && database['timeslots'][timeslotId]['status'] == "Completed").length > 0
     );
+    const [externalIdForAPI, setExternalIdForAPI] = useState("");
+    const [contributions, setContributions] = useState([]);
+    const [selectedContribution, setSelectedContribution] = useState("");
+    const [isloading, setIsLoading] = useState(false);
+
 
     let participantInfo = database['participants'][participantId];
-    
+
     // Update value in DB
     function updateValue(path, newValue) {
         realtimeDb.ref(path).update(newValue);
@@ -177,6 +182,33 @@ function UpdateSession({ database, updateSession, setUpdateSession, setCheckDocu
         })
     }
 
+    function getClientInfo(externalIdForAPI) {
+        setExternalIdForAPI(externalIdForAPI);
+        setIsLoading(true);
+
+        const scriptURL = "https://script.google.com/macros/s/AKfycbzSU_qQjdAgUx-oFn5CwfbtOCKTeDdjBg0ZbOVZcxqEyl99Qv58rLuFokxTIHSB0-XVMQ/exec";
+        fetch(scriptURL, {
+            method: 'POST',
+            muteHttpExceptions: true,
+            body: JSON.stringify({
+                externalId: externalIdForAPI
+            })
+        }).then(res => {
+            return res.json();
+            setIsLoading(false);
+        }).then(data => {
+            //console.log(data);
+            setContributions(data['results'][0]['metadata']);
+            setIsLoading(false);
+        },
+            err => {
+                setExternalIdForAPI("");
+                setContributions([]);
+                console.log('Error');
+                setIsLoading(false);
+            });
+    }
+
     return ReactDOM.createPortal((
         <div className="modal-book-update-session-backdrop" onClick={(e) => { if (e.target.className == "modal-book-update-session-backdrop") setUpdateSession("") }}>
             <div className="modal-book-update-session-main-container">
@@ -199,9 +231,9 @@ function UpdateSession({ database, updateSession, setUpdateSession, setCheckDocu
                                             onClick={() => {
                                                 setActivityLog(true);
                                                 setIdForLog(participantId);
-                                                
-                                                
-                                                
+
+
+
                                             }}
                                         ></a>
                                     </td>
@@ -243,6 +275,18 @@ function UpdateSession({ database, updateSession, setUpdateSession, setCheckDocu
                                     <td className="participant-table-right">{participantInfo['city_of_residence']}</td>
                                 </tr>
                                 <tr>
+                                    <td className="participant-table-left">Documents</td>
+                                    <td className="participant-table-right"><a href="" className="signature-link" onClick={(e) => { e.preventDefault(); openDocuments(participantId); }}>Open Documents</a>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td className="participant-table-left">Signatures</td>
+                                    <td className="participant-table-right">
+                                        <a href={"https://fs30.formsite.com/LB2014/files/" + participantInfo['sla_url']} target="_blank" className="signature-link">Open SLA</a>&nbsp;&nbsp;&nbsp;&nbsp;
+                                        <a href={"https://fs30.formsite.com/LB2014/files/" + participantInfo['icf']} target="_blank" className="signature-link">Open ICF</a>
+                                    </td>
+                                </tr>
+                                <tr>
                                     <td className="participant-table-left">Participant comment</td>
                                 </tr>
                                 <tr>
@@ -269,10 +313,7 @@ function UpdateSession({ database, updateSession, setUpdateSession, setCheckDocu
                                         />
                                     </td>
                                 </tr>
-                                <tr>
-                                    <td className="participant-table-left">&nbsp;</td>
-                                    <td className="participant-table-right">&nbsp;</td>
-                                </tr>
+                                {/*
                                 <tr>
                                     <td className="participant-table-left">Target of sessions</td>
                                     <td className="participant-table-right">
@@ -291,42 +332,12 @@ function UpdateSession({ database, updateSession, setUpdateSession, setCheckDocu
                                         </select>
                                     </td>
                                 </tr>
-                                <tr>
-                                    <td className="participant-table-left">Vision correction</td>
-                                    <td className="participant-table-right">
-                                        <select className="session-data-selector"
-                                            disabled={hasCompletedSession}
-                                            onChange={(e) => {
-                                                updateValue("/participants/" + participantId, { vision_correction: e.currentTarget.value });
-                                                updateValue("/timeslots/" + updateSession, { glasses: ['Glasses - distance', 'Glasses - progressive, bifocal or multifocal'].includes(e.currentTarget.value) });
-                                                LogEvent({
-                                                    pid: participantId,
-                                                    action: "Vision correction: '" + e.currentTarget.value + "'"
-                                                })
-                                            }}
-                                        >
-                                            {Constants['visionCorrections'].map((s, i) => (
-                                                <option key={"data-vc" + i} value={s} selected={s == participantInfo['vision_correction']}>{s.replace("progressive, bifocal or multifocal", "pr/ bf/ mf")}</option>
-                                            ))}
-                                        </select>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td className="participant-table-left">Documents</td>
-                                    <td className="participant-table-right"><a href="" className="signature-link" onClick={(e) => { e.preventDefault(); openDocuments(participantId); }}>Open Documents</a>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td className="participant-table-left">Signatures</td>
-                                    <td className="participant-table-right">
-                                        <a href={"https://fs30.formsite.com/LB2014/files/" + participantInfo['sla_url']} target="_blank" className="signature-link">Open SLA</a>&nbsp;&nbsp;&nbsp;&nbsp;
-                                        <a href={"https://fs30.formsite.com/LB2014/files/" + participantInfo['icf']} target="_blank" className="signature-link">Open ICF</a>
-                                    </td>
-                                </tr>
+                                */}
+
                                 <tr>
                                     <td className="participant-table-left">&nbsp;</td>
-                                    <td className="participant-table-right">&nbsp;</td>
                                 </tr>
+
                                 <tr>
                                     <td className="participant-table-left">Demo bin</td>
                                     <td className="participant-table-right">{participantInfo['demo_bin']}</td>
@@ -370,6 +381,31 @@ function UpdateSession({ database, updateSession, setUpdateSession, setCheckDocu
                                         <td className="participant-table-right">{participantInfo['original_unlisted_ethnicity']}</td>
                                     </tr>
                                 }
+                                <tr>
+                                    <td className="participant-table-left">Vision correction</td>
+                                    <td className="participant-table-right">
+                                        <select className="session-data-selector"
+                                            disabled={hasCompletedSession}
+                                            onChange={(e) => {
+                                                updateValue("/participants/" + participantId, { vision_correction: e.currentTarget.value });
+                                                updateValue("/timeslots/" + updateSession, { glasses: ['Glasses - distance', 'Glasses - progressive, bifocal or multifocal'].includes(e.currentTarget.value) });
+                                                LogEvent({
+                                                    pid: participantId,
+                                                    action: "Vision correction: '" + e.currentTarget.value + "'"
+                                                })
+                                            }}
+                                        >
+                                            {Constants['visionCorrections'].map((s, i) => (
+                                                <option key={"data-vc" + i} value={s} selected={s == participantInfo['vision_correction']}>{s.replace("progressive, bifocal or multifocal", "pr/ bf/ mf")}</option>
+                                            ))}
+                                        </select>
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td className="participant-table-left">&nbsp;</td>
+                                </tr>
+
                                 <tr>
                                     <td className="participant-table-left">Height</td>
                                     <td className="participant-table-right">{participantInfo['height']} inch</td>
@@ -529,18 +565,6 @@ function UpdateSession({ database, updateSession, setUpdateSession, setCheckDocu
                                     <td className="participant-table-left">Session number</td>
                                     <td className="participant-table-right">{(participantInfo['sessions'] || {})[updateSession]}</td>
                                 </tr>
-                                <tr>
-                                    <td className="participant-table-left">Moderator</td>
-                                    <td className="participant-table-right">
-                                        <select className="session-data-selector"
-                                            onChange={(e) => updateValue("/timeslots/" + updateSession, { moderator: e.currentTarget.value })}
-                                        >
-                                            {Constants['listOfModerators'].map((s, i) => (
-                                                <option key={"data-moderator" +i} value={s} selected={s == sessionInfo['moderator']}>{s}</option>
-                                            ))}
-                                        </select>
-                                    </td>
-                                </tr>
                                 */}
                                 {(['Checked In', 'Completed'].includes(database['timeslots'][updateSession]['status']) &&
                                     database['timeslots'][updateSession]['backup']) &&
@@ -604,8 +628,12 @@ function UpdateSession({ database, updateSession, setUpdateSession, setCheckDocu
                                     <td className="participant-table-left">External ID</td>
                                     <td className="participant-table-right">
                                         <button className="external-id-button" onClick={() => modifyExternalId()}>{participantInfo['external_id'] || "Missing ID!"}</button>
+                                        {participantInfo['external_id'] &&
+                                            <button className="refresh-api-button" onClick={() => getClientInfo(participantInfo['external_id'])}>Get info</button>
+                                        }
                                     </td>
                                 </tr>
+
                                 <tr>
                                     <td className="participant-table-left">Phase</td>
                                     <td className="participant-table-right">
@@ -701,6 +729,100 @@ function UpdateSession({ database, updateSession, setUpdateSession, setCheckDocu
                                             <label> Extra bonus ($ {participantInfo['bonus_amount']}) <i>Offered during the handoff</i></label>
                                         </td>
                                     </tr>
+                                }
+
+                                {isloading &&
+                                    <tr>
+                                        <td className="participant-table-center" colspan="2">Loading...</td>
+                                    </tr>
+                                }
+                                {externalIdForAPI && !isloading &&
+                                    <>
+                                        <tr className='client-info-container'>
+                                            <td className="participant-table-center" colspan="2">Client info: {externalIdForAPI}</td>
+                                        </tr>
+                                        <tr className='client-info-container'>
+                                            <td className="participant-table-left" colSpan="2">
+                                                {contributions.map(contribution => {
+                                                    const tag = contribution['tag'];
+                                                    const formatted = tag.substring(0, 4) + "-" +
+                                                        tag.substring(4, 6) + "-" +
+                                                        tag.substring(6, 8) + " " +
+                                                        tag.substring(8, 10) + ":" +
+                                                        tag.substring(10, 12);
+
+                                                    const sameDay = updateSession.substring(0, 8) == tag.substring(0, 8);
+                                                    if (selectedContribution == "" && sameDay) setSelectedContribution(contribution);
+                                                    return <>
+                                                        <button
+                                                            className={"client-contribution-button" + (tag == selectedContribution['tag'] ? " same-day-contribution" : "")}
+                                                            onClick={() => setSelectedContribution(contribution)}
+                                                        >
+                                                            {sameDay ? formatted + " < Same day" : formatted}
+                                                        </button>
+                                                        <br />
+                                                    </>
+                                                })}
+                                            </td>
+                                        </tr>
+                                        <tr className='client-info-container'>
+                                            <td className="participant-table-left" colSpan="2">&nbsp;</td>
+                                        </tr>
+                                        {selectedContribution != "" && <>
+                                            <tr className='client-info-container'>
+                                                <td className="participant-table-center" colspan="2">Contribution {selectedContribution['tag'].substring(0, 4) + "-" +
+                                                    selectedContribution['tag'].substring(4, 6) + "-" +
+                                                    selectedContribution['tag'].substring(6, 8) + " " +
+                                                    selectedContribution['tag'].substring(8, 10) + ":" +
+                                                    selectedContribution['tag'].substring(10, 12)}</td>
+                                            </tr>
+                                            <tr className='client-info-container'>
+                                                <td className="participant-table-left">
+                                                    Demo bin
+                                                </td>
+                                                <td className={"participant-table-right" + ((selectedContribution['answers'].filter(answer => answer['slug'] == 'demo_bin').length > 0 ?
+                                                    selectedContribution['answers'].filter(answer => answer['slug'] == 'demo_bin')[0]['values'].join(",")
+                                                    : "") != participantInfo['demo_bin'] ? " not-matching-client-data" : "")}>
+
+                                                    {selectedContribution['answers'].filter(answer => answer['slug'] == 'demo_bin').length > 0 ?
+                                                        selectedContribution['answers'].filter(answer => answer['slug'] == 'demo_bin')[0]['values'].join(",")
+                                                        : ""}
+                                                </td>
+                                            </tr>
+                                            <tr className='client-info-container'>
+                                                <td className="participant-table-left">
+                                                    Date of birth
+                                                </td>
+                                                <td className={"participant-table-right" + (selectedContribution['answers'].filter(answer => answer['slug'] == 'birth_date')[0]['values'].join(",") != participantInfo['date_of_birth'].substring(0, 10) ? " not-matching-client-data" : "")}>
+                                                    {selectedContribution['answers'].filter(answer => answer['slug'] == 'birth_date')[0]['values'].join(",")}
+                                                </td>
+                                            </tr>
+                                            <tr className='client-info-container'>
+                                                <td className="participant-table-left">
+                                                    Gender
+                                                </td>
+                                                <td className={"participant-table-right" + (selectedContribution['answers'].filter(answer => answer['slug'] == 'gender')[0]['values'].join(",") != participantInfo['gender'] ? " not-matching-client-data" : "")}>
+                                                    {selectedContribution['answers'].filter(answer => answer['slug'] == 'gender')[0]['values'].join(",")}
+                                                </td>
+                                            </tr>
+                                            <tr className='client-info-container'>
+                                                <td className="participant-table-left">
+                                                    Ethnicity
+                                                </td>
+                                                <td className={"participant-table-right" + (selectedContribution['answers'].filter(answer => answer['slug'] == 'ethnicity')[0]['values'].join(",").toLowerCase() != participantInfo['ethnicities'].toLowerCase() ? " not-matching-client-data" : "")}>
+                                                    {selectedContribution['answers'].filter(answer => answer['slug'] == 'ethnicity')[0]['values'].join(",")}
+                                                </td>
+                                            </tr>
+                                            <tr className='client-info-container'>
+                                                <td className="participant-table-left">
+                                                    Vision correction
+                                                </td>
+                                                <td className={"participant-table-right" + (selectedContribution['answers'].filter(answer => answer['slug'] == 'vision_correction')[0]['values'].join(",").replace("Glasses - Progressive", "Glasses - progressive, bifocal or multifocal").replace("Glasses - Reading", "None").replace("Contact Lens", "Contact lenses").toLowerCase() != participantInfo['vision_correction'].replace("Glasses - reading", "None").toLowerCase() ? " not-matching-client-data" : "")}>
+                                                    {selectedContribution['answers'].filter(answer => answer['slug'] == 'vision_correction')[0]['values'].join(",")}
+                                                </td>
+                                            </tr>
+                                        </>}
+                                    </>
                                 }
                             </tbody>
                         </table>

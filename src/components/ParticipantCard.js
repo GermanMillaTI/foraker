@@ -18,7 +18,6 @@ function ParticipantCard({ database, participantId, index, setShowBookSession2, 
     let participantInfo = database['participants'][participantId];
     let timeslotsOfParticipant = Object.values(database['timeslots']).filter(timeslot => participantId == timeslot['participant_id']);
 
-
     // Update value in DB
     function updateValue(path, newValue) {
         realtimeDb.ref(path).update(newValue);
@@ -165,9 +164,12 @@ function ParticipantCard({ database, participantId, index, setShowBookSession2, 
                         {participantInfo['highlighted'] && <Tooltip
                             disableInteractive
                             TransitionProps={{ timeout: 100 }}
-                            componentsProps={{ tooltip: { sx: { width: '30em', minHeight: '3em', fontSize: '1.2em' }, } }}
+                            componentsProps={{ tooltip: { sx: { width: '30em', fontSize: '1.2em' }, } }}
                             title={
-                                <span>{participantInfo['highlight_reason']}</span>
+                                participantInfo['highlight_reason'] &&
+                                participantInfo['highlight_reason'].map(reason => {
+                                    return <><span>- {reason}</span><br /></>
+                                })
                             }
                         >
                             <span className="highlighted-participant-button fas fa-exclamation-circle" />

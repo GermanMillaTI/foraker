@@ -1,7 +1,6 @@
 import { realtimeDb } from '../firebase/config';
 import { useState, useEffect } from 'react';
-
-
+import { format } from 'date-fns';
 
 
 import './MainPage.css';
@@ -127,22 +126,58 @@ function MainPage() {
 
 
         // it needs to be updated
+        let highlightReason = [];
         if (participant['document_approval'] != "Pass" && ["Contacted", "Scheduled", "Completed"].includes(participant['status'])) {
-          temp['participants'][participantId]['highlight_reason'] = "Wrong document status";
+          highlightReason.push("Wrong document status");
+        }
+
+        if (!participant['phase'] && ["Contacted", "Scheduled", "Completed"].includes(participant['status'])) {
+          highlightReason.push("Missing phase");
+        }
+
+        if (highlightReason != "") {
+          temp['participants'][participantId]['highlight_reason'] = highlightReason;
           temp['participants'][participantId]['highlighted'] = true;
         }
 
       }
 
+      const dateNow = parseInt(format(new Date(), "yyyyMMdd"));
       for (let sessionId in temp['timeslots']) {
         let session = temp['timeslots'][sessionId];
         let participantId = session['participant_id'];
         let status = session['status'];
+        let sessionDate = parseInt(sessionId.substring(0, 8));
+
+        if (sessionDate > dateNow && ['Rescheduled'].includes(status)) {
+          if (temp['participants'][participantId]['highlight_reason']) {
+            temp['participants'][participantId]['highlight_reason'].push("'Rescheduled' session in the future");
+          } else {
+            temp['participants'][participantId]['highlight_reason'] = ["'Rescheduled' session in the future"];
+            temp['participants'][participantId]['highlighted'] = true;
+          }
+        }
+
 
         if (!participantId) continue;
-        if (!['Scheduled', 'Completed'].includes(status)) continue;
-
         let participant = temp['participants'][participantId];
+
+        let externalId = participant['external_id'];
+        if (!externalId) {
+          if (sessionDate < dateNow && ['Completed'].includes(status)) {
+            if (temp['participants'][participantId]['highlight_reason']) {
+              if (!temp['participants'][participantId]['highlight_reason'].includes("Missing external ID")) {
+                temp['participants'][participantId]['highlight_reason'].push("Missing external ID");
+              }
+            } else {
+              temp['participants'][participantId]['highlight_reason'] = ["Missing external ID"];
+              temp['participants'][participantId]['highlighted'] = true;
+            }
+          }
+        }
+
+
+        if (!['Scheduled', 'Completed'].includes(status)) continue;
         let sessionsOfParticipant = participant['sessions'];
         if (!sessionsOfParticipant) {
           participant['sessions'] = {};
@@ -217,7 +252,7 @@ function MainPage() {
       )}
 
       <div id="mainContainer">
-      
+
 
         {activePage == "Participants" && (
           <Participants
@@ -242,7 +277,7 @@ function MainPage() {
         {activePage == "External" && (<External database={database} setCheckDocuments />)}
         {activePage == "Goodwork" && (<Goodwork database={database} />)}
         {checkDocuments && <CheckDocuments database={database} checkDocuments={checkDocuments} setCheckDocuments={setCheckDocuments} />}
-        {updateSession && <UpdateSession database={database} updateSession={updateSession} setUpdateSession={setUpdateSession} checkDocuments={checkDocuments} setCheckDocuments={setCheckDocuments} setActivityLog={setActivityLog} setIdForLog={setIdForLog} setTimeslotforLog={setTimeslotforLog} timeslotforLog={timeslotforLog}/>}
+        {updateSession && <UpdateSession database={database} updateSession={updateSession} setUpdateSession={setUpdateSession} checkDocuments={checkDocuments} setCheckDocuments={setCheckDocuments} setActivityLog={setActivityLog} setIdForLog={setIdForLog} setTimeslotforLog={setTimeslotforLog} timeslotforLog={timeslotforLog} />}
         {showStats && <Stats database={database} setActivePage={setActivePage} setShowStats={setShowStats} setFilterDataFromStats={setFilterDataFromStats} />}
         {showBins && <Bins database={database} setShowBins={setShowBins} />}
         {showBonuses && <Bonuses database={database} setShowBonuses={setShowBonuses} />}

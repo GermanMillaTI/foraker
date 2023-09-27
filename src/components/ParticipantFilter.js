@@ -417,10 +417,12 @@ function ParticipantFilter({ database, setShownParticipants, filterDataFromStats
         <div className="filter-object">
           <input id="filter-icf-yes" name="Yes" type="checkbox" alt="icfs" onChange={setFilterData} checked={filterData['icfs'].includes('Yes')} />
           <label htmlFor="filter-icf-yes">Yes ({filterStats['icfs']['Yes']})</label>
+          <button name={"Yes"} alt="icfs" className="filter-this-button" onClick={setFilterData}>!</button>
         </div>
         <div className="filter-object">
           <input id="filter-icf-no" name="No" type="checkbox" alt="icfs" onChange={setFilterData} checked={filterData['icfs'].includes('No')} />
           <label htmlFor="filter-icf-no">No ({filterStats['icfs']['No']})</label>
+          <button name={"No"} alt="icfs" className="filter-this-button" onClick={setFilterData}>!</button>
         </div>
       </div>
 
@@ -429,10 +431,12 @@ function ParticipantFilter({ database, setShownParticipants, filterDataFromStats
         <div className="filter-object">
           <input id="filter-highlighted-yes" name="Yes" type="checkbox" alt="highlighted" onChange={setFilterData} checked={filterData['highlighted'].includes('Yes')} />
           <label htmlFor="filter-highlighted-yes">Yes ({filterStats['highlighted']['Yes']})</label>
+          <button name={"Yes"} alt="highlighted" className="filter-this-button" onClick={setFilterData}>!</button>
         </div>
         <div className="filter-object">
           <input id="filter-highlighted-no" name="No" type="checkbox" alt="highlighted" onChange={setFilterData} checked={filterData['highlighted'].includes('No')} />
           <label htmlFor="filter-highlighted-no">No ({filterStats['highlighted']['No']})</label>
+          <button name={"No"} alt="highlighted" className="filter-this-button" onClick={setFilterData}>!</button>
         </div>
       </div>
     </div>

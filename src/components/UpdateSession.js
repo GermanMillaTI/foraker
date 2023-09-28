@@ -836,8 +836,8 @@ function UpdateSession({ database, updateSession, setUpdateSession, setCheckDocu
                                                 <td className="participant-table-left">
                                                     Ethnicity
                                                 </td>
-                                                <td className={"participant-table-right" + (Constants['clientEthnicities'][selectedContribution['answers'].filter(answer => answer['slug'] == 'ethnicity')[0]['values'].join(",")] != participantInfo['ethnicities'] ? " not-matching-client-data" : "")}>
-                                                    {Constants['clientEthnicities'][selectedContribution['answers'].filter(answer => answer['slug'] == 'ethnicity')[0]['values'].join(",")]}
+                                                <td className={"participant-table-right" + ((Constants['clientEthnicities'][selectedContribution['answers'].filter(answer => answer['slug'] == 'ethnicity')[0]['values'].join(",")] || selectedContribution['answers'].filter(answer => answer['slug'] == 'ethnicity')[0]['values'].join(",")) != participantInfo['ethnicities'] ? " not-matching-client-data" : "")}>
+                                                    {Constants['clientEthnicities'][selectedContribution['answers'].filter(answer => answer['slug'] == 'ethnicity')[0]['values'].join(",")] || selectedContribution['answers'].filter(answer => answer['slug'] == 'ethnicity')[0]['values'].join(",")}
                                                 </td>
                                             </tr>
                                             <tr className='client-info-container'>

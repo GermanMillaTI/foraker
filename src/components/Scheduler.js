@@ -290,6 +290,12 @@ function Scheduler({ database, setUpdateSession }) {
                         database['participants'][database['timeslots'][key]['participant_id']]['first_name'] + " " +
                         database['participants'][database['timeslots'][key]['participant_id']]['last_name']
                         : ""}
+                      {database['timeslots'][key]['participant_id'] &&
+                        <a className="copy-email-link fas fa-search"
+                          title="Google"
+                          target="_blank"
+                          href={("https://www.google.com/search?q=" + database['participants'][database['timeslots'][key]['participant_id']]['first_name'] + " " + database['participants'][database['timeslots'][key]['participant_id']]['last_name'] + " Los Angeles").replaceAll(" ", "%20")}
+                        />}
                     </td>
                     <td className={"center-tag " + ((highlightedTimeslots[key.substring(0, 13)] > 4 && database['timeslots'][key]['glasses']) ? "glasses-highlighted" : "")}>
                       {database['timeslots'][key]['participant_id'] ?

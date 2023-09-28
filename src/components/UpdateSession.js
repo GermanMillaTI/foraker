@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { renderToString } from 'react-dom/server';
 import ReactDOM from 'react-dom';
 import { auth, realtimeDb } from '../firebase/config';
@@ -104,7 +104,9 @@ function UpdateSession({ database, updateSession, setUpdateSession, setCheckDocu
                     LogEvent({
                         pid: participantId,
                         action: "External ID: '" + newId + "'"
-                    })
+                    });
+
+                    getClientInfo(externalId);
                 } else {
                     Swal.fire({
                         title: 'The ID is not saved!',
@@ -209,6 +211,10 @@ function UpdateSession({ database, updateSession, setUpdateSession, setCheckDocu
             });
     }
 
+    useEffect(() => {
+        if (participantInfo['external_id']) getClientInfo(participantInfo['external_id']);
+    }, [])
+
     return ReactDOM.createPortal((
         <div className="modal-book-update-session-backdrop" onClick={(e) => { if (e.target.className == "modal-book-update-session-backdrop") setUpdateSession("") }}>
             <div className="modal-book-update-session-main-container">
@@ -231,11 +237,14 @@ function UpdateSession({ database, updateSession, setUpdateSession, setCheckDocu
                                             onClick={() => {
                                                 setActivityLog(true);
                                                 setIdForLog(participantId);
-
-
-
                                             }}
-                                        ></a>
+                                        />
+
+                                        <a className="copy-email-link fas fa-search"
+                                            title="Google"
+                                            target="_blank"
+                                            href={("https://www.google.com/search?q=" + participantInfo['first_name'] + " " + participantInfo['last_name'] + " Los Angeles").replaceAll(" ", "%20")}
+                                        />
                                     </td>
                                 </tr>
                                 <tr>
@@ -264,7 +273,27 @@ function UpdateSession({ database, updateSession, setUpdateSession, setCheckDocu
                                 </tr>
                                 <tr>
                                     <td className="participant-table-left">Phone</td>
-                                    <td className="participant-table-right">{participantInfo['phone'].replace("T: ", "")}</td>
+                                    <td className="participant-table-right">
+                                        {participantInfo['phone'].replace("T: ", "")}
+                                        <a className="copy-email-link fas fa-copy"
+                                            title="Copy phone"
+                                            onClick={(e) => {
+                                                e.preventDefault();
+                                                let phone = participantInfo['phone'].replace("T: ", "");
+                                                navigator.clipboard.writeText(phone);
+
+                                                Swal.fire({
+                                                    toast: true,
+                                                    icon: 'success',
+                                                    title: 'Copied: ' + phone,
+                                                    animation: false,
+                                                    position: 'bottom',
+                                                    width: 'unset',
+                                                    showConfirmButton: false,
+                                                    timer: 2000
+                                                })
+                                            }} target="_blank" />
+                                    </td>
                                 </tr>
                                 <tr>
                                     <td className="participant-table-left">Country, State</td>
@@ -560,12 +589,6 @@ function UpdateSession({ database, updateSession, setUpdateSession, setCheckDocu
                                     <td className="participant-table-left">Station</td>
                                     <td className="participant-table-right">{updateSession.substring(14, 20) + (sessionInfo['backup'] ? " (backup session)" : "")}</td>
                                 </tr>
-                                {/*
-                                <tr>
-                                    <td className="participant-table-left">Session number</td>
-                                    <td className="participant-table-right">{(participantInfo['sessions'] || {})[updateSession]}</td>
-                                </tr>
-                                */}
                                 {(['Checked In', 'Completed'].includes(database['timeslots'][updateSession]['status']) &&
                                     database['timeslots'][updateSession]['backup']) &&
                                     <tr>
@@ -629,7 +652,11 @@ function UpdateSession({ database, updateSession, setUpdateSession, setCheckDocu
                                     <td className="participant-table-right">
                                         <button className="external-id-button" onClick={() => modifyExternalId()}>{participantInfo['external_id'] || "Missing ID!"}</button>
                                         {participantInfo['external_id'] &&
-                                            <button className="refresh-api-button" onClick={() => getClientInfo(participantInfo['external_id'])}>Get info</button>
+                                            <button
+                                                className="refresh-api-button"
+                                                onClick={() => getClientInfo(participantInfo['external_id'])}
+                                                disabled={isloading}
+                                            >Get info</button>
                                         }
                                     </td>
                                 </tr>
@@ -809,8 +836,8 @@ function UpdateSession({ database, updateSession, setUpdateSession, setCheckDocu
                                                 <td className="participant-table-left">
                                                     Ethnicity
                                                 </td>
-                                                <td className={"participant-table-right" + (selectedContribution['answers'].filter(answer => answer['slug'] == 'ethnicity')[0]['values'].join(",").toLowerCase() != participantInfo['ethnicities'].toLowerCase() ? " not-matching-client-data" : "")}>
-                                                    {selectedContribution['answers'].filter(answer => answer['slug'] == 'ethnicity')[0]['values'].join(",")}
+                                                <td className={"participant-table-right" + (Constants['clientEthnicities'][selectedContribution['answers'].filter(answer => answer['slug'] == 'ethnicity')[0]['values'].join(",")] != participantInfo['ethnicities'] ? " not-matching-client-data" : "")}>
+                                                    {Constants['clientEthnicities'][selectedContribution['answers'].filter(answer => answer['slug'] == 'ethnicity')[0]['values'].join(",")]}
                                                 </td>
                                             </tr>
                                             <tr className='client-info-container'>

@@ -48,6 +48,12 @@ const filterReducer = (state, event) => {
   if (event.target.type == "text" || event.target.type == "number") {
     let filterName = event.target.name;
     let filterValue = event.target.value.toLowerCase();
+
+    if (['externalId', 'email'].includes(filterName)) filterValue = filterValue.trim();
+
+    if (filterName == "externalId") {
+      filterValue = filterValue.replaceAll("tl_", "TL_").replaceAll("Tl_", "TL_").replaceAll("tL_", "TL_");
+    }
     if (filterValue == "") {
       if (newState[filterName]) delete newState[filterName];
     } else {
@@ -126,11 +132,11 @@ function ParticipantFilter({ database, setShownParticipants, filterDataFromStats
     let email = participantInfo['email'].toLowerCase();
     let phone = participantInfo['phone'].toLowerCase();
     let visionCorrection = participantInfo['vision_correction'];
-    let ipAddress = participantInfo['ip_address'];
     let phase = participantInfo['phase'] ? "Phase " + participantInfo['phase'] : 'Blank';
     let source = participantInfo['source'] || 'Other';
     let demoBinStatus = participantInfo['open_demo_bin'] ? 'Open' : 'Closed';
     let highlighted = participantInfo['highlighted'] ? 'Yes' : 'No';
+    let externalId = participantInfo['external_id'] || "";
 
     let ageRange = participantInfo['age_range'];
 
@@ -141,6 +147,7 @@ function ParticipantFilter({ database, setShownParticipants, filterDataFromStats
       if (!ethnicityOk && filterData['ethnicities'].includes(eth.trim())) ethnicityOk = true;
     })
 
+    // Check date of registration
     let dateOk = true;
     let dateOfRegistration;
     let dateFrom = filterData['dateOfRegistrationFrom'];
@@ -161,6 +168,31 @@ function ParticipantFilter({ database, setShownParticipants, filterDataFromStats
       }
     }
 
+    // Check date of sessions
+    let sessionDateOk = true;
+    let sessionDate;
+    let sessionDateFrom = filterData['dateOfSessionsFrom'];
+    let sessionDateTo = filterData['dateOfSessionsTo'];
+
+    if (sessionDateFrom || sessionDateTo) {
+      sessionDateOk = false;
+      Object.keys(participantInfo['sessions'] || {}).map(sessionId => {
+        if (sessionDateOk) return;
+
+        if (sessionDateFrom) {
+          sessionDate = new Date(sessionId.substring(0, 4) + "-" + sessionId.substring(4, 6) + "-" + sessionId.substring(6, 8));
+          sessionDateFrom = new Date(sessionDateFrom);
+          sessionDateOk = sessionDate >= sessionDateFrom;
+        }
+        if (sessionDateTo) {
+          if (!sessionDate) sessionDate = new Date(sessionId.substring(0, 4) + "-" + sessionId.substring(4, 6) + "-" + sessionId.substring(6, 8));
+          sessionDateTo = new Date(sessionDateTo);
+          //sessionDateTo.setDate(sessionDateTo.getDate() + 1)
+          sessionDateOk = sessionDate <= sessionDateTo && (sessionDateFrom ? sessionDate >= sessionDateFrom : true);
+        }
+      })
+    }
+
     let icfSigned = participantInfo['icf'] ? "Yes" : "No";
     let icfSignedIsOk = filterData['icfs'].includes(icfSigned);
     let status = participantInfo['status'] || "Blank";
@@ -169,6 +201,7 @@ function ParticipantFilter({ database, setShownParticipants, filterDataFromStats
 
     return ethnicityOk &&
       dateOk &&
+      sessionDateOk &&
       filterData['genders'].includes(gender) &&
       filterData['ageRanges'].includes(ageRange) &&
       filterData['visionCorrections'].includes(visionCorrection) &&
@@ -186,7 +219,7 @@ function ParticipantFilter({ database, setShownParticipants, filterDataFromStats
       (!filterData['lastName'] || lastName.includes(filterData['lastName'].trim())) &&
       (!filterData['email'] || email.includes(filterData['email'].trim())) &&
       (!filterData['phone'] || phone.includes(filterData['phone'].trim())) &&
-      (!filterData['ipAddress'] || ipAddress.includes(filterData['ipAddress'].trim()));
+      (!filterData['externalId'] || externalId.includes(filterData['externalId'].trim()));
   }
 
 
@@ -240,7 +273,10 @@ function ParticipantFilter({ database, setShownParticipants, filterDataFromStats
     <div className="filter-container">
       <span className="filter-container-header">Filter</span>
       <div className="filter-element">
-        <input name="participantId" type="number" placeholder="Participant Id" className="main-input" autoComplete="off" onChange={setFilterData} value={filterData['participantId'] || ""} />
+        <input name="participantId" type="number" placeholder="Participant ID" className="main-input" autoComplete="off" onChange={setFilterData} value={filterData['participantId'] || ""} />
+      </div>
+      <div className="filter-element">
+        <input name="externalId" type="text" maxlength="9" placeholder="External ID (TL_......)" className="main-input" autoComplete="off" onChange={setFilterData} value={filterData['externalId'] || ""} />
       </div>
       <div className="filter-element">
         <input name="firstName" type="text" placeholder="First name" className="main-input" autoComplete="off" onChange={setFilterData} value={filterData['firstName'] || ""} />
@@ -254,15 +290,19 @@ function ParticipantFilter({ database, setShownParticipants, filterDataFromStats
       <div className="filter-element">
         <input name="phone" type="text" placeholder="Phone" className="main-input" autoComplete="off" onChange={setFilterData} value={filterData['phone'] || ""} />
       </div>
-      <div className="filter-element">
-        <input name="ipAddress" type="text" placeholder="IP address" className="main-input" autoComplete="off" onChange={setFilterData} value={filterData['ipAddress'] || ""} />
-      </div>
       <div className="filter-element gap">
         <span>Date of registration</span>
-        <input name="dateOfRegistrationFrom" type="date" className="main-input" onChange={setFilterData} min="2023-05-31" max="2023-12-31" value={filterData['dateOfRegistrationFrom'] || ""} />
+        <input name="dateOfRegistrationFrom" type="date" className="main-input" onChange={setFilterData} min="2023-04-14" max="2024-12-31" value={filterData['dateOfRegistrationFrom'] || ""} />
       </div>
       <div className="filter-element">
-        <input name="dateOfRegistrationTo" type="date" className="main-input" onChange={setFilterData} min="2023-04-14" max="2023-12-31" value={filterData['dateOfRegistrationTo'] || ""} />
+        <input name="dateOfRegistrationTo" type="date" className="main-input" onChange={setFilterData} min="2023-04-15" max="2024-12-31" value={filterData['dateOfRegistrationTo'] || ""} />
+      </div>
+      <div className="filter-element gap">
+        <span>Date of session(s)</span>
+        <input name="dateOfSessionsFrom" type="date" className="main-input" onChange={setFilterData} min="2023-04-14" max="2024-12-31" value={filterData['dateOfSessionsFrom'] || ""} />
+      </div>
+      <div className="filter-element">
+        <input name="dateOfSessionsTo" type="date" className="main-input" onChange={setFilterData} min="2023-04-15" max="2024-12-31" value={filterData['dateOfSessionsTo'] || ""} />
       </div>
       <div className="filter-element">
         <button name="resetFilter" className="reset-filter-button" onClick={setFilterData}>Reset filter</button>

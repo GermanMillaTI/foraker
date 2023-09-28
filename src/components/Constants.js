@@ -68,7 +68,9 @@ const Constants = {
     "Rescheduled",
     "NoShow",
     "Withdrawn",
-    "Failed"
+    "Failed",
+    "Failed - Comp.",
+    "Failed - No Comp."
   ],
   visionCorrections: [
     "Contact lenses",
@@ -283,6 +285,20 @@ const Constants = {
     0: 'Open',
     1: 'Closed',
     2: 'Closed'
+  },
+  clientEthnicities: {
+    'Aboriginal Australians / Papuans': 'Aboriginal Australians/Papuans',
+    'African/African-American/Black': 'African/African-American/Black',
+    'American Indian': 'American Indian',
+    'East Asian': 'East Asian',
+    'Latin America': 'Hispanic/Latin American/Spanish',
+    'Middle Eastern/North African': 'Middle Eastern/North African',
+    'N/A': 'N/A',
+    'South Asian': 'South Asian',
+    'Southeast Asian': 'Southeast Asian',
+    'White - Northern European': 'White - Northern European',
+    'White - Southern European': 'White - Southern European',
+    'Prefer not to state': 'Prefer not to state'
   },
   superAdmins: [
     'zoltan.bathori@telusinternational.com',

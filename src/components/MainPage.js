@@ -139,28 +139,40 @@ function MainPage() {
           temp['participants'][participantId]['highlight_reason'] = highlightReason;
           temp['participants'][participantId]['highlighted'] = true;
         }
-
       }
 
       const dateNow = parseInt(format(new Date(), "yyyyMMdd"));
+      var numberOfScheduledSessions = {};
       for (let sessionId in temp['timeslots']) {
         let session = temp['timeslots'][sessionId];
         let participantId = session['participant_id'];
+        if (!participantId) continue;
+        let participant = temp['participants'][participantId];
+
         let status = session['status'];
         let sessionDate = parseInt(sessionId.substring(0, 8));
+        if (!numberOfScheduledSessions[participantId]) numberOfScheduledSessions[participantId] = 0;
+        if (status == 'Scheduled') numberOfScheduledSessions[participantId]++;
 
         if (sessionDate > dateNow && ['Rescheduled'].includes(status)) {
           if (temp['participants'][participantId]['highlight_reason']) {
             temp['participants'][participantId]['highlight_reason'].push("'Rescheduled' session in the future");
           } else {
             temp['participants'][participantId]['highlight_reason'] = ["'Rescheduled' session in the future"];
-            temp['participants'][participantId]['highlighted'] = true;
+            temp['participants'][participantId]['h  ighlighted'] = true;
           }
         }
 
-
-        if (!participantId) continue;
-        let participant = temp['participants'][participantId];
+        if (participant['phase'] == 2 && numberOfScheduledSessions[participantId] == 2 && status == 'Scheduled') {
+          if (temp['participants'][participantId]['highlight_reason']) {
+            if (!temp['participants'][participantId]['highlight_reason'].includes("There are more 'Scheduled' sessions")) {
+              temp['participants'][participantId]['highlight_reason'].push("There are more 'Scheduled' sessions");
+            }
+          } else {
+            temp['participants'][participantId]['highlight_reason'] = ["There are more 'Scheduled' sessions"];
+            temp['participants'][participantId]['highlighted'] = true;
+          }
+        }
 
         let externalId = participant['external_id'];
         if (!externalId) {
@@ -177,7 +189,7 @@ function MainPage() {
         }
 
 
-        if (!['Scheduled', 'Completed'].includes(status)) continue;
+        //if (!['Scheduled', 'Completed'].includes(status)) continue;
         let sessionsOfParticipant = participant['sessions'];
         if (!sessionsOfParticipant) {
           participant['sessions'] = {};

@@ -16,7 +16,8 @@ function ParticipantCard({ database, participantId, index, setShowBookSession2, 
     const [tempParticipants, setTempParticipants] = useState([]);
 
     let participantInfo = database['participants'][participantId];
-    let timeslotsOfParticipant = Object.values(database['timeslots']).filter(timeslot => participantId == timeslot['participant_id']);
+    let timeslotsOfParticipant = Object.assign({}, Object.keys(participantInfo['sessions'] || {}).map(timeslotId => database['timeslots'][timeslotId]));
+    let nrOfTimeslotsOfParticipant = Object.keys(timeslotsOfParticipant).length;
 
     // Update value in DB
     function updateValue(path, newValue) {
@@ -153,7 +154,7 @@ function ParticipantCard({ database, participantId, index, setShowBookSession2, 
                                 setIdForLog(participantId)
                                 setTimeslotforLog("");
                             }}
-                        ></a>
+                        />
                         {activityLog && Constants.superAdmins.includes(auth.currentUser.email) &&
                             <ActivityLog
                                 database={database}
@@ -174,6 +175,12 @@ function ParticipantCard({ database, participantId, index, setShowBookSession2, 
                         >
                             <span className="highlighted-participant-button fas fa-exclamation-circle" />
                         </Tooltip>}
+
+                        <a className="copy-email-link fas fa-search"
+                            title="Google"
+                            target="_blank"
+                            href={("https://www.google.com/search?q=" + participantInfo['first_name'] + " " + participantInfo['last_name'] + " Los Angeles").replaceAll(" ", "%20")}
+                        />
                     </span>
                 </div>
                 {participantInfo['registered_as'] != 'parent' &&
@@ -203,7 +210,27 @@ function ParticipantCard({ database, participantId, index, setShowBookSession2, 
                             </span>
                         </div>
                         <div className="participant-attribute-container">
-                            <span className="field-label">Phone</span><span className={participantInfo['phone_counter'] > 1 ? "highlighted-span" : ""}>{participantInfo['phone'].replaceAll('T: ', '')}</span>
+                            <span className="field-label">Phone</span><span className={participantInfo['phone_counter'] > 1 ? "highlighted-span" : ""}>
+                                {participantInfo['phone'].replaceAll('T: ', '')}
+                                <a className="copy-email-link fas fa-copy"
+                                    title="Copy phone number"
+                                    onClick={(e) => {
+                                        e.preventDefault();
+                                        let phone = participantInfo['phone'].replace("T: ", "");
+                                        navigator.clipboard.writeText(phone);
+
+                                        Swal.fire({
+                                            toast: true,
+                                            icon: 'success',
+                                            title: 'Copied: ' + phone,
+                                            animation: false,
+                                            position: 'bottom',
+                                            width: 'unset',
+                                            showConfirmButton: false,
+                                            timer: 2000
+                                        })
+                                    }} target="_blank" />
+                            </span>
                         </div>
                     </>
                 }
@@ -218,7 +245,9 @@ function ParticipantCard({ database, participantId, index, setShowBookSession2, 
                 <div className="participant-attribute-container">
                     <span className="field-label">Age range / Gender</span><span>{participantInfo['age_range'] + " / " + participantInfo['gender']}</span>
                 </div>
-
+                <div className="participant-attribute-container">
+                    <span className="field-label">Date of birth</span><span>{participantInfo['date_of_birth'].substring(0, 10)}</span>
+                </div>
                 <div className="participant-attribute-container">
                     <span className="field-label">Country, State</span><span>{participantInfo['country_of_residence'] + ", " + participantInfo['state_of_residence']}</span>
                 </div>
@@ -281,7 +310,15 @@ function ParticipantCard({ database, participantId, index, setShowBookSession2, 
                     <>
                         <hr />
                         <div className="participant-attribute-container">
-                            <span className="field-label">Parent Name</span><span>{participantInfo['parent_first_name'] + " " + participantInfo['parent_last_name']}</span>
+                            <span className="field-label">Parent Name</span>
+                            <span>
+                                {participantInfo['parent_first_name'] + " " + participantInfo['parent_last_name']}
+                                <a className="copy-email-link fas fa-search"
+                                    title="Google"
+                                    target="_blank"
+                                    href={("https://www.google.com/search?q=" + participantInfo['parent_first_name'] + " " + participantInfo['parent_last_name'] + " Los Angeles").replaceAll(" ", "%20")}
+                                />
+                            </span>
                         </div>
                         <div className="participant-attribute-container">
                             <span className="field-label">Parent E-mail</span>
@@ -308,7 +345,28 @@ function ParticipantCard({ database, participantId, index, setShowBookSession2, 
                             </span>
                         </div>
                         <div className="participant-attribute-container">
-                            <span className="field-label">Parent Phone</span><span className={participantInfo['phone_counter'] > 1 ? "highlighted-span" : ""}>{participantInfo['phone'].replaceAll('T: ', '')}</span>
+                            <span className="field-label">Parent Phone</span>
+                            <span className={participantInfo['phone_counter'] > 1 ? "highlighted-span" : ""}>
+                                {participantInfo['phone'].replaceAll('T: ', '')}
+                                <a className="copy-email-link fas fa-copy"
+                                    title="Copy phone number"
+                                    onClick={(e) => {
+                                        e.preventDefault();
+                                        let phone = participantInfo['phone'].replace("T: ", "");
+                                        navigator.clipboard.writeText(phone);
+
+                                        Swal.fire({
+                                            toast: true,
+                                            icon: 'success',
+                                            title: 'Copied: ' + phone,
+                                            animation: false,
+                                            position: 'bottom',
+                                            width: 'unset',
+                                            showConfirmButton: false,
+                                            timer: 2000
+                                        })
+                                    }} target="_blank" />
+                            </span>
                         </div>
 
                         <div className="participant-attribute-container">
@@ -330,7 +388,7 @@ function ParticipantCard({ database, participantId, index, setShowBookSession2, 
                     <span className="field-label">Documents</span>
 
                     <select className="participant-data-selector"
-                        disabled={timeslotsOfParticipant.length > 0}
+                        disabled={nrOfTimeslotsOfParticipant > 0}
                         onChange={(e) => {
                             updateValue("/participants/" + participantId, { document_approval: e.currentTarget.value });
                             LogEvent({
@@ -526,10 +584,10 @@ function ParticipantCard({ database, participantId, index, setShowBookSession2, 
             {((participantInfo['icf'] &&
                 participantInfo['document_approval'] == "Pass" &&
                 !["Rejected", "Withdrawn", "Completed", "Not Selected"].includes(participantInfo['status'])) ||
-                Object.keys(timeslotsOfParticipant).length > 0) &&
+                nrOfTimeslotsOfParticipant > 0) &&
                 <div className="participant-card-column column-4">
-                    <span className="participant-attribute-header">Sessions</span>
-                    {Object.keys(database['timeslots']).filter(timeslotId => participantId == database['timeslots'][timeslotId]['participant_id']).map(timeslotId => {
+                    <span className="participant-attribute-header">Sessions {participantInfo['external_id'] ? " (" + participantInfo['external_id'] + ")" : ""}</span>
+                    {Object.keys(participantInfo['sessions'] || {}).map(timeslotId => {
                         let session = database['timeslots'][timeslotId];
                         let sessionString = timeslotId.substring(0, 4) + "-" +
                             timeslotId.substring(4, 6) + "-" +
@@ -568,12 +626,11 @@ function ParticipantCard({ database, participantId, index, setShowBookSession2, 
                         let emailTitle = participantInfo['history'][t]['title'].replace("Document Request:", "DR:");
                         let appointmentTime = "";
                         console.log(participantInfo);
-                        let uploadURL = `https://fs30.formsite.com/LB2014/pegzfrigaw/index?fill&id16=${participantInfo['first_name']}&id17=${participantInfo['last_name']}&id20=${auth.currentUser.email}&id434=${
-                            emailTitle === "DR: ID" ? 1 
-                                : emailTitle === "DR: Vision Correction" ? 2 
-                                    : emailTitle === "DR: ID & Vision Correction" ? 0
-                                        : ""
-                        }&id435=${participantId}`;
+                        let uploadURL = `https://fs30.formsite.com/LB2014/pegzfrigaw/index?fill&id16=${participantInfo['first_name']}&id17=${participantInfo['last_name']}&id20=${auth.currentUser.email}&id434=${emailTitle === "DR: ID" ? 1
+                            : emailTitle === "DR: Vision Correction" ? 2
+                                : emailTitle === "DR: ID & Vision Correction" ? 0
+                                    : ""
+                            }&id435=${participantId}`;
                         if (emailTitle.startsWith('Confirmation') && emailTitle.length > 15) {
                             appointmentTime = emailTitle.substring(13, 17) + "-" +
                                 emailTitle.substring(17, 19) + "-" +
@@ -592,12 +649,12 @@ function ParticipantCard({ database, participantId, index, setShowBookSession2, 
                         return <div key={participantId + t} className="participant-attribute-container">
                             <span className="field-label">{t.substring(0, 16).replaceAll('_', ' ')}</span>
                             <span className="email-history-content">
-                                <span>{emailTitle} {emailTitle.includes("DR: ") && ['zoltan.bathori@telusinternational.com', 'german.milla01@telusinternational.com'].includes(auth.currentUser.email) && participantInfo['document_approval'] !== "Pass" ? 
-                                    <a className='copy-email-link fas fa-link' 
-                                        title='open upload link' 
+                                <span>{emailTitle} {emailTitle.includes("DR: ") && ['zoltan.bathori@telusinternational.com', 'german.milla01@telusinternational.com'].includes(auth.currentUser.email) && participantInfo['document_approval'] !== "Pass" ?
+                                    <a className='copy-email-link fas fa-link'
+                                        title='Open upload link'
                                         href={uploadURL}
                                         target="_blank"></a> : ""} </span>
-                                {appointmentTime && <span>{appointmentTime}</span>} 
+                                {appointmentTime && <span>{appointmentTime}</span>}
                             </span>
                         </div>
                     })}

@@ -80,13 +80,24 @@ function Scheduler({ database, setUpdateSession }) {
     for (var r = 0; r < table.rows.length; r++) {
       let row = table.rows[r];
       let temp = [];
+      let participant = {};
       // -1, because we don't need the last column...
       for (var c = 0; c < row.cells.length - 1; c++) {
         if (c == 0 && r == 0) {
           temp.push('Date');
           continue;
         }
+        if (c == 4 && r > 0) {
+          let participantID = row.cells[c].innerHTML;
+          if (participantID) participant = database['participants'][participantID];
+        }
         temp.push(row.cells[c].innerHTML);
+      }
+
+      if (r == 0) {
+        temp.push("Demo bin");
+      } else {
+        temp.push(participant['demo_bin'] || "");
       }
       output.push(temp);
     }
@@ -221,7 +232,6 @@ function Scheduler({ database, setUpdateSession }) {
               <th>Participant ID</th>
               <th>Name</th>
               <th>Vision corr.</th>
-              {/*<th>#</th>*/}
               <th>Phase</th>
               <th>Session comments</th>
               <th>Functions</th>
@@ -286,15 +296,6 @@ function Scheduler({ database, setUpdateSession }) {
                         database['participants'][database['timeslots'][key]['participant_id']]['vision_correction'].replace("progressive, bifocal or multifocal", "pr/ bf/ mf")
                         : ""}
                     </td>
-                    {/*
-                  <td className="center-tag">
-                    {database['timeslots'][key]['participant_id'] ?
-                      (database['participants'][database['timeslots'][key]['participant_id']]['sessions'] ?
-                        database['participants'][database['timeslots'][key]['participant_id']]['sessions'][key]
-                        : "")
-                      : ""}
-                  </td>
-                  */}
                     <td className="center-tag">
                       {database['timeslots'][key]['participant_id'] ? (database['participants'][database['timeslots'][key]['participant_id']]['phase'] ? "Ph. " + database['participants'][database['timeslots'][key]['participant_id']]['phase'] : "") : ""}
                     </td>
@@ -307,7 +308,6 @@ function Scheduler({ database, setUpdateSession }) {
                         {database['timeslots'][key]['status'] == "Scheduled" && database['timeslots'][key]['remind'] == true && <button className="update-timeslot-button remind-button" onClick={() => sendReminder(key)}>Remind</button>}
                         {database['timeslots'][key]['status'] != "" && <button className="update-timeslot-button update-button" onClick={() => setUpdateSession(key)}>Update</button>}
                         {database['timeslots'][key]['status'] != "" && <button className="update-timeslot-button cancel-button" onClick={() => cancelSession(key)}>Cancel</button>}
-                        {/*<span>{testFunction(key)}</span>*/}
                       </div>
                     </td>
                   </tr>

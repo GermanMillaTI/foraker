@@ -90,8 +90,6 @@ function ParticipantCard({ database, participantId, index, setShowBookSession2, 
                         updateValue("/participants/" + pid.toString(), { status: "Document Requested" });
                     }
 
-                    console.log()
-
                     LogEvent({
                         pid: participantId,
                         action: "Email: '" + kind + "'"
@@ -200,7 +198,6 @@ function ParticipantCard({ database, participantId, index, setShowBookSession2, 
                                             toast: true,
                                             icon: 'success',
                                             title: 'Copied: ' + email,
-                                            animation: false,
                                             position: 'bottom',
                                             width: 'unset',
                                             showConfirmButton: false,
@@ -223,7 +220,6 @@ function ParticipantCard({ database, participantId, index, setShowBookSession2, 
                                             toast: true,
                                             icon: 'success',
                                             title: 'Copied: ' + phone,
-                                            animation: false,
                                             position: 'bottom',
                                             width: 'unset',
                                             showConfirmButton: false,
@@ -335,7 +331,6 @@ function ParticipantCard({ database, participantId, index, setShowBookSession2, 
                                             toast: true,
                                             icon: 'success',
                                             title: 'Copied: ' + email,
-                                            animation: false,
                                             position: 'bottom',
                                             width: 'unset',
                                             showConfirmButton: false,
@@ -359,7 +354,6 @@ function ParticipantCard({ database, participantId, index, setShowBookSession2, 
                                             toast: true,
                                             icon: 'success',
                                             title: 'Copied: ' + phone,
-                                            animation: false,
                                             position: 'bottom',
                                             width: 'unset',
                                             showConfirmButton: false,
@@ -544,7 +538,6 @@ function ParticipantCard({ database, participantId, index, setShowBookSession2, 
                                         icon: 'success',
                                         title: 'Copied',
                                         html: url,
-                                        animation: false,
                                         position: 'bottom',
                                         width: 'unset',
                                         showConfirmButton: false,
@@ -625,7 +618,6 @@ function ParticipantCard({ database, participantId, index, setShowBookSession2, 
                     {participantInfo['history'] && Object.keys(participantInfo['history']).map((t) => {
                         let emailTitle = participantInfo['history'][t]['title'].replace("Document Request:", "DR:");
                         let appointmentTime = "";
-                        console.log(participantInfo);
                         let uploadURL = `https://fs30.formsite.com/LB2014/pegzfrigaw/index?fill&id16=${participantInfo['first_name']}&id17=${participantInfo['last_name']}&id20=${auth.currentUser.email}&id434=${emailTitle === "DR: ID" ? 1
                             : emailTitle === "DR: Vision Correction" ? 2
                                 : emailTitle === "DR: ID & Vision Correction" ? 0

@@ -641,7 +641,7 @@ function ParticipantCard({ database, participantId, index, setShowBookSession2, 
                         return <div key={participantId + t} className="participant-attribute-container">
                             <span className="field-label">{t.substring(0, 16).replaceAll('_', ' ')}</span>
                             <span className="email-history-content">
-                                <span>{emailTitle} {emailTitle.includes("DR: ") && ['zoltan.bathori@telusinternational.com', 'german.milla01@telusinternational.com'].includes(auth.currentUser.email) && participantInfo['document_approval'] !== "Pass" ?
+                                <span>{emailTitle} {emailTitle.includes("DR: ") && participantInfo['document_approval'] !== "Pass" ?
                                     <a className='copy-email-link fas fa-link'
                                         title='Open upload link'
                                         href={uploadURL}

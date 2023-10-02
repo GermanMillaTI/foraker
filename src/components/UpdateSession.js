@@ -431,10 +431,7 @@ function UpdateSession({ database, updateSession, setUpdateSession, setCheckDocu
                                     </td>
                                 </tr>
 
-                                <tr>
-                                    <td className="participant-table-left">&nbsp;</td>
-                                </tr>
-
+                                {/*
                                 <tr>
                                     <td className="participant-table-left">Height</td>
                                     <td className="participant-table-right">{participantInfo['height']} inch</td>
@@ -547,24 +544,125 @@ function UpdateSession({ database, updateSession, setUpdateSession, setCheckDocu
                                         </select>
                                     </td>
                                 </tr>
-                                <tr>
-                                    <td className="participant-table-left">Pregnant</td>
-                                    <td className="participant-table-right">
-                                        <select className="session-data-selector"
-                                            disabled={hasCompletedSession}
-                                            onChange={(e) => updateValue("/participants/" + participantId, { pregnant: e.currentTarget.value })}
-                                        >
-                                            {Constants['pregnant'].map((s, i) => (
-                                                <option key={"data-pregnant" + i} value={s} selected={s == participantInfo['pregnant']}>{s}</option>
-                                            ))}
-                                        </select>
-                                    </td>
-                                </tr>
+                                */}
+                                {participantInfo['gender'] == "Female" &&
+                                    <tr>
+                                        <td className="participant-table-left">Pregnant</td>
+                                        <td className="participant-table-right">
+                                            <select className="session-data-selector"
+                                                disabled={hasCompletedSession}
+                                                onChange={(e) => updateValue("/participants/" + participantId, { pregnant: e.currentTarget.value })}
+                                            >
+                                                {Constants['pregnant'].map((s, i) => (
+                                                    <option key={"data-pregnant" + i} value={s} selected={s == participantInfo['pregnant']}>{s}</option>
+                                                ))}
+                                            </select>
+                                        </td>
+                                    </tr>
+                                }
                                 {participantInfo['conditions'] != "None of the above" &&
                                     <tr>
                                         <td className="participant-table-left">Health conditions</td>
                                         <td className="participant-table-right">{participantInfo['conditions']}</td>
                                     </tr>
+                                }
+
+                                <tr>
+                                    <td className="participant-table-left">&nbsp;</td>
+                                </tr>
+
+                                {isloading &&
+                                    <tr>
+                                        <td className="participant-table-center" colspan="2">Loading...</td>
+                                    </tr>
+                                }
+                                {externalIdForAPI && !isloading &&
+                                    <>
+                                        <tr className='client-info-container'>
+                                            <td className="participant-table-center" colspan="2">Client info: {externalIdForAPI}</td>
+                                        </tr>
+                                        <tr className='client-info-container'>
+                                            <td className="participant-table-left" colSpan="2">
+                                                {contributions.map(contribution => {
+                                                    const tag = contribution['tag'];
+                                                    const formatted = tag.substring(0, 4) + "-" +
+                                                        tag.substring(4, 6) + "-" +
+                                                        tag.substring(6, 8) + " " +
+                                                        tag.substring(8, 10) + ":" +
+                                                        tag.substring(10, 12);
+
+                                                    const sameDay = updateSession.substring(0, 8) == tag.substring(0, 8);
+                                                    if (selectedContribution == "" && sameDay) setSelectedContribution(contribution);
+                                                    return <>
+                                                        <button
+                                                            className={"client-contribution-button" + (tag == selectedContribution['tag'] ? " same-day-contribution" : "")}
+                                                            onClick={() => setSelectedContribution(contribution)}
+                                                        >
+                                                            {sameDay ? formatted + " < Same day" : formatted}
+                                                        </button>
+                                                        <br />
+                                                    </>
+                                                })}
+                                            </td>
+                                        </tr>
+                                        <tr className='client-info-container'>
+                                            <td className="participant-table-left" colSpan="2">&nbsp;</td>
+                                        </tr>
+                                        {selectedContribution != "" && <>
+                                            <tr className='client-info-container'>
+                                                <td className="participant-table-center" colspan="2">Contribution {selectedContribution['tag'].substring(0, 4) + "-" +
+                                                    selectedContribution['tag'].substring(4, 6) + "-" +
+                                                    selectedContribution['tag'].substring(6, 8) + " " +
+                                                    selectedContribution['tag'].substring(8, 10) + ":" +
+                                                    selectedContribution['tag'].substring(10, 12)}</td>
+                                            </tr>
+                                            <tr className='client-info-container'>
+                                                <td className="participant-table-left">
+                                                    Demo bin
+                                                </td>
+                                                <td className={"participant-table-right" + ((selectedContribution['answers'].filter(answer => answer['slug'] == 'demo_bin').length > 0 ?
+                                                    selectedContribution['answers'].filter(answer => answer['slug'] == 'demo_bin')[0]['values'].join(",")
+                                                    : "") != participantInfo['demo_bin'] ? " not-matching-client-data" : "")}>
+
+                                                    {selectedContribution['answers'].filter(answer => answer['slug'] == 'demo_bin').length > 0 ?
+                                                        selectedContribution['answers'].filter(answer => answer['slug'] == 'demo_bin')[0]['values'].join(",")
+                                                        : ""}
+                                                </td>
+                                            </tr>
+                                            <tr className='client-info-container'>
+                                                <td className="participant-table-left">
+                                                    Date of birth
+                                                </td>
+                                                <td className={"participant-table-right" + (selectedContribution['answers'].filter(answer => answer['slug'] == 'birth_date')[0]['values'].join(",") != participantInfo['date_of_birth'].substring(0, 10) ? " not-matching-client-data" : "")}>
+                                                    {selectedContribution['answers'].filter(answer => answer['slug'] == 'birth_date')[0]['values'].join(",")}
+                                                </td>
+                                            </tr>
+                                            <tr className='client-info-container'>
+                                                <td className="participant-table-left">
+                                                    Gender
+                                                </td>
+                                                <td className={"participant-table-right" + (selectedContribution['answers'].filter(answer => answer['slug'] == 'gender')[0]['values'].join(",") != participantInfo['gender'] ? " not-matching-client-data" : "")}>
+                                                    {selectedContribution['answers'].filter(answer => answer['slug'] == 'gender')[0]['values'].join(",")}
+                                                </td>
+                                            </tr>
+                                            <tr className='client-info-container'>
+                                                <td className="participant-table-left">
+                                                    Ethnicity
+                                                </td>
+                                                <td className={"participant-table-right" + ((Constants['clientEthnicities'][selectedContribution['answers'].filter(answer => answer['slug'] == 'ethnicity')[0]['values'].join(",")] || selectedContribution['answers'].filter(answer => answer['slug'] == 'ethnicity')[0]['values'].join(",")) != participantInfo['ethnicities'] ? " not-matching-client-data" : "")}>
+                                                    {Constants['clientEthnicities'][selectedContribution['answers'].filter(answer => answer['slug'] == 'ethnicity')[0]['values'].join(",")] || selectedContribution['answers'].filter(answer => answer['slug'] == 'ethnicity')[0]['values'].join(",")}
+                                                </td>
+                                            </tr>
+                                            <tr className='client-info-container'>
+                                                <td className="participant-table-left">
+                                                    Vision correction
+                                                </td>
+                                                <td className={"participant-table-right" + (selectedContribution['answers'].filter(answer => answer['slug'] == 'vision_correction')[0]['values'].join(",").replace("Glasses - Progressive", "Glasses - progressive, bifocal or multifocal").replace("Glasses - Reading", "None").replace("Contact Lens", "Contact lenses").toLowerCase() != participantInfo['vision_correction'].replace("Glasses - reading", "None").toLowerCase() ? " not-matching-client-data" : "")}>
+                                                    {selectedContribution['answers'].filter(answer => answer['slug'] == 'vision_correction')[0]['values'].join(",")}
+                                                </td>
+                                            </tr>
+                                        </>}
+                                    </>
                                 }
                             </tbody>
                         </table>
@@ -756,100 +854,6 @@ function UpdateSession({ database, updateSession, setUpdateSession, setCheckDocu
                                             <label> Extra bonus ($ {participantInfo['bonus_amount']}) <i>Offered during the handoff</i></label>
                                         </td>
                                     </tr>
-                                }
-
-                                {isloading &&
-                                    <tr>
-                                        <td className="participant-table-center" colspan="2">Loading...</td>
-                                    </tr>
-                                }
-                                {externalIdForAPI && !isloading &&
-                                    <>
-                                        <tr className='client-info-container'>
-                                            <td className="participant-table-center" colspan="2">Client info: {externalIdForAPI}</td>
-                                        </tr>
-                                        <tr className='client-info-container'>
-                                            <td className="participant-table-left" colSpan="2">
-                                                {contributions.map(contribution => {
-                                                    const tag = contribution['tag'];
-                                                    const formatted = tag.substring(0, 4) + "-" +
-                                                        tag.substring(4, 6) + "-" +
-                                                        tag.substring(6, 8) + " " +
-                                                        tag.substring(8, 10) + ":" +
-                                                        tag.substring(10, 12);
-
-                                                    const sameDay = updateSession.substring(0, 8) == tag.substring(0, 8);
-                                                    if (selectedContribution == "" && sameDay) setSelectedContribution(contribution);
-                                                    return <>
-                                                        <button
-                                                            className={"client-contribution-button" + (tag == selectedContribution['tag'] ? " same-day-contribution" : "")}
-                                                            onClick={() => setSelectedContribution(contribution)}
-                                                        >
-                                                            {sameDay ? formatted + " < Same day" : formatted}
-                                                        </button>
-                                                        <br />
-                                                    </>
-                                                })}
-                                            </td>
-                                        </tr>
-                                        <tr className='client-info-container'>
-                                            <td className="participant-table-left" colSpan="2">&nbsp;</td>
-                                        </tr>
-                                        {selectedContribution != "" && <>
-                                            <tr className='client-info-container'>
-                                                <td className="participant-table-center" colspan="2">Contribution {selectedContribution['tag'].substring(0, 4) + "-" +
-                                                    selectedContribution['tag'].substring(4, 6) + "-" +
-                                                    selectedContribution['tag'].substring(6, 8) + " " +
-                                                    selectedContribution['tag'].substring(8, 10) + ":" +
-                                                    selectedContribution['tag'].substring(10, 12)}</td>
-                                            </tr>
-                                            <tr className='client-info-container'>
-                                                <td className="participant-table-left">
-                                                    Demo bin
-                                                </td>
-                                                <td className={"participant-table-right" + ((selectedContribution['answers'].filter(answer => answer['slug'] == 'demo_bin').length > 0 ?
-                                                    selectedContribution['answers'].filter(answer => answer['slug'] == 'demo_bin')[0]['values'].join(",")
-                                                    : "") != participantInfo['demo_bin'] ? " not-matching-client-data" : "")}>
-
-                                                    {selectedContribution['answers'].filter(answer => answer['slug'] == 'demo_bin').length > 0 ?
-                                                        selectedContribution['answers'].filter(answer => answer['slug'] == 'demo_bin')[0]['values'].join(",")
-                                                        : ""}
-                                                </td>
-                                            </tr>
-                                            <tr className='client-info-container'>
-                                                <td className="participant-table-left">
-                                                    Date of birth
-                                                </td>
-                                                <td className={"participant-table-right" + (selectedContribution['answers'].filter(answer => answer['slug'] == 'birth_date')[0]['values'].join(",") != participantInfo['date_of_birth'].substring(0, 10) ? " not-matching-client-data" : "")}>
-                                                    {selectedContribution['answers'].filter(answer => answer['slug'] == 'birth_date')[0]['values'].join(",")}
-                                                </td>
-                                            </tr>
-                                            <tr className='client-info-container'>
-                                                <td className="participant-table-left">
-                                                    Gender
-                                                </td>
-                                                <td className={"participant-table-right" + (selectedContribution['answers'].filter(answer => answer['slug'] == 'gender')[0]['values'].join(",") != participantInfo['gender'] ? " not-matching-client-data" : "")}>
-                                                    {selectedContribution['answers'].filter(answer => answer['slug'] == 'gender')[0]['values'].join(",")}
-                                                </td>
-                                            </tr>
-                                            <tr className='client-info-container'>
-                                                <td className="participant-table-left">
-                                                    Ethnicity
-                                                </td>
-                                                <td className={"participant-table-right" + ((Constants['clientEthnicities'][selectedContribution['answers'].filter(answer => answer['slug'] == 'ethnicity')[0]['values'].join(",")] || selectedContribution['answers'].filter(answer => answer['slug'] == 'ethnicity')[0]['values'].join(",")) != participantInfo['ethnicities'] ? " not-matching-client-data" : "")}>
-                                                    {Constants['clientEthnicities'][selectedContribution['answers'].filter(answer => answer['slug'] == 'ethnicity')[0]['values'].join(",")] || selectedContribution['answers'].filter(answer => answer['slug'] == 'ethnicity')[0]['values'].join(",")}
-                                                </td>
-                                            </tr>
-                                            <tr className='client-info-container'>
-                                                <td className="participant-table-left">
-                                                    Vision correction
-                                                </td>
-                                                <td className={"participant-table-right" + (selectedContribution['answers'].filter(answer => answer['slug'] == 'vision_correction')[0]['values'].join(",").replace("Glasses - Progressive", "Glasses - progressive, bifocal or multifocal").replace("Glasses - Reading", "None").replace("Contact Lens", "Contact lenses").toLowerCase() != participantInfo['vision_correction'].replace("Glasses - reading", "None").toLowerCase() ? " not-matching-client-data" : "")}>
-                                                    {selectedContribution['answers'].filter(answer => answer['slug'] == 'vision_correction')[0]['values'].join(",")}
-                                                </td>
-                                            </tr>
-                                        </>}
-                                    </>
                                 }
                             </tbody>
                         </table>

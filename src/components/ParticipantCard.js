@@ -470,11 +470,6 @@ function ParticipantCard({ database, participantId, index, setShowBookSession2, 
                         onChange={(e) => {
                             updateValue("/participants/" + participantId, { phase: e.currentTarget.value });
 
-                            //update target of sessions to be 1 in case "Phase 2" gets selected
-                            if (e.currentTarget.value.toString() === "2") {
-                                updateValue("participants/" + participantId, { multiple_times: 1 })
-                            }
-
                             LogEvent({
                                 pid: participantId,
                                 action: "Phase: '" + (e.currentTarget.value || "Blank") + "'"

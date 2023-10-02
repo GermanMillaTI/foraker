@@ -36,14 +36,7 @@ function SchedulerOverview({ database }) {
       }
     })
     setDays(temp);
-
   }, [Object.keys(database['timeslots']).length])
-
-  useEffect(() => {
-    // Scroll to the bottom when opening
-    window.scrollTo(0, document.body.scrollHeight);
-  }, [])
-
 
   function getCSVData() {
     let output = [];

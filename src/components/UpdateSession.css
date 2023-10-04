@@ -211,3 +211,10 @@
     background: red;
     font-size: 1.3em;
 }
+
+.same-external-id-error-message {
+    color: white;
+    background: red;
+    font-size: 1em;
+    padding: .2em;
+}

@@ -21,6 +21,7 @@ function UpdateSession({ database, updateSession, setUpdateSession, setCheckDocu
     const [selectedContribution, setSelectedContribution] = useState("");
     const [isloading, setIsLoading] = useState(false);
     const [errorMessage, setErrorMessage] = useState("");
+    const [externalIdParticipants, setExternalIdParticipants] = useState([]);
 
 
     let participantInfo = database['participants'][participantId];
@@ -220,7 +221,10 @@ function UpdateSession({ database, updateSession, setUpdateSession, setCheckDocu
     }
 
     useEffect(() => {
-        if (participantInfo['external_id']) getClientInfo(participantInfo['external_id']);
+        if (participantInfo['external_id']) {
+            getClientInfo(participantInfo['external_id']);
+            setExternalIdParticipants(Object.keys(database['participants']).filter(pid => database['participants'][pid]['external_id'] == participantInfo['external_id']));
+        }
     }, [participantInfo['external_id']])
 
     return ReactDOM.createPortal((
@@ -874,6 +878,25 @@ function UpdateSession({ database, updateSession, setUpdateSession, setCheckDocu
                                         <td className="participant-table-right bonus-container" colspan="2">
                                             <input type="checkbox" checked={['Scheduled', 'Checked In', 'Completed'].includes(database['timeslots'][updateSession]['status'])} disabled />
                                             <label> Extra bonus ($ {participantInfo['bonus_amount']}) <i>Offered during the handoff</i></label>
+                                        </td>
+                                    </tr>
+                                }
+
+                                <tr>
+                                    <td className="participant-table-left">&nbsp;</td>
+                                </tr>
+                                <tr>
+                                    <td className="participant-table-left">&nbsp;</td>
+                                </tr>
+
+                                {externalIdParticipants.length > 1 &&
+                                    <tr>
+                                        <td className="participant-table-left" colspan="2">
+                                            <span className="same-external-id-error-message">The same external ID is used for multiple people:</span><br /><br />
+                                            {externalIdParticipants.map(participantId => {
+                                                const ppt = database['participants'][participantId];
+                                                return <><span>{participantId + ": " + ppt['first_name'] + " " + ppt['last_name'] + (ppt["registered_as"] == "parent" ? "  (parent)" : "")}</span><br /></>
+                                            })}
                                         </td>
                                     </tr>
                                 }

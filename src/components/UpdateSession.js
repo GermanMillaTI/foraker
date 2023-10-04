@@ -895,7 +895,7 @@ function UpdateSession({ database, updateSession, setUpdateSession, setCheckDocu
                                             <span className="same-external-id-error-message">The same external ID is used for multiple people:</span><br /><br />
                                             {externalIdParticipants.map(participantId => {
                                                 const ppt = database['participants'][participantId];
-                                                return <><span>{participantId + ": " + ppt['first_name'] + " " + ppt['last_name'] + (ppt["registered_as"] == "parent" ? "  (parent)" : "")}</span><br /></>
+                                                return <><span>{participantId + ": " + ppt['first_name'] + " " + ppt['last_name'] + (ppt["registered_as"] == "parent" ? "  (child)" : "")}</span><br /></>
                                             })}
                                         </td>
                                     </tr>

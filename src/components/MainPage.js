@@ -142,7 +142,7 @@ function MainPage() {
       }
 
       const dateNow = parseInt(format(new Date(), "yyyyMMdd"));
-      var numberOfScheduledSessions = {};
+      var sessionDictionary = {};
       for (let sessionId in temp['timeslots']) {
         let session = temp['timeslots'][sessionId];
         let participantId = session['participant_id'];
@@ -151,25 +151,43 @@ function MainPage() {
 
         let status = session['status'];
         let sessionDate = parseInt(sessionId.substring(0, 8));
-        if (!numberOfScheduledSessions[participantId]) numberOfScheduledSessions[participantId] = 0;
-        if (status == 'Scheduled') numberOfScheduledSessions[participantId]++;
+        if (!sessionDictionary[participantId]) {
+          sessionDictionary[participantId] = { [status]: 1 };
+        } else {
+          sessionDictionary[participantId][status] = (sessionDictionary[participantId][status] || 0) + 1;
+        }
 
         if (sessionDate > dateNow && ['Rescheduled'].includes(status)) {
           if (temp['participants'][participantId]['highlight_reason']) {
             temp['participants'][participantId]['highlight_reason'].push("'Rescheduled' session in the future");
           } else {
             temp['participants'][participantId]['highlight_reason'] = ["'Rescheduled' session in the future"];
-            temp['participants'][participantId]['h  ighlighted'] = true;
+            temp['participants'][participantId]['highlighted'] = true;
           }
         }
 
-        if (participant['phase'] == 2 && numberOfScheduledSessions[participantId] == 2 && status == 'Scheduled') {
+        if (participant['phase'] == 2 && (sessionDictionary[participantId]['Scheduled'] || 0) > 1 && status == 'Scheduled') {
           if (temp['participants'][participantId]['highlight_reason']) {
             if (!temp['participants'][participantId]['highlight_reason'].includes("There are more 'Scheduled' sessions")) {
               temp['participants'][participantId]['highlight_reason'].push("There are more 'Scheduled' sessions");
             }
           } else {
             temp['participants'][participantId]['highlight_reason'] = ["There are more 'Scheduled' sessions"];
+            temp['participants'][participantId]['highlighted'] = true;
+          }
+        }
+
+        if (participant['phase'] == 2 && (
+          (sessionDictionary[participantId]['Scheduled'] || 0) +
+          (sessionDictionary[participantId]['Checked In'] || 0) +
+          (sessionDictionary[participantId]['Completed'] || 0)
+        ) > 1) {
+          if (temp['participants'][participantId]['highlight_reason']) {
+            if (!temp['participants'][participantId]['highlight_reason'].includes("There are more sessions for phase 2")) {
+              temp['participants'][participantId]['highlight_reason'].push("There are more sessions for phase 2");
+            }
+          } else {
+            temp['participants'][participantId]['highlight_reason'] = ["There are more sessions for phase 2"];
             temp['participants'][participantId]['highlighted'] = true;
           }
         }

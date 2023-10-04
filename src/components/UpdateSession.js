@@ -20,6 +20,7 @@ function UpdateSession({ database, updateSession, setUpdateSession, setCheckDocu
     const [contributions, setContributions] = useState([]);
     const [selectedContribution, setSelectedContribution] = useState("");
     const [isloading, setIsLoading] = useState(false);
+    const [errorMessage, setErrorMessage] = useState("");
 
 
     let participantInfo = database['participants'][participantId];
@@ -105,8 +106,6 @@ function UpdateSession({ database, updateSession, setUpdateSession, setCheckDocu
                         pid: participantId,
                         action: "External ID: '" + newId + "'"
                     });
-
-                    getClientInfo(externalId);
                 } else {
                     Swal.fire({
                         title: 'The ID is not saved!',
@@ -197,23 +196,32 @@ function UpdateSession({ database, updateSession, setUpdateSession, setCheckDocu
             })
         }).then(res => {
             return res.json();
-            setIsLoading(false);
         }).then(data => {
             //console.log(data);
-            setContributions(data['results'][0]['metadata']);
-            setIsLoading(false);
+            if (data['results'].length > 0) {
+                setIsLoading(false);
+                setErrorMessage("");
+                setContributions(data['results'][0]['metadata']);
+            } else {
+                setIsLoading(false);
+                setSelectedContribution("");
+                setContributions([]);
+                setErrorMessage("Wrong ID: " + externalIdForAPI);
+            }
         },
             err => {
-                setExternalIdForAPI("");
-                setContributions([]);
-                console.log('Error');
                 setIsLoading(false);
+                setExternalIdForAPI("");
+                setSelectedContribution("");
+                setContributions([]);
+                setErrorMessage("Wrong ID: " + externalIdForAPI);
+                console.log('Error');
             });
     }
 
     useEffect(() => {
         if (participantInfo['external_id']) getClientInfo(participantInfo['external_id']);
-    }, [])
+    }, [participantInfo['external_id']])
 
     return ReactDOM.createPortal((
         <div className="modal-book-update-session-backdrop" onClick={(e) => { if (e.target.className == "modal-book-update-session-backdrop") setUpdateSession("") }}>
@@ -577,9 +585,16 @@ function UpdateSession({ database, updateSession, setUpdateSession, setCheckDocu
                                 }
                                 {externalIdForAPI && !isloading &&
                                     <>
-                                        <tr className='client-info-container'>
-                                            <td className="participant-table-center" colspan="2">Client info: {externalIdForAPI}</td>
-                                        </tr>
+                                        {!errorMessage &&
+                                            <tr className='client-info-container'>
+                                                <td className="participant-table-center" colspan="2">Client info: {externalIdForAPI}</td>
+                                            </tr>
+                                        }
+                                        {errorMessage &&
+                                            <tr>
+                                                <td className="participant-table-center client-api-error-message" colspan="2">{errorMessage}</td>
+                                            </tr>
+                                        }
                                         <tr className='client-info-container'>
                                             <td className="participant-table-left" colSpan="2">
                                                 {contributions.map(contribution => {
@@ -815,7 +830,7 @@ function UpdateSession({ database, updateSession, setUpdateSession, setCheckDocu
                                 </tr>
                                 <tr>
                                     <td className="cancel-button-row" colSpan="2">
-                                        {sessionInfo['status'] == "Scheduled" && <button className="cancel-session-button" onClick={() => cancelSession(updateSession)}>Cancel session</button>}
+                                        <button className="cancel-session-button" onClick={() => cancelSession(updateSession)}>Cancel session</button>
                                     </td>
                                 </tr>
                                 {(sessionInfo['bonus'] || participantInfo['bonus_amount']) &&

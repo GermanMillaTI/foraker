@@ -14,7 +14,7 @@ function UpdateSession({ database, updateSession, setUpdateSession, setCheckDocu
     const [participantId, setParticipantId] = useState(database['timeslots'][updateSession]['participant_id']);
     const [sessionInfo, setSessionInfo] = useState(database['timeslots'][updateSession]);
     const [hasCompletedSession] = useState(
-        ['sari.kiiskinen@telusinternational.com', 'axel.romeo@telusinternational.com'].includes(auth.currentUser.email) ? false : Object.keys(database['timeslots']).filter(timeslotId => participantId == database['timeslots'][timeslotId]['participant_id'] && database['timeslots'][timeslotId]['status'] == "Completed").length > 0
+        ['sari.kiiskinen@telusinternational.com', 'axel.romeo@telusinternational.com', 'zoltan.bathori@telusinternational.com'].includes(auth.currentUser.email) ? false : Object.keys(database['timeslots']).filter(timeslotId => participantId == database['timeslots'][timeslotId]['participant_id'] && database['timeslots'][timeslotId]['status'] == "Completed").length > 0
     );
     const [externalIdForAPI, setExternalIdForAPI] = useState("");
     const [contributions, setContributions] = useState([]);
@@ -342,26 +342,6 @@ function UpdateSession({ database, updateSession, setUpdateSession, setCheckDocu
                                         />
                                     </td>
                                 </tr>
-                                {/*
-                                <tr>
-                                    <td className="participant-table-left">Target of sessions</td>
-                                    <td className="participant-table-right">
-                                        <select className="session-data-selector"
-                                            onChange={(e) => {
-                                                updateValue("/participants/" + participantId, { multiple_times: e.currentTarget.value });
-                                                LogEvent({
-                                                    pid: participantId,
-                                                    action: "Target: '" + (e.currentTarget.value || "Blank") + "'"
-                                                })
-                                            }}
-                                        >
-                                            {Constants['possibleNumberOfSessions'].map((s, i) => (
-                                                <option key={"data-vc" + i} value={s} selected={s == participantInfo['multiple_times']}>{s}</option>
-                                            ))}
-                                        </select>
-                                    </td>
-                                </tr>
-                                */}
 
                                 <tr>
                                     <td className="participant-table-left">&nbsp;</td>
@@ -568,6 +548,25 @@ function UpdateSession({ database, updateSession, setUpdateSession, setCheckDocu
                                 }
 
                                 <tr>
+                                    <td className="participant-table-left">Target of sessions</td>
+                                    <td className="participant-table-right">
+                                        <select className="session-data-selector"
+                                            onChange={(e) => {
+                                                updateValue("/participants/" + participantId, { multiple_times: e.currentTarget.value });
+                                                LogEvent({
+                                                    pid: participantId,
+                                                    action: "Target: '" + (e.currentTarget.value || "Blank") + "'"
+                                                })
+                                            }}
+                                        >
+                                            {Constants['possibleNumberOfSessions'].map((s, i) => (
+                                                <option key={"data-vc" + i} value={s} selected={s == participantInfo['multiple_times']}>{s}</option>
+                                            ))}
+                                        </select>
+                                    </td>
+                                </tr>
+
+                                <tr>
                                     <td className="participant-table-left">&nbsp;</td>
                                 </tr>
 
@@ -769,10 +768,18 @@ function UpdateSession({ database, updateSession, setUpdateSession, setCheckDocu
                                                     pid: participantId,
                                                     action: "Phase: '" + (e.currentTarget.value || "Blank") + "'"
                                                 })
+
+                                                if (e.currentTarget.value == 2 && participantInfo['multiple_times'] && participantInfo['multiple_times'] != 1) {
+                                                    updateValue("/participants/" + participantId, { multiple_times: "1" });
+                                                    LogEvent({
+                                                        pid: participantId,
+                                                        action: "Target of sessions: '1'"
+                                                    })
+                                                }
                                             }}
                                             disabled={participantInfo['phase_fixed']}
                                         >
-                                            {["", "1", "2"].map((s, i) => (
+                                            {["", "1", "2", "2 Recall"].map((s, i) => (
                                                 <option key={"data-ppt-phase_" + i} value={s} selected={s == participantInfo['phase']}>{s ? "Phase " + s : ""}</option>
                                             ))}
                                         </select>

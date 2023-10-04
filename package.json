@@ -1,6 +1,6 @@
 {
-  "name": "matterhorn",
-  "version": "7.0.0",
+  "name": "denali",
+  "version": "8.0.0",
   "private": true,
   "dependencies": {
     "@emotion/react": "^11.11.0",

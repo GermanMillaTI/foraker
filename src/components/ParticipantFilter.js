@@ -410,21 +410,13 @@ function ParticipantFilter({ database, setShownParticipants, filterDataFromStats
 
       <div className="filter-element gap">
         <span className="filter-container-header">Phase</span>
-        <div className="filter-object">
-          <input id="filter-phases-blank" name="Blank" type="checkbox" alt="phases" onChange={setFilterData} checked={filterData['phases'].includes('Blank')} />
-          <label htmlFor="filter-phases-blank">Blank ({filterStats['phases']['Blank']})</label>
-          <button name="Blank" alt="phases" className="filter-this-button" onClick={setFilterData}>!</button>
-        </div>
-        <div className="filter-object">
-          <input id="filter-phases-phase-1" name="Phase 1" type="checkbox" alt="phases" onChange={setFilterData} checked={filterData['phases'].includes('Phase 1')} />
-          <label htmlFor="filter-phases-phase-1">Phase 1 ({filterStats['phases']['Phase 1']})</label>
-          <button name="Phase 1" alt="phases" className="filter-this-button" onClick={setFilterData}>!</button>
-        </div>
-        <div className="filter-object">
-          <input id="filter-phases-phase-2" name="Phase 2" type="checkbox" alt="phases" onChange={setFilterData} checked={filterData['phases'].includes('Phase 2')} />
-          <label htmlFor="filter-phases-phase-2">Phase 2 ({filterStats['phases']['Phase 2']})</label>
-          <button name="Phase 2" alt="phases" className="filter-this-button" onClick={setFilterData}>!</button>
-        </div>
+        {Constants['phases'].map((val) => {
+          return <div className="filter-object">
+            <input id={"filter-phases-" + val} name={val} type="checkbox" alt="phases" onChange={setFilterData} checked={filterData['phases'].includes(val)} />
+            <label htmlFor={"filter-phases-" + val}>{val} ({filterStats['phases'][val]})</label>
+            <button name={val} alt="phases" className="filter-this-button" onClick={setFilterData}>!</button>
+          </div>
+        })}
       </div>
 
       <div className="filter-element gap">

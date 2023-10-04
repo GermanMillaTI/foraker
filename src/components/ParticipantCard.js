@@ -474,10 +474,18 @@ function ParticipantCard({ database, participantId, index, setShowBookSession2, 
                                 pid: participantId,
                                 action: "Phase: '" + (e.currentTarget.value || "Blank") + "'"
                             })
+
+                            if (e.currentTarget.value == 2 && participantInfo['multiple_times'] && participantInfo['multiple_times'] != 1) {
+                                updateValue("/participants/" + participantId, { multiple_times: "1" });
+                                LogEvent({
+                                    pid: participantId,
+                                    action: "Target of sessions: '1'"
+                                })
+                            }
                         }}
                         disabled={participantInfo['phase_fixed']}
                     >
-                        {["", "1", "2"].map((s, i) => (
+                        {["", "1", "2", "2 Recall"].map((s, i) => (
                             <option key={"data-ppt-phase_" + i} value={s} selected={s == participantInfo['phase']}>{s ? "Phase " + s : ""}</option>
                         ))}
                     </select>

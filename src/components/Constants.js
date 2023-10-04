@@ -239,7 +239,8 @@ const Constants = {
   phases: [
     "Blank",
     "Phase 1",
-    "Phase 2"
+    "Phase 2",
+    "Phase 2 Recall"
   ],
   sources: {
     "goodwork": "Goodwork",

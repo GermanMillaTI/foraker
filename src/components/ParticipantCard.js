@@ -617,7 +617,7 @@ function ParticipantCard({ database, participantId, index, setShowBookSession2, 
             {
                 participantInfo['history'] &&
                 <div className="participant-card-column column-5">
-                    <span className="participant-attribute-header">Email history</span>
+                    <span className="participant-attribute-header">Email history {participantInfo['unsubscribed_comms']==="Yes" && <span className='unsubscribed' title='Participant requested to not receive any more comms'>Unsubscribed</span>} </span>
                     {participantInfo['history'] && Object.keys(participantInfo['history']).map((t) => {
                         let emailTitle = participantInfo['history'][t]['title'].replace("Document Request:", "DR:");
                         let appointmentTime = "";

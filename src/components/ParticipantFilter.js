@@ -11,6 +11,7 @@ const filterReducer = (state, event) => {
   if (event.target.name == "resetFilter") {
     return {
       ethnicities: Constants['ethnicities'],
+      multipleEthnicities: ['Yes', 'No'],
       genders: Constants['genders'],
       ageRanges: Constants['listOfAgeRanges'],
       statuses: ["Blank", ...Constants['participantStatuses']],
@@ -78,6 +79,7 @@ function ParticipantFilter({ database, setShownParticipants, filterDataFromStats
   const [filterStats, setFilterStats] = useState(resetFilterStats());
   const [filterData, setFilterData] = useReducer(filterReducer, {
     ethnicities: Constants['ethnicities'],
+    multipleEthnicities: ['Yes', 'No'],
     genders: Constants['genders'],
     ageRanges: Constants['listOfAgeRanges'],
     statuses: ["Blank", ...Constants['participantStatuses']],
@@ -103,6 +105,7 @@ function ParticipantFilter({ database, setShownParticipants, filterDataFromStats
   function resetFilterStats() {
     return {
       ethnicities: Object.assign({}, ...Constants['ethnicities'].map(k => ({ [k]: 0 }))),
+      multipleEthnicities: { 'Yes': 0, 'No': 0 },
       ageRanges: Object.assign({}, ...[...['<13', ...Constants['listOfAgeRanges']], ...['75+']].map(k => ({ [k]: 0 }))),
       genders: Object.assign({}, ...Constants['genders'].map(k => ({ [k]: 0 }))),
       statuses: Object.assign({}, ...Constants['participantStatuses'].map(k => ({ [k || "Blank"]: 0 }))),
@@ -142,6 +145,7 @@ function ParticipantFilter({ database, setShownParticipants, filterDataFromStats
 
     let ethnicity = participantInfo['ethnicities'];
     let ethnicities = ethnicity.split(',');
+    let multipleEthnicities = ethnicities.length > 1 ? "Yes" : "No";
     var ethnicityOk = false;
     ethnicities.map(eth => {
       if (!ethnicityOk && filterData['ethnicities'].includes(eth.trim())) ethnicityOk = true;
@@ -202,6 +206,7 @@ function ParticipantFilter({ database, setShownParticipants, filterDataFromStats
     return ethnicityOk &&
       dateOk &&
       sessionDateOk &&
+      filterData['multipleEthnicities'].includes(multipleEthnicities) &&
       filterData['genders'].includes(gender) &&
       filterData['ageRanges'].includes(ageRange) &&
       filterData['visionCorrections'].includes(visionCorrection) &&
@@ -244,6 +249,7 @@ function ParticipantFilter({ database, setShownParticipants, filterDataFromStats
       let highlighted = participantInfo['highlighted'] ? 'Yes' : 'No';
 
       let ethnicities = participantInfo['ethnicities'].split(',');
+      let multipleEthnicities = ethnicities.length > 1 ? "Yes" : "No";
       ethnicities.map((eth) => {
         output['ethnicities'][eth]++;
       })
@@ -252,6 +258,7 @@ function ParticipantFilter({ database, setShownParticipants, filterDataFromStats
       let status = participantInfo['status'] || "Blank";
       let documentStatus = participantInfo['document_approval'] || "Blank";
 
+      output['multipleEthnicities'][multipleEthnicities]++;
       output['genders'][gender]++;
       output['phases'][phase]++;
       output['demoBinStatuses'][demoBinStatus]++;
@@ -310,14 +317,30 @@ function ParticipantFilter({ database, setShownParticipants, filterDataFromStats
     </div>
 
     <div className="filter-container">
-      <span className="filter-container-header">Ethnicity</span>
-      {Constants['ethnicities'].map((val, i) => {
-        return <div key={"filter-eth" + i} className="filter-object">
-          <input id={"filter-" + val} name={val} type="checkbox" alt="ethnicities" onChange={setFilterData} checked={filterData['ethnicities'].includes(val) ? true : false} />
-          <label htmlFor={"filter-" + val}>{(val.length > 30 ? val.substring(0, 30) + '...' : val) + " (" + filterStats['ethnicities'][val] + ")"}</label>
-          <button name={val} alt="ethnicities" className="filter-this-button" onClick={setFilterData}>!</button>
+      <div className="filter-element">
+        <span className="filter-container-header">Ethnicity</span>
+        {Constants['ethnicities'].map((val, i) => {
+          return <div key={"filter-eth" + i} className="filter-object">
+            <input id={"filter-" + val} name={val} type="checkbox" alt="ethnicities" onChange={setFilterData} checked={filterData['ethnicities'].includes(val) ? true : false} />
+            <label htmlFor={"filter-" + val}>{(val.length > 30 ? val.substring(0, 30) + '...' : val) + " (" + filterStats['ethnicities'][val] + ")"}</label>
+            <button name={val} alt="ethnicities" className="filter-this-button" onClick={setFilterData}>!</button>
+          </div>
+        })}
+      </div>
+
+      <div className="filter-element gap">
+        <span className="filter-container-header">Multiple ethnicities</span>
+        <div className="filter-object">
+          <input id="filter-multiple-ethnicities-yes" name="Yes" type="checkbox" alt="multipleEthnicities" onChange={setFilterData} checked={filterData['multipleEthnicities'].includes('Yes')} />
+          <label htmlFor="filter-multiple-ethnicities-yes">Yes ({filterStats['multipleEthnicities']['Yes']})</label>
+          <button name="Yes" alt="multipleEthnicities" className="filter-this-button" onClick={setFilterData}>!</button>
         </div>
-      })}
+        <div className="filter-object">
+          <input id="filter-multiple-ethnicities-no" name="No" type="checkbox" alt="multipleEthnicities" onChange={setFilterData} checked={filterData['multipleEthnicities'].includes('No')} />
+          <label htmlFor="filter-multiple-ethnicities-no">No ({filterStats['multipleEthnicities']['No']})</label>
+          <button name="No" alt="multipleEthnicities" className="filter-this-button" onClick={setFilterData}>!</button>
+        </div>
+      </div>
     </div>
 
     <div className="filter-container">

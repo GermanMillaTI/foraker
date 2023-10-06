@@ -50,6 +50,7 @@ function Stats({ database, setActivePage, setShowStats, setFilterDataFromStats }
         setFilterDataFromStats({
             fromStats: true,
             ethnicities: ethnicities,
+            multipleEthnicities: ['Yes', 'No'],
             genders: [gender],
             ageRanges: ageRange,
             statuses: statuses,

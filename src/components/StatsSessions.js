@@ -51,6 +51,7 @@ function StatsSessions({ database, setActivePage, setShowStatsSessions, setFilte
         setFilterDataFromStats({
             fromStats: true,
             ethnicities: ethnicities,
+            multipleEthnicities: ['Yes', 'No'],
             genders: [gender],
             ageRanges: ageRange,
             statuses: ["Blank", ...Constants['participantStatuses']],

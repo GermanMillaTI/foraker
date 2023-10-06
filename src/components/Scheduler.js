@@ -312,7 +312,7 @@ function Scheduler({ database, setUpdateSession }) {
                               <tr>
                                 <th>Vision corr.</th>
                                 <td>{participantInfo['vision_correction'].replace("progressive, bifocal or multifocal", "pr/ bf/ mf")}</td>
-                                {externalId && <td>{clientParticipantInfo['v'] ? clientParticipantInfo['v'].replace("Glasses - Progressive", "Glasses - progressive, bifocal or multifocal").replace("Glasses - Reading", "None").replace("Contact Lens", "Contact lenses") : ""}</td>}
+                                {externalId && <td>{clientParticipantInfo['v'] ? clientParticipantInfo['v'].replace("Glasses - Progressive", "Glasses - pr/ bf/ mf").replace("Glasses - Reading", "None").replace("Contact Lens", "Contact lenses") : ""}</td>}
                               </tr>
 
                               {clientContributons.length > 0 && <>

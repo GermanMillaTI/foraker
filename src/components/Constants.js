@@ -308,7 +308,14 @@ const Constants = {
     'axel.romeo@telusinternational.com',
     'jessica.tucker@telusinternational.com',
     'sheiby.molina@telusinternational.com'
-  ]
+  ],
+  clientContributionStatuses: {
+    0: "New",
+    1: "In Progress",
+    2: "Completed",
+    3: "Archived",
+    4: "Failed"
+  }
 }
 
 export default Constants;

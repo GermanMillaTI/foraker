@@ -31,8 +31,8 @@ function MainPage() {
   const [showBonuses, setShowBonuses] = useState(false);
   const [showBins, setShowBins] = useState(false);
   const [activityLog, setActivityLog] = useState(false);
-  const [idforLog, setIdForLog] = useState("")
-  const [timeslotforLog, setTimeslotforLog] = useState("")
+  const [idforLog, setIdForLog] = useState("");
+  const [timeslotforLog, setTimeslotforLog] = useState("");
 
 
 

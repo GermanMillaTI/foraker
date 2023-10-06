@@ -10,6 +10,7 @@ import Constants from './Constants';
 import BookSession from './BookSession';
 import TableFilter from './Core/TableFilter';
 import LogEvent from './Core/LogEvent';
+import FormattingFunctions from './Core/FormattingFunctions';
 
 const filterReducer = (state, event) => {
 
@@ -146,14 +147,6 @@ function Scheduler({ database, setUpdateSession }) {
     })
   }
 
-  /*
-  function testFunction(key) {
-    let timeslotDate = new Date(key.substring(0, 4) + "-" + key.substring(4, 6) + "-" + key.substring(6, 8) + " " + key.substring(9, 11) + ":" + key.substring(11, 13));
-    let currentTime = new Date();
-    return currentTime.toString() + "   " + timeslotDate.toString();
-  }
-  */
-
   function filterFunction(timeslotId) {
     let timeslotDate = timeslotId.substring(0, 4) + "-" + timeslotId.substring(4, 6) + "-" + timeslotId.substring(6, 8);
     return filterData['date'].includes(timeslotDate);
@@ -242,6 +235,11 @@ function Scheduler({ database, setUpdateSession }) {
               .filter(timeslotId => filterFunction(timeslotId))
               .sort((a, b) => (a.length == 15 ? (a.substring(0, 14) + "0" + a.substring(14)) : a) < (b.length == 15 ? (b.substring(0, 14) + "0" + b.substring(14)) : b) ? -1 : 1)
               .map((key, index, array) => {
+                const participantId = database['timeslots'][key]['participant_id'];
+                const participantInfo = database['participants'][participantId] || {};
+                const externalId = participantInfo['external_id'] || "";
+                const clientContributons = database['client']['contributions'][externalId] || [];
+
                 return (
                   <tr key={"schedule-row-" + index} className={(justBookedSession == key ? "highlighted-session-row" : "") + (index < array.length - 1 ? (key.substring(0, 13) != array[index + 1].substring(0, 13) ? " day-separator" : "") : "")}>
                     <td className="center-tag no-wrap">
@@ -268,42 +266,93 @@ function Scheduler({ database, setUpdateSession }) {
                       {database['timeslots'][key]['status']}
                     </td>
                     <td className="center-tag">
-                      {database['timeslots'][key]['participant_id'] ? database['participants'][database['timeslots'][key]['participant_id']]['status'] : ""}
+                      {participantInfo['status'] || ""}
                     </td>
                     {database['timeslots'][key]['participant_id'] ?
                       <Tooltip
                         disableInteractive
                         TransitionProps={{ timeout: 100 }}
-                        componentsProps={{ tooltip: { sx: { fontSize: '1em' }, } }}
+                        componentsProps={{ tooltip: { sx: { fontSize: '1em', maxWidth: '100em' }, } }}
                         title={
-                          <>
-                            <b><span>Demo bin: {database['participants'][database['timeslots'][key]['participant_id']]['demo_bin']}</span><br /><br /></b>
-                            <span>{database['participants'][database['timeslots'][key]['participant_id']]['age_range']} / {database['participants'][database['timeslots'][key]['participant_id']]['gender']}</span><br />
-                            <span>{database['participants'][database['timeslots'][key]['participant_id']]['ethnicities']}</span>
-                          </>
+                          <table className="popup-table-participant-info center-tag">
+                            <tbody>
+                              <tr>
+                                <th>Demo bin</th>
+                                <td>{participantInfo['demo_bin'] || ""}</td>
+                                <td></td>
+                              </tr>
+                              <tr>
+                                <th>Date of birth</th>
+                                <td>{participantInfo['date_of_birth'].substring(0, 10)}</td>
+                                <td></td>
+                              </tr>
+                              <tr>
+                                <th>Gender</th>
+                                <td>{participantInfo['gender']}</td>
+                                <td></td>
+                              </tr>
+                              <tr>
+                                <th>Ethnicity</th>
+                                <td>{participantInfo['ethnicities']}</td>
+                                <td></td>
+                              </tr>
+                              <tr>
+                                <th>External ID</th>
+                                <td>{participantInfo['external_id'] || "Missing ID"}</td>
+                                <td></td>
+                              </tr>
+
+                              {clientContributons.length > 0 && <>
+                                <tr colSpan="3">
+                                  <td>&nbsp;</td>
+                                </tr>
+                                <tr colSpan="3">
+                                  <td>&nbsp;</td>
+                                </tr>
+                                <tr>
+                                  <th>Day</th>
+                                  <th>Telus</th>
+                                  <th>Apple</th>
+                                </tr>
+                                {clientContributons.map(contribution => {
+                                  const appleContributionDate = FormattingFunctions.ClientTimeslotFormat(contribution['d']);
+                                  const appleContributionStatus = Constants['clientContributionStatuses'][contribution['s']];
+                                  const telusContributions = participantInfo['sessions'];
+                                  const sameDayTelusContribution = (Object.keys(telusContributions).filter(sessionId => sessionId.startsWith(appleContributionDate.substring(0, 10).replaceAll("-", ""))) || [])[0];
+                                  const sameDayTelusContributionDate = FormattingFunctions.TimeSlotFormat(sameDayTelusContribution);
+                                  const sameDayTelusContributionStatus = sameDayTelusContribution ? database['timeslots'][sameDayTelusContribution]['status'] : "";
+
+                                  return <tr>
+                                    <th>{appleContributionDate.substring(0, 11)}</th>
+                                    <td>{sameDayTelusContributionDate.substring(11) + ": " + sameDayTelusContributionStatus}</td>
+                                    <td>{appleContributionDate.substring(11) + ": " + appleContributionStatus}</td>
+                                  </tr>
+                                })}
+                              </>
+                              }
+
+                            </tbody>
+                          </table>
                         }
                       >
                         <td className="center-tag">{database['timeslots'][key]['participant_id']}</td>
                       </Tooltip> : <td></td>}
                     <td>
-                      {database['timeslots'][key]['participant_id'] ?
-                        database['participants'][database['timeslots'][key]['participant_id']]['first_name'] + " " +
-                        database['participants'][database['timeslots'][key]['participant_id']]['last_name']
-                        : ""}
-                      {database['timeslots'][key]['participant_id'] &&
+                      {participantId ? (participantInfo['first_name'] + " " + participantInfo['last_name']) : ""}
+                      {participantId &&
                         <a className="copy-email-link fas fa-search"
                           title="Google"
                           target="_blank"
-                          href={("https://www.google.com/search?q=" + database['participants'][database['timeslots'][key]['participant_id']]['first_name'] + " " + database['participants'][database['timeslots'][key]['participant_id']]['last_name'] + " Los Angeles").replaceAll(" ", "%20")}
+                          href={("https://www.google.com/search?q=" + participantInfo['first_name'] + " " + participantInfo['last_name'] + " Los Angeles").replaceAll(" ", "%20")}
                         />}
                     </td>
                     <td className={"center-tag " + ((highlightedTimeslots[key.substring(0, 13)] > 4 && database['timeslots'][key]['glasses']) ? "glasses-highlighted" : "")}>
-                      {database['timeslots'][key]['participant_id'] ?
-                        database['participants'][database['timeslots'][key]['participant_id']]['vision_correction'].replace("progressive, bifocal or multifocal", "pr/ bf/ mf")
+                      {participantId ?
+                        participantInfo['vision_correction'].replace("progressive, bifocal or multifocal", "pr/ bf/ mf")
                         : ""}
                     </td>
                     <td className="center-tag">
-                      {database['timeslots'][key]['participant_id'] ? (database['participants'][database['timeslots'][key]['participant_id']]['phase'] ? "Ph. " + database['participants'][database['timeslots'][key]['participant_id']]['phase'] : "") : ""}
+                      {participantInfo['phase'] ? "Ph. " + participantInfo['phase'] : ""}
                     </td>
                     <td>
                       {database['timeslots'][key]['comments']}

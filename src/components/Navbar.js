@@ -26,7 +26,7 @@ function Navbar({ database, setActivePage, setShowStats, setShowStatsSessions, s
       Swal.fire({
         toast: true,
         title: 'The app is updated now, please refresh the page!',
-        html: 'Your version: ' + appInfo.version + '<br/>New version: ' + hostedVersion + '<br/><br/><b><a href=".">Click here to refresh!</a></b>',
+        html: 'Your version: ' + appInfo.version + '<br/>New version: ' + hostedVersion + '<br/><br/><b><a href=".">Click here to refresh!</a></b> <br/><br/><i>If not working, press CTRL+F5 <br/> to refresh and empty the cache!</i>',
         position: 'bottom-end',
         width: 'unset',
         showConfirmButton: false,

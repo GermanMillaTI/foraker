@@ -239,6 +239,7 @@ function Scheduler({ database, setUpdateSession }) {
                 const participantInfo = database['participants'][participantId] || {};
                 const externalId = participantInfo['external_id'] || "";
                 const clientContributons = database['client']['contributions'][externalId] || [];
+                const clientParticipantInfo = clientContributons.length > 0 ? clientContributons[clientContributons.length - 1] : {};
 
                 return (
                   <tr key={"schedule-row-" + index} className={(justBookedSession == key ? "highlighted-session-row" : "") + (index < array.length - 1 ? (key.substring(0, 13) != array[index + 1].substring(0, 13) ? " day-separator" : "") : "")}>
@@ -275,31 +276,43 @@ function Scheduler({ database, setUpdateSession }) {
                         componentsProps={{ tooltip: { sx: { fontSize: '1em', maxWidth: '100em' }, } }}
                         title={
                           <table className="popup-table-participant-info center-tag">
+                            {externalId && <thead>
+                              <tr>
+                                <th>Property</th>
+                                <th>Telus</th>
+                                {externalId && <th>Apple</th>}
+                              </tr>
+                            </thead>}
                             <tbody>
+                              {externalId && <tr>
+                                <th>ID</th>
+                                <td>{participantId}</td>
+                                {externalId && <td>{externalId || ""}</td>}
+                              </tr>}
                               <tr>
                                 <th>Demo bin</th>
                                 <td>{participantInfo['demo_bin'] || ""}</td>
-                                <td></td>
+                                {externalId && <td>{clientParticipantInfo['db'] || ""}</td>}
                               </tr>
                               <tr>
                                 <th>Date of birth</th>
                                 <td>{participantInfo['date_of_birth'].substring(0, 10)}</td>
-                                <td></td>
+                                {externalId && <td>{clientParticipantInfo['b'] || ""}</td>}
                               </tr>
                               <tr>
                                 <th>Gender</th>
                                 <td>{participantInfo['gender']}</td>
-                                <td></td>
+                                {externalId && <td>{clientParticipantInfo['g'] || ""}</td>}
                               </tr>
                               <tr>
                                 <th>Ethnicity</th>
                                 <td>{participantInfo['ethnicities']}</td>
-                                <td></td>
+                                {externalId && <td>{clientParticipantInfo['e'] ? (Constants['clientEthnicities'][clientParticipantInfo['e']] || clientParticipantInfo['e']) : ""}</td>}
                               </tr>
                               <tr>
-                                <th>External ID</th>
-                                <td>{participantInfo['external_id'] || "Missing ID"}</td>
-                                <td></td>
+                                <th>Vision corr.</th>
+                                <td>{participantInfo['vision_correction'].replace("progressive, bifocal or multifocal", "pr/ bf/ mf")}</td>
+                                {externalId && <td>{clientParticipantInfo['v'] ? clientParticipantInfo['v'].replace("Glasses - Progressive", "Glasses - progressive, bifocal or multifocal").replace("Glasses - Reading", "None").replace("Contact Lens", "Contact lenses") : ""}</td>}
                               </tr>
 
                               {clientContributons.length > 0 && <>

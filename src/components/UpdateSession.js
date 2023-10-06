@@ -675,8 +675,8 @@ function UpdateSession({ database, updateSession, setUpdateSession, setCheckDocu
                                                 <td className="participant-table-left">
                                                     Vision correction
                                                 </td>
-                                                <td className={"participant-table-right" + (selectedContribution['answers'].filter(answer => answer['slug'] == 'vision_correction')[0]['values'].join(",").replace("Glasses - Progressive", "Glasses - pr/ bf/ mf").replace("Glasses - Reading", "None").replace("Contact Lens", "Contact lenses").toLowerCase() != participantInfo['vision_correction'].replace("Glasses - reading", "None").toLowerCase() ? " not-matching-client-data" : "")}>
-                                                    {selectedContribution['answers'].filter(answer => answer['slug'] == 'vision_correction')[0]['values'].join(",")}
+                                                <td className={"participant-table-right" + (selectedContribution['answers'].filter(answer => answer['slug'] == 'vision_correction')[0]['values'].join(",").replace("Glasses - Progressive", "Glasses - pr/ bf/ mf").replace("Glasses - Reading", "None").replace("Contact Lens", "Contact lenses").toLowerCase() != participantInfo['vision_correction'].replace("Glasses - reading", "None").replace("progressive, bifocal or multifocal", "pr/ bf/ mf").toLowerCase() ? " not-matching-client-data" : "")}>
+                                                    {selectedContribution['answers'].filter(answer => answer['slug'] == 'vision_correction')[0]['values'].join(",").replace("Glasses - Progressive", "Glasses - pr/ bf/ mf").replace("Contact Lens", "Contact lenses")}
                                                 </td>
                                             </tr>
                                         </>}

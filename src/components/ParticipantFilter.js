@@ -3,6 +3,7 @@ import { useState, useEffect, useReducer } from 'react';
 
 import './ParticipantFilter.css';
 import Constants from './Constants';
+import { filter } from "d3";
 
 const filterReducer = (state, event) => {
   // If the filter is called from stats
@@ -23,7 +24,8 @@ const filterReducer = (state, event) => {
       visionCorrections: Constants['visionCorrections'],
       parentRegistered: ['Yes', 'No'],
       newDocuments: ['Yes', 'No'],
-      highlighted: ['Yes', 'No']
+      highlighted: ['Yes', 'No'],
+      stillInterested: ['Yes', 'No', 'N/A']
     }
   }
 
@@ -91,7 +93,8 @@ function ParticipantFilter({ database, setShownParticipants, filterDataFromStats
     visionCorrections: Constants['visionCorrections'],
     parentRegistered: ['Yes', 'No'],
     newDocuments: ['Yes', 'No'],
-    highlighted: ['Yes', 'No']
+    highlighted: ['Yes', 'No'],
+    stillInterested: ['Yes', 'No', 'N/A']
   });
 
   useEffect(() => {
@@ -117,7 +120,8 @@ function ParticipantFilter({ database, setShownParticipants, filterDataFromStats
       visionCorrections: Object.assign({}, ...Constants['visionCorrections'].map(k => ({ [k]: 0 }))),
       parentRegistered: { Yes: 0, No: 0 },
       newDocuments: { Yes: 0, No: 0 },
-      highlighted: { 'Yes': 0, 'No': 0 }
+      highlighted: { 'Yes': 0, 'No': 0 },
+      stillInterested: {'Yes': 0, 'No': 0, 'N/A' : 0}
     }
   }
 
@@ -139,6 +143,7 @@ function ParticipantFilter({ database, setShownParticipants, filterDataFromStats
     let source = participantInfo['source'] || 'Other';
     let demoBinStatus = participantInfo['open_demo_bin'] ? 'Open' : 'Closed';
     let highlighted = participantInfo['highlighted'] ? 'Yes' : 'No';
+    let stillInterested = participantInfo['still_interested'] == 'Yes' ? 'Yes' : participantInfo['still_interested'] == 'No' ? 'No' : 'N/A';
     let externalId = participantInfo['external_id'] || "";
 
     let ageRange = participantInfo['age_range'];
@@ -219,6 +224,7 @@ function ParticipantFilter({ database, setShownParticipants, filterDataFromStats
       filterData['parentRegistered'].includes(parentRegistered) &&
       filterData['newDocuments'].includes(hasNewDocument) &&
       filterData['highlighted'].includes(highlighted) &&
+      filterData['stillInterested'].includes(stillInterested) &&
       (!filterData['participantId'] || participantId.includes(filterData['participantId'])) &&
       (!filterData['firstName'] || firstName.includes(filterData['firstName'].trim())) &&
       (!filterData['lastName'] || lastName.includes(filterData['lastName'].trim())) &&
@@ -247,6 +253,7 @@ function ParticipantFilter({ database, setShownParticipants, filterDataFromStats
       let demoBinStatus = participantInfo['open_demo_bin'] ? 'Open' : 'Closed';
       let source = participantInfo['source'] || 'Other';
       let highlighted = participantInfo['highlighted'] ? 'Yes' : 'No';
+      let stillInterested = participantInfo['still_interested'] == 'Yes' ? 'Yes' : participantInfo['still_interested'] == 'No' ? 'No' : 'N/A';
 
       let ethnicities = participantInfo['ethnicities'].split(',');
       let multipleEthnicities = ethnicities.length > 1 ? "Yes" : "No";
@@ -271,6 +278,7 @@ function ParticipantFilter({ database, setShownParticipants, filterDataFromStats
       output['parentRegistered'][parentRegistered]++;
       output['newDocuments'][hasNewDocument]++;
       output['highlighted'][highlighted]++;
+      output['stillInterested'][stillInterested]++;
     })
     setFilterStats(output);
   }, [filterData])
@@ -492,6 +500,24 @@ function ParticipantFilter({ database, setShownParticipants, filterDataFromStats
           <input id="filter-highlighted-no" name="No" type="checkbox" alt="highlighted" onChange={setFilterData} checked={filterData['highlighted'].includes('No')} />
           <label htmlFor="filter-highlighted-no">No ({filterStats['highlighted']['No']})</label>
           <button name={"No"} alt="highlighted" className="filter-this-button" onClick={setFilterData}>!</button>
+        </div>
+      </div>
+      <div className="filter-element gap">
+        <span className="filter-container-header">Still Interested?</span>
+        <div className="filter-object">
+          <input id="filter-interested-yes" name="Yes" type="checkbox" alt="Still Interested" onChange={setFilterData} checked={filterData['stillInterested'].includes('Yes')} />
+          <label htmlFor="filter-interested-yes">Yes ({filterStats['stillInterested']['Yes']})</label>
+          <button name={"Yes"} alt="stillInterested" className="filter-this-button" onClick={setFilterData}>!</button>
+        </div>
+        <div className="filter-object">
+          <input id="filter-interested-no" name="No" type="checkbox" alt="stillInterested" onChange={setFilterData} checked={filterData['stillInterested'].includes('No')} />
+          <label htmlFor="filter-interested-no">No ({filterStats['stillInterested']['No']})</label>
+          <button name={"No"} alt="stillInterested" className="filter-this-button" onClick={setFilterData}>!</button>
+        </div>
+        <div className="filter-object">
+          <input id="filter-interested-na" name="N/A" type="checkbox" alt="stillInterested" onChange={setFilterData} checked={filterData['stillInterested'].includes('N/A')} />
+          <label htmlFor="filter-interested-na">N/A ({filterStats['stillInterested']['N/A']})</label>
+          <button name={"N/A"} alt="stillInterested" className="filter-this-button" onClick={setFilterData}>!</button>
         </div>
       </div>
     </div>

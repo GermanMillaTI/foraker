@@ -62,7 +62,8 @@ function Stats({ database, setActivePage, setShowStats, setFilterDataFromStats }
             visionCorrections: Constants['visionCorrections'],
             parentRegistered: ['Yes', 'No'],
             newDocuments: ['Yes', 'No'],
-            highlighted: ['Yes', 'No']
+            highlighted: ['Yes', 'No'],
+            stillInterested: ['Yes', 'No', 'N/A']
         });
 
         setActivePage("Participants");

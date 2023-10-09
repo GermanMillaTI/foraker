@@ -505,7 +505,7 @@ function ParticipantFilter({ database, setShownParticipants, filterDataFromStats
       <div className="filter-element gap">
         <span className="filter-container-header">Still Interested?</span>
         <div className="filter-object">
-          <input id="filter-interested-yes" name="Yes" type="checkbox" alt="Still Interested" onChange={setFilterData} checked={filterData['stillInterested'].includes('Yes')} />
+          <input id="filter-interested-yes" name="Yes" type="checkbox" alt="stillInterested" onChange={setFilterData} checked={filterData['stillInterested'].includes('Yes')} />
           <label htmlFor="filter-interested-yes">Yes ({filterStats['stillInterested']['Yes']})</label>
           <button name={"Yes"} alt="stillInterested" className="filter-this-button" onClick={setFilterData}>!</button>
         </div>

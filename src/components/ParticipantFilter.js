@@ -25,7 +25,8 @@ const filterReducer = (state, event) => {
       parentRegistered: ['Yes', 'No'],
       newDocuments: ['Yes', 'No'],
       highlighted: ['Yes', 'No'],
-      stillInterested: ['Yes', 'No', 'N/A']
+      stillInterested: ['Yes', 'No', 'N/A'],
+      unsubscribed: ['Yes', 'No']
     }
   }
 
@@ -94,7 +95,8 @@ function ParticipantFilter({ database, setShownParticipants, filterDataFromStats
     parentRegistered: ['Yes', 'No'],
     newDocuments: ['Yes', 'No'],
     highlighted: ['Yes', 'No'],
-    stillInterested: ['Yes', 'No', 'N/A']
+    stillInterested: ['Yes', 'No', 'N/A'],
+    unsubscribed: ['Yes', 'No']
   });
 
   useEffect(() => {
@@ -121,7 +123,8 @@ function ParticipantFilter({ database, setShownParticipants, filterDataFromStats
       parentRegistered: { Yes: 0, No: 0 },
       newDocuments: { Yes: 0, No: 0 },
       highlighted: { 'Yes': 0, 'No': 0 },
-      stillInterested: {'Yes': 0, 'No': 0, 'N/A' : 0}
+      stillInterested: {'Yes': 0, 'No': 0, 'N/A' : 0},
+      unsubscribed: {'Yes' : 0, 'No': 0}
     }
   }
 
@@ -144,6 +147,7 @@ function ParticipantFilter({ database, setShownParticipants, filterDataFromStats
     let demoBinStatus = participantInfo['open_demo_bin'] ? 'Open' : 'Closed';
     let highlighted = participantInfo['highlighted'] ? 'Yes' : 'No';
     let stillInterested = participantInfo['still_interested'] == 'Yes' ? 'Yes' : participantInfo['still_interested'] == 'No' ? 'No' : 'N/A';
+    let unsubscribed = participantInfo['unsubscribed_comms'] == 'Yes' ? 'Yes' : 'No';
     let externalId = participantInfo['external_id'] || "";
 
     let ageRange = participantInfo['age_range'];
@@ -225,6 +229,7 @@ function ParticipantFilter({ database, setShownParticipants, filterDataFromStats
       filterData['newDocuments'].includes(hasNewDocument) &&
       filterData['highlighted'].includes(highlighted) &&
       filterData['stillInterested'].includes(stillInterested) &&
+      filterData['unsubscribed'].includes(unsubscribed) &&
       (!filterData['participantId'] || participantId.includes(filterData['participantId'])) &&
       (!filterData['firstName'] || firstName.includes(filterData['firstName'].trim())) &&
       (!filterData['lastName'] || lastName.includes(filterData['lastName'].trim())) &&
@@ -254,6 +259,7 @@ function ParticipantFilter({ database, setShownParticipants, filterDataFromStats
       let source = participantInfo['source'] || 'Other';
       let highlighted = participantInfo['highlighted'] ? 'Yes' : 'No';
       let stillInterested = participantInfo['still_interested'] == 'Yes' ? 'Yes' : participantInfo['still_interested'] == 'No' ? 'No' : 'N/A';
+      let unsubscribed = participantInfo['unsubscribed_comms'] == 'Yes' ? 'Yes' : 'No';
 
       let ethnicities = participantInfo['ethnicities'].split(',');
       let multipleEthnicities = ethnicities.length > 1 ? "Yes" : "No";
@@ -279,6 +285,7 @@ function ParticipantFilter({ database, setShownParticipants, filterDataFromStats
       output['newDocuments'][hasNewDocument]++;
       output['highlighted'][highlighted]++;
       output['stillInterested'][stillInterested]++;
+      output['unsubscribed'][unsubscribed]++;
     })
     setFilterStats(output);
   }, [filterData])
@@ -518,6 +525,21 @@ function ParticipantFilter({ database, setShownParticipants, filterDataFromStats
           <input id="filter-interested-na" name="N/A" type="checkbox" alt="stillInterested" onChange={setFilterData} checked={filterData['stillInterested'].includes('N/A')} />
           <label htmlFor="filter-interested-na">N/A ({filterStats['stillInterested']['N/A']})</label>
           <button name={"N/A"} alt="stillInterested" className="filter-this-button" onClick={setFilterData}>!</button>
+        </div>
+      </div>
+    </div>
+    <div className="filter-container">
+      <div className="filter-element">
+        <span className="filter-container-header">Unsubscribed</span>
+        <div className="filter-object">
+          <input id="filter-unsubscribed-yes" name="Yes" type="checkbox" alt="unsubscribed" onChange={setFilterData} checked={filterData['unsubscribed'].includes('Yes')} />
+          <label htmlFor="filter-unsubscribed-yes">Yes ({filterStats['unsubscribed']['Yes']})</label>
+          <button name={"Yes"} alt="unsubscribed" className="filter-this-button" onClick={setFilterData}>!</button>
+        </div>
+        <div className="filter-object">
+          <input id="filter-unsubscribed-no" name="No" type="checkbox" alt="unsubscribed" onChange={setFilterData} checked={filterData['unsubscribed'].includes('No')} />
+          <label htmlFor="filter-unsubscribed-no">No ({filterStats['unsubscribed']['No']})</label>
+          <button name={"No"} alt="unsubscribed" className="filter-this-button" onClick={setFilterData}>!</button>
         </div>
       </div>
     </div>

@@ -141,8 +141,10 @@ function ParticipantCard({ database, participantId, index, setShowBookSession2, 
                 {participantInfo['registered_as'] == 'parent' &&
                     <span className="registered-by-parent">Registered by parent or guardian</span>
                 }
+
+                    {participantInfo['unsubscribed_comms'] === "Yes" && <span className="unsubscribed" title="Participant requested to not receive further comms">Unsubscribed participant</span>}
                 <div className="participant-attribute-container">
-                    <span className="field-label"># {participantId}</span>
+                    <span className="field-label"># {participantId} </span>
                     <span>{participantInfo['first_name'] + " " + participantInfo['last_name']}
                         <a
                             className="copy-email-link fas fa-file-export"
@@ -272,6 +274,7 @@ function ParticipantCard({ database, participantId, index, setShowBookSession2, 
                 <div className="participant-attribute-container">
                     <span className="field-label">Date of registration</span><span>{participantInfo['date'].substring(0, 16).replaceAll("T", " ")}</span>
                 </div>
+
 
                 <div className="participant-attribute-container">
                     <span className="field-label">Signatures</span>
@@ -617,7 +620,7 @@ function ParticipantCard({ database, participantId, index, setShowBookSession2, 
             {
                 participantInfo['history'] &&
                 <div className="participant-card-column column-5">
-                    <span className="participant-attribute-header">Email history {participantInfo['unsubscribed_comms']==="Yes" && <span className='unsubscribed' title='Participant requested to not receive any more comms'>Unsubscribed</span>} </span>
+                    <span className="participant-attribute-header">Email history</span>
                     {participantInfo['history'] && Object.keys(participantInfo['history']).map((t) => {
                         let emailTitle = participantInfo['history'][t]['title'].replace("Document Request:", "DR:");
                         let appointmentTime = "";

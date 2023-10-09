@@ -64,7 +64,8 @@ function StatsSessions({ database, setActivePage, setShowStatsSessions, setFilte
             parentRegistered: ['Yes', 'No'],
             newDocuments: ['Yes', 'No'],
             highlighted: ['Yes', 'No'],
-            stillInterested: ['Yes', 'No', 'N/A']
+            stillInterested: ['Yes', 'No', 'N/A'],
+            unsubscribed: ['Yes', 'No']
         });
 
         setActivePage("Participants");

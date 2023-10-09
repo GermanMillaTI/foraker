@@ -34,7 +34,7 @@ function Participants({
   }, [checkDocuments, showBookSession2, updateSession])
 
   function getCSVdata() {
-    let output = [['ID', 'First Name', 'Last Name', 'Email', 'Age-Range', 'Demo Bins', 'Ethnicities', 'Date', 'DOB', 'Target of Sessions', 'External ID', 'Phone', 'Status', 'Document Approval', 'Vision Correction', 'Sessions No.']];
+    let output = [['ID', 'First Name', 'Last Name', 'Email', 'Age-Range', 'Demo Bins', 'Ethnicities', 'Date', 'DOB', 'Target of Sessions', 'External ID', 'Phone', 'Status', 'Document Approval', 'Vision Correction', 'Sessions No.', 'Unsubscribed']];
 
     var data = Object.keys(database['participants']).filter(pid => shownParticipants.includes(pid)).sort((a, b) => {
       return a < b ? -1 : 1;
@@ -57,6 +57,9 @@ function Participants({
       typeof database['participants'][key]['sessions'] === 'object' ?
         Object.keys(database['participants'][key]['sessions']).length
         : "0",
+      database['participants'][key]['unsubscribed_comms'] === 'Yes' ?
+        database['participants'][key]['unsubscribed_comms']
+        : 'No'
       //typeof database['participants'][key]['sessions'] === 'object' ?
       //Object.keys(database['participants'][key]['sessions'])
       //: "-"

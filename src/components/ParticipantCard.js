@@ -142,7 +142,7 @@ function ParticipantCard({ database, participantId, index, setShowBookSession2, 
                     <span className="registered-by-parent">Registered by parent or guardian</span>
                 }
 
-                    {participantInfo['unsubscribed_comms'] === "Yes" && <span className="unsubscribed" title="Participant requested to not receive further comms">Unsubscribed participant</span>}
+                {participantInfo['unsubscribed_comms'] === "Yes" && <span className="unsubscribed" title="Participant requested to not receive further comms">Unsubscribed participant</span>}
                 <div className="participant-attribute-container">
                     <span className="field-label"># {participantId} </span>
                     <span>{participantInfo['first_name'] + " " + participantInfo['last_name']}
@@ -466,6 +466,12 @@ function ParticipantCard({ database, participantId, index, setShowBookSession2, 
                         ))}
                     </select>
                 </div>
+
+                {((participantInfo['email_counter'] > 1 || participantInfo['phone_counter'] > 1) && participantInfo['status'] != "Duplicate") && <div className="participant-attribute-container">
+                    <span className="field-label">Not duplicate</span>
+
+                    <input type="checkbox" />
+                </div>}
 
                 <div className="participant-attribute-container">
                     <span className="field-label">Phase</span>

@@ -14,7 +14,14 @@ function UpdateSession({ database, updateSession, setUpdateSession, setCheckDocu
     const [participantId, setParticipantId] = useState(database['timeslots'][updateSession]['participant_id']);
     const [sessionInfo, setSessionInfo] = useState(database['timeslots'][updateSession]);
     const [hasCompletedSession] = useState(
-        ['sari.kiiskinen@telusinternational.com', 'axel.romeo@telusinternational.com', 'zoltan.bathori@telusinternational.com'].includes(auth.currentUser.email) ? false : Object.keys(database['timeslots']).filter(timeslotId => participantId == database['timeslots'][timeslotId]['participant_id'] && database['timeslots'][timeslotId]['status'] == "Completed").length > 0
+        [
+            'sari.kiiskinen@telusinternational.com',
+            'axel.romeo@telusinternational.com',
+            'zoltan.bathori@telusinternational.com',
+            'denise.bugarin@telusinternational.com',
+            'mayghan.brown@telusinternational.com',
+            'christopher.warren@telusinternational.com'
+        ].includes(auth.currentUser.email) ? false : Object.keys(database['timeslots']).filter(timeslotId => participantId == database['timeslots'][timeslotId]['participant_id'] && database['timeslots'][timeslotId]['status'] == "Completed").length > 0
     );
     const [externalIdForAPI, setExternalIdForAPI] = useState("");
     const [contributions, setContributions] = useState([]);

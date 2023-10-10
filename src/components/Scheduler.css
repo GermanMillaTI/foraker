@@ -199,3 +199,7 @@
 .popup-table-participant-info td {
     padding: .1em 1em;
 }
+
+.session-discrepancy {
+    background-color: yellow
+}

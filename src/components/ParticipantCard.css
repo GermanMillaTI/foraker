@@ -270,7 +270,7 @@
 
 .unsubscribed {
     padding: 0 1.4em;
-    background: red;
+    background: rgb(0, 47, 255);
     color: white;
     text-align: center;
     font-weight: bold;

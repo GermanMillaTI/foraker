@@ -104,3 +104,9 @@
 .filter-this-button:hover {
     background-color: #ff5100;
 }
+
+.red-highlighted-filter {
+    background: rgba(255, 0, 0, 0.61);
+    color: white;
+    font-weight: bold;
+}

@@ -206,7 +206,6 @@ function MainPage() {
           }
         }
 
-
         //if (!['Scheduled', 'Completed'].includes(status)) continue;
         let sessionsOfParticipant = participant['sessions'];
         if (!sessionsOfParticipant) {

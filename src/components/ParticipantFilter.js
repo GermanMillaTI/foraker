@@ -3,7 +3,6 @@ import { useState, useEffect, useReducer } from 'react';
 
 import './ParticipantFilter.css';
 import Constants from './Constants';
-import { filter } from "d3";
 
 const filterReducer = (state, event) => {
   // If the filter is called from stats
@@ -123,8 +122,8 @@ function ParticipantFilter({ database, setShownParticipants, filterDataFromStats
       parentRegistered: { Yes: 0, No: 0 },
       newDocuments: { Yes: 0, No: 0 },
       highlighted: { 'Yes': 0, 'No': 0 },
-      stillInterested: {'Yes': 0, 'No': 0, 'N/A' : 0},
-      unsubscribed: {'Yes' : 0, 'No': 0}
+      stillInterested: { 'Yes': 0, 'No': 0, 'N/A': 0 },
+      unsubscribed: { 'Yes': 0, 'No': 0 }
     }
   }
 
@@ -498,7 +497,7 @@ function ParticipantFilter({ database, setShownParticipants, filterDataFromStats
 
       <div className="filter-element gap">
         <span className="filter-container-header">Highlighted participant</span>
-        <div className="filter-object">
+        <div className={"filter-object" + (filterStats['highlighted']['Yes'] > 0 ? " red-highlighted-filter" : "")}>
           <input id="filter-highlighted-yes" name="Yes" type="checkbox" alt="highlighted" onChange={setFilterData} checked={filterData['highlighted'].includes('Yes')} />
           <label htmlFor="filter-highlighted-yes">Yes ({filterStats['highlighted']['Yes']})</label>
           <button name={"Yes"} alt="highlighted" className="filter-this-button" onClick={setFilterData}>!</button>
@@ -509,7 +508,11 @@ function ParticipantFilter({ database, setShownParticipants, filterDataFromStats
           <button name={"No"} alt="highlighted" className="filter-this-button" onClick={setFilterData}>!</button>
         </div>
       </div>
-      <div className="filter-element gap">
+    </div>
+
+    <div className="filter-container">
+
+      <div className="filter-element">
         <span className="filter-container-header">Still Interested?</span>
         <div className="filter-object">
           <input id="filter-interested-yes" name="Yes" type="checkbox" alt="stillInterested" onChange={setFilterData} checked={filterData['stillInterested'].includes('Yes')} />
@@ -527,9 +530,8 @@ function ParticipantFilter({ database, setShownParticipants, filterDataFromStats
           <button name={"N/A"} alt="stillInterested" className="filter-this-button" onClick={setFilterData}>!</button>
         </div>
       </div>
-    </div>
-    <div className="filter-container">
-      <div className="filter-element">
+
+      <div className="filter-element gap">
         <span className="filter-container-header">Unsubscribed</span>
         <div className="filter-object">
           <input id="filter-unsubscribed-yes" name="Yes" type="checkbox" alt="unsubscribed" onChange={setFilterData} checked={filterData['unsubscribed'].includes('Yes')} />
@@ -542,6 +544,7 @@ function ParticipantFilter({ database, setShownParticipants, filterDataFromStats
           <button name={"No"} alt="unsubscribed" className="filter-this-button" onClick={setFilterData}>!</button>
         </div>
       </div>
+
     </div>
 
   </div>);

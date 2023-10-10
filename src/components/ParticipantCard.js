@@ -181,6 +181,7 @@ function ParticipantCard({ database, participantId, index, setShowBookSession2, 
                             target="_blank"
                             href={("https://www.google.com/search?q=" + participantInfo['first_name'] + " " + participantInfo['last_name'] + " Los Angeles").replaceAll(" ", "%20")}
                         />
+                        {database['mailbox_unread']['items'].includes(participantId) && <a className="fas fa-envelope" style={{color : "red", position: "relative", left : "5%"}} title="participant has unread emails in the shared mailbox"/>}
                     </span>
                 </div>
                 {participantInfo['registered_as'] != 'parent' &&
@@ -509,7 +510,7 @@ function ParticipantCard({ database, participantId, index, setShowBookSession2, 
                     !["Rejected", "Withdrawn", "Not Selected"].includes(participantInfo['status']) &&
                     <div className="participant-attribute-container">
                         <span className="field-label">Communication</span>
-                        {(participantInfo['open_demo_bin'] === true || tempParticipants.includes(participantId)) ?
+                        {(participantInfo['open_demo_bin'] === true || tempParticipants.includes(participantId))  ? 
                             <button className="email-button icf-reminder-button" onClick={() => sendMail(participantId, "ICF Reminder", "")}>ICF Reminder</button>
                             : <span><b>Closed demo bin!</b>
                                 {participantInfo['status'] == "Contacted" && <label className="copy-email-link fas fa-eye" onClick={() => setTempParticipants([participantId, ...tempParticipants])}></label>}
@@ -520,7 +521,7 @@ function ParticipantCard({ database, participantId, index, setShowBookSession2, 
 
                 {participantInfo['icf'] &&
                     participantInfo['document_approval'] != "Pass" &&
-                    !["Contacted", "Rejected", "Withdrawn", "Completed", "Not Selected"].includes(participantInfo['status']) &&
+                    !["Contacted", "Rejected", "Withdrawn", "Completed", "Not Selected", "Duplicate"].includes(participantInfo['status']) &&
                     <div className="participant-attribute-container">
                         <span className="field-label">Communication</span>
                         {(participantInfo['open_demo_bin'] === true || tempParticipants.includes(participantId)) ?
@@ -534,7 +535,7 @@ function ParticipantCard({ database, participantId, index, setShowBookSession2, 
 
                 {participantInfo['icf'] &&
                     participantInfo['document_approval'] == "Pass" &&
-                    !["Rejected", "Withdrawn", "Completed", "Not Selected"].includes(participantInfo['status']) &&
+                    !["Rejected", "Withdrawn", "Completed", "Not Selected", "Duplicate"].includes(participantInfo['status']) &&
                     <div className="participant-attribute-container">
                         <span className="field-label">Communication</span>
                         {(participantInfo['open_demo_bin'] === true || tempParticipants.includes(participantId)) ?
@@ -616,7 +617,7 @@ function ParticipantCard({ database, participantId, index, setShowBookSession2, 
                     })}
 
                     {
-                        !["Rejected", "Withdrawn", "Completed", "Not Selected"].includes(participantInfo['status']) &&
+                        !["Rejected", "Withdrawn", "Completed", "Not Selected", "Duplicate"].includes(participantInfo['status']) &&
                         <button className="book-session-button" onClick={() => setShowBookSession2(participantId)}>Schedule session</button>
                     }
                 </div>

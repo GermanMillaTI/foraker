@@ -1,6 +1,6 @@
 {
   "name": "denali",
-  "version": "14.0.0",
+  "version": "15.0.0",
   "private": true,
   "dependencies": {
     "@emotion/react": "^11.11.0",

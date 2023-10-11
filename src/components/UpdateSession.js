@@ -686,6 +686,19 @@ function UpdateSession({ database, updateSession, setUpdateSession, setCheckDocu
                                                     {selectedContribution['answers'].filter(answer => answer['slug'] == 'vision_correction')[0]['values'].join(",").replace("Glasses - Progressive", "Glasses - pr/ bf/ mf").replace("Contact Lens", "Contact lenses")}
                                                 </td>
                                             </tr>
+                                            <tr className='client-info-container'>
+                                                <td className="participant-table-left">
+                                                    Phase
+                                                </td>
+                                                <td className={"participant-table-right" + ((selectedContribution['answers'].filter(answer => answer['slug'] == 'study_phase').length > 0 ?
+                                                    selectedContribution['answers'].filter(answer => answer['slug'] == 'study_phase')[0]['values'].join(",")
+                                                    : "") != ("Phase " + participantInfo['phase']) ? " not-matching-client-data" : "")}>
+
+                                                    {selectedContribution['answers'].filter(answer => answer['slug'] == 'study_phase').length > 0 ?
+                                                        selectedContribution['answers'].filter(answer => answer['slug'] == 'study_phase')[0]['values'].join(",")
+                                                        : ""}
+                                                </td>
+                                            </tr>
                                         </>}
                                     </>
                                 }
@@ -758,6 +771,13 @@ function UpdateSession({ database, updateSession, setUpdateSession, setCheckDocu
                                         <select className="session-data-selector"
                                             onChange={(e) => {
                                                 updateValue("/participants/" + participantId, { status: e.currentTarget.value });
+                                                if (e.currentTarget.value == "Duplicate" && participantInfo['not_duplicate']) {
+                                                    updateValue("/participants/" + participantId, { not_duplicate: false });
+                                                    LogEvent({
+                                                        pid: participantId,
+                                                        action: "Not duplicate: 'No'"
+                                                    })
+                                                }
                                                 LogEvent({
                                                     pid: participantId,
                                                     action: "Participant status: '" + (e.currentTarget.value || "Blank") + "'"

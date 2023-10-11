@@ -181,7 +181,7 @@ function ParticipantCard({ database, participantId, index, setShowBookSession2, 
                             target="_blank"
                             href={("https://www.google.com/search?q=" + participantInfo['first_name'] + " " + participantInfo['last_name'] + " Los Angeles").replaceAll(" ", "%20")}
                         />
-                        {database['mailbox_unread']['items'].includes(participantId) && <a className="fas fa-envelope" style={{ color: "red", position: "relative", left: "5%" }} title="participant has unread emails in the shared mailbox" />}
+                        {database['mailbox_unread']['items'].includes(participantId) && <a className="fas fa-envelope" style={{ color: "red", position: "relative", left: "5%" }} title="Participant has unread emails in the shared mailbox" />}
                     </span>
                 </div>
                 {participantInfo['registered_as'] != 'parent' &&

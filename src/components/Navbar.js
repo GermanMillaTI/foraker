@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { renderToString } from 'react-dom/server';
 import { auth } from '../firebase/config'
 import { signOut } from 'firebase/auth';
 import Constants from './Constants';
@@ -19,14 +20,26 @@ function Navbar({ database, setActivePage, setShowStats, setShowStatsSessions, s
     }
   };
 
+
   let hostedVersion = database['settings']['app_version'];
+
+  const NewVersionMessageHTML = () => {
+    return <>
+      Your version:  {appInfo.version} <br />
+      New version: {hostedVersion} <br /><br />
+      {/* I couldn't make the reload button working fine, so I commented it out for now, and the users can manually refresh the page.... */}
+      {/*<b><a href="" onClick={(e) => { e.preventDefault(); window.location.reload(true) }}>Click here to refresh the page...</a></b> <br /><br />
+      <i>If not working, press CTRL+F5 <br />
+         to refresh and empty the cache!</i>*/}
+    </>
+  }
 
   useEffect(() => {
     if (hostedVersion !== appInfo.version) {
       Swal.fire({
         toast: true,
         title: 'The app is updated now, please refresh the page!',
-        html: 'Your version: ' + appInfo.version + '<br/>New version: ' + hostedVersion + '<br/><br/><b><a href=".">Click here to refresh!</a></b> <br/><br/><i>If not working, press CTRL+F5 <br/> to refresh and empty the cache!</i>',
+        html: renderToString(<NewVersionMessageHTML />),
         position: 'bottom-end',
         width: 'unset',
         showConfirmButton: false,

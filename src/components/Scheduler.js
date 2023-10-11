@@ -351,6 +351,11 @@ function Scheduler({ database, setUpdateSession }) {
                                 {externalId && <td>{clientParticipantInfo['v'] ? clientParticipantInfo['v'].replace("Glasses - Progressive", "Glasses - pr/ bf/ mf").replace("Contact Lens", "Contact lenses") : ""}</td>}
                               </tr>
                               <tr>
+                                <th>Phase</th>
+                                <td>{participantInfo['phase'] ? "Phase " + participantInfo['phase'] : ""}</td>
+                                {externalId && <td>{clientParticipantInfo['p'] ? "Phase " + clientParticipantInfo['p'] : ""}</td>}
+                              </tr>
+                              <tr>
                                 <th>Date of info</th>
                                 <td>Realtime</td>
                                 {externalId && <td>{FormattingFunctions.ClientTimeslotFormat(clientParticipantInfo['d'])}</td>}

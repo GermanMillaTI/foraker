@@ -69,7 +69,6 @@ const Constants = {
     "Rescheduled",
     "NoShow",
     "Withdrawn",
-    "Failed",
     "Failed - Comp.",
     "Failed - No Comp."
   ],

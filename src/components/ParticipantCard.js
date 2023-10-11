@@ -181,7 +181,7 @@ function ParticipantCard({ database, participantId, index, setShowBookSession2, 
                             target="_blank"
                             href={("https://www.google.com/search?q=" + participantInfo['first_name'] + " " + participantInfo['last_name'] + " Los Angeles").replaceAll(" ", "%20")}
                         />
-                        {database['mailbox_unread']['items'].includes(participantId) && <a className="fas fa-envelope" style={{color : "red", position: "relative", left : "5%"}} title="participant has unread emails in the shared mailbox"/>}
+                        {database['mailbox_unread']['items'].includes(participantId) && <a className="fas fa-envelope" style={{ color: "red", position: "relative", left: "5%" }} title="participant has unread emails in the shared mailbox" />}
                     </span>
                 </div>
                 {participantInfo['registered_as'] != 'parent' &&
@@ -457,6 +457,13 @@ function ParticipantCard({ database, participantId, index, setShowBookSession2, 
                     <select className="participant-data-selector min-width-selector"
                         onChange={(e) => {
                             updateValue("/participants/" + participantId, { status: e.currentTarget.value });
+                            if (e.currentTarget.value == "Duplicate" && participantInfo['not_duplicate']) {
+                                updateValue("/participants/" + participantId, { not_duplicate: false });
+                                LogEvent({
+                                    pid: participantId,
+                                    action: "Not duplicate: 'No'"
+                                })
+                            }
                             LogEvent({
                                 pid: participantId,
                                 action: "Participant status: '" + (e.currentTarget.value || "Blank") + "'"
@@ -471,7 +478,17 @@ function ParticipantCard({ database, participantId, index, setShowBookSession2, 
                 {((participantInfo['email_counter'] > 1 || participantInfo['phone_counter'] > 1) && participantInfo['status'] != "Duplicate") && <div className="participant-attribute-container">
                     <span className="field-label">Not duplicate</span>
 
-                    <input type="checkbox" />
+                    <input
+                        type="checkbox"
+                        checked={participantInfo['not_duplicate']}
+                        onChange={(e) => {
+                            updateValue("/participants/" + participantId, { not_duplicate: e.currentTarget.checked });
+                            LogEvent({
+                                pid: participantId,
+                                action: "Not duplicate: '" + (e.currentTarget.checked ? "Yes" : "No") + "'"
+                            })
+                        }}
+                    />
                 </div>}
 
                 <div className="participant-attribute-container">
@@ -510,7 +527,7 @@ function ParticipantCard({ database, participantId, index, setShowBookSession2, 
                     !["Rejected", "Withdrawn", "Not Selected"].includes(participantInfo['status']) &&
                     <div className="participant-attribute-container">
                         <span className="field-label">Communication</span>
-                        {(participantInfo['open_demo_bin'] === true || tempParticipants.includes(participantId))  ? 
+                        {(participantInfo['open_demo_bin'] === true || tempParticipants.includes(participantId)) ?
                             <button className="email-button icf-reminder-button" onClick={() => sendMail(participantId, "ICF Reminder", "")}>ICF Reminder</button>
                             : <span><b>Closed demo bin!</b>
                                 {participantInfo['status'] == "Contacted" && <label className="copy-email-link fas fa-eye" onClick={() => setTempParticipants([participantId, ...tempParticipants])}></label>}

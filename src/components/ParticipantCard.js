@@ -527,11 +527,9 @@ function ParticipantCard({ database, participantId, index, setShowBookSession2, 
                     !["Rejected", "Withdrawn", "Not Selected"].includes(participantInfo['status']) &&
                     <div className="participant-attribute-container">
                         <span className="field-label">Communication</span>
-                        {(participantInfo['open_demo_bin'] === true || tempParticipants.includes(participantId)) ?
+                        {
                             <button className="email-button icf-reminder-button" onClick={() => sendMail(participantId, "ICF Reminder", "")}>ICF Reminder</button>
-                            : <span><b>Closed demo bin!</b>
-                                {participantInfo['status'] == "Contacted" && <label className="copy-email-link fas fa-eye" onClick={() => setTempParticipants([participantId, ...tempParticipants])}></label>}
-                            </span>
+
                         }
                     </div>
                 }
@@ -541,11 +539,8 @@ function ParticipantCard({ database, participantId, index, setShowBookSession2, 
                     !["Contacted", "Rejected", "Withdrawn", "Completed", "Not Selected", "Duplicate"].includes(participantInfo['status']) &&
                     <div className="participant-attribute-container">
                         <span className="field-label">Communication</span>
-                        {(participantInfo['open_demo_bin'] === true || tempParticipants.includes(participantId)) ?
+                        {
                             <button className="email-button document-request-button" onClick={() => sendMail(participantId, "Document Request", "")}>Document Request</button>
-                            : <span><b>Closed demo bin!</b>
-                                {participantInfo['status'] == "Contacted" && <label className="copy-email-link fas fa-eye" onClick={() => setTempParticipants([participantId, ...tempParticipants])}></label>}
-                            </span>
                         }
                     </div>
                 }

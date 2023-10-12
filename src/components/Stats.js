@@ -64,7 +64,8 @@ function Stats({ database, setActivePage, setShowStats, setFilterDataFromStats }
             newDocuments: ['Yes', 'No'],
             highlighted: ['Yes', 'No'],
             stillInterested: ['Yes', 'No', 'N/A'],
-            unsubscribed: ['Yes', 'No']
+            unsubscribed: ['Yes', 'No'], 
+            unreadEmails: ['Yes', 'No']
         });
 
         setActivePage("Participants");

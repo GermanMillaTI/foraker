@@ -25,7 +25,8 @@ const filterReducer = (state, event) => {
       newDocuments: ['Yes', 'No'],
       highlighted: ['Yes', 'No'],
       stillInterested: ['Yes', 'No', 'N/A'],
-      unsubscribed: ['Yes', 'No']
+      unsubscribed: ['Yes', 'No'],
+      unreadEmails: ['Yes', 'No'],
     }
   }
 
@@ -77,6 +78,7 @@ const filterReducer = (state, event) => {
   return newState;
 }
 
+
 function ParticipantFilter({ database, setShownParticipants, filterDataFromStats, setFilterDataFromStats }) {
   const [filterStats, setFilterStats] = useState(resetFilterStats());
   const [filterData, setFilterData] = useReducer(filterReducer, {
@@ -95,7 +97,8 @@ function ParticipantFilter({ database, setShownParticipants, filterDataFromStats
     newDocuments: ['Yes', 'No'],
     highlighted: ['Yes', 'No'],
     stillInterested: ['Yes', 'No', 'N/A'],
-    unsubscribed: ['Yes', 'No']
+    unsubscribed: ['Yes', 'No'],
+    unreadEmails: ['Yes', 'No']
   });
 
   useEffect(() => {
@@ -123,12 +126,17 @@ function ParticipantFilter({ database, setShownParticipants, filterDataFromStats
       newDocuments: { Yes: 0, No: 0 },
       highlighted: { 'Yes': 0, 'No': 0 },
       stillInterested: { 'Yes': 0, 'No': 0, 'N/A': 0 },
-      unsubscribed: { 'Yes': 0, 'No': 0 }
+      unsubscribed: { 'Yes': 0, 'No': 0 },
+      unreadEmails: {'Yes': 0, 'No': 0}
     }
   }
 
+  let unreadItems = database['mailbox_unread']['items'].split(", ");
+
   function filterFunction(participantId) {
     let participantInfo = database['participants'][participantId];
+    unreadItems.includes(participantId) ? participantInfo['unread_emails'] = 'Yes'
+      : participantInfo['unread_emails'] = 'No'
 
     // Check if the participant data is imported, not just the ICF which could generate issue...
     // It's required because Formsite doesn't export the data sometimes...
@@ -147,6 +155,7 @@ function ParticipantFilter({ database, setShownParticipants, filterDataFromStats
     let highlighted = participantInfo['highlighted'] ? 'Yes' : 'No';
     let stillInterested = participantInfo['still_interested'] == 'Yes' ? 'Yes' : participantInfo['still_interested'] == 'No' ? 'No' : 'N/A';
     let unsubscribed = participantInfo['unsubscribed_comms'] == 'Yes' ? 'Yes' : 'No';
+    let unreadEmails = participantInfo['unread_emails'] == "Yes" ? "Yes" : "No";
     let externalId = participantInfo['external_id'] || "";
 
     let ageRange = participantInfo['age_range'];
@@ -229,6 +238,7 @@ function ParticipantFilter({ database, setShownParticipants, filterDataFromStats
       filterData['highlighted'].includes(highlighted) &&
       filterData['stillInterested'].includes(stillInterested) &&
       filterData['unsubscribed'].includes(unsubscribed) &&
+      filterData['unreadEmails'].includes(unreadEmails) &&
       (!filterData['participantId'] || participantId.includes(filterData['participantId'])) &&
       (!filterData['firstName'] || firstName.includes(filterData['firstName'].trim())) &&
       (!filterData['lastName'] || lastName.includes(filterData['lastName'].trim())) &&
@@ -259,7 +269,7 @@ function ParticipantFilter({ database, setShownParticipants, filterDataFromStats
       let highlighted = participantInfo['highlighted'] ? 'Yes' : 'No';
       let stillInterested = participantInfo['still_interested'] == 'Yes' ? 'Yes' : participantInfo['still_interested'] == 'No' ? 'No' : 'N/A';
       let unsubscribed = participantInfo['unsubscribed_comms'] == 'Yes' ? 'Yes' : 'No';
-
+      let unreadEmails = participantInfo['unread_emails'] == "Yes" ? "Yes" : "No";
       let ethnicities = participantInfo['ethnicities'].split(',');
       let multipleEthnicities = ethnicities.length > 1 ? "Yes" : "No";
       ethnicities.map((eth) => {
@@ -285,6 +295,7 @@ function ParticipantFilter({ database, setShownParticipants, filterDataFromStats
       output['highlighted'][highlighted]++;
       output['stillInterested'][stillInterested]++;
       output['unsubscribed'][unsubscribed]++;
+      output['unreadEmails'][unreadEmails]++;
     })
     setFilterStats(output);
   }, [filterData])
@@ -297,7 +308,7 @@ function ParticipantFilter({ database, setShownParticipants, filterDataFromStats
         <input name="participantId" type="number" placeholder="Participant ID" className="main-input" autoComplete="off" onChange={setFilterData} value={filterData['participantId'] || ""} />
       </div>
       <div className="filter-element">
-        <input name="externalId" type="text" maxlength="9" placeholder="External ID (TL_......)" className="main-input" autoComplete="off" onChange={setFilterData} value={filterData['externalId'] || ""} />
+        <input name="externalId" type="text" maxLength="9" placeholder="External ID (TL_......)" className="main-input" autoComplete="off" onChange={setFilterData} value={filterData['externalId'] || ""} />
       </div>
       <div className="filter-element">
         <input name="firstName" type="text" placeholder="First name" className="main-input" autoComplete="off" onChange={setFilterData} value={filterData['firstName'] || ""} />
@@ -542,6 +553,20 @@ function ParticipantFilter({ database, setShownParticipants, filterDataFromStats
           <input id="filter-unsubscribed-no" name="No" type="checkbox" alt="unsubscribed" onChange={setFilterData} checked={filterData['unsubscribed'].includes('No')} />
           <label htmlFor="filter-unsubscribed-no">No ({filterStats['unsubscribed']['No']})</label>
           <button name={"No"} alt="unsubscribed" className="filter-this-button" onClick={setFilterData}>!</button>
+        </div>
+      </div>
+
+      <div className="filter-element gap">
+        <span className="filter-container-header">Unread in Mailbox</span>
+        <div className="filter-object">
+          <input id="filter-unreadEmails-yes" name="Yes" type="checkbox" alt="unreadEmails" onChange={setFilterData} checked={filterData['unreadEmails'].includes('Yes')} />
+          <label htmlFor="filter-unreadEmails-yes">Yes ({filterStats['unreadEmails']['Yes']})</label>
+          <button name={"Yes"} alt="unreadEmails" className="filter-this-button" onClick={setFilterData}>!</button>
+        </div>
+        <div className="filter-object">
+          <input id="filter-unreadEmails-no" name="No" type="checkbox" alt="unreadEmails" onChange={setFilterData} checked={filterData['unreadEmails'].includes('No')} />
+          <label htmlFor="filter-unreadEmails-no">No ({filterStats['unreadEmails']['No']})</label>
+          <button name={"No"} alt="unreadEmails" className="filter-this-button" onClick={setFilterData}>!</button>
         </div>
       </div>
 

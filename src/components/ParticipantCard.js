@@ -428,7 +428,7 @@ function ParticipantCard({ database, participantId, index, setShowBookSession2, 
                         }}
                     >
                         {Constants['visionCorrections'].map((s, i) => (
-                            <option key={"vc" + i} value={s} selected={s == participantInfo['vision_correction']}>{s.replace("progressive, bifocal or multifocal", "pr/ bf/ mf")}</option>
+                            <option key={"vc" + i} value={s} selected={s == participantInfo['vision_correction']}>{s}</option>
                         ))}
                     </select>
                 </div>

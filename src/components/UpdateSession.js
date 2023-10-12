@@ -416,7 +416,7 @@ function UpdateSession({ database, updateSession, setUpdateSession, setCheckDocu
                                             disabled={hasCompletedSession}
                                             onChange={(e) => {
                                                 updateValue("/participants/" + participantId, { vision_correction: e.currentTarget.value });
-                                                updateValue("/timeslots/" + updateSession, { glasses: ['Glasses - distance', 'Glasses - progressive, bifocal or multifocal'].includes(e.currentTarget.value) });
+                                                updateValue("/timeslots/" + updateSession, { glasses: ['Glasses - distance', 'Glasses - pr/ bf/ mf'].includes(e.currentTarget.value) });
                                                 LogEvent({
                                                     pid: participantId,
                                                     action: "Vision correction: '" + e.currentTarget.value + "'"
@@ -424,126 +424,12 @@ function UpdateSession({ database, updateSession, setUpdateSession, setCheckDocu
                                             }}
                                         >
                                             {Constants['visionCorrections'].map((s, i) => (
-                                                <option key={"data-vc" + i} value={s} selected={s == participantInfo['vision_correction']}>{s.replace("progressive, bifocal or multifocal", "pr/ bf/ mf")}</option>
+                                                <option key={"data-vc" + i} value={s} selected={s == participantInfo['vision_correction']}>{s}</option>
                                             ))}
                                         </select>
                                     </td>
                                 </tr>
 
-                                {/*
-                                <tr>
-                                    <td className="participant-table-left">Height</td>
-                                    <td className="participant-table-right">{participantInfo['height']} inch</td>
-                                </tr>
-                                <tr>
-                                    <td className="participant-table-left">Weight</td>
-                                    <td className="participant-table-right">{participantInfo['weight']} lbs</td>
-                                </tr>
-                                <tr>
-                                    <td className="participant-table-left">Monk skin type</td>
-                                    <td className="participant-table-right">
-                                        <select className="session-data-selector"
-                                            disabled={hasCompletedSession}
-                                            onChange={(e) => updateValue("/participants/" + participantId, { skin_type: parseInt(e.currentTarget.value) })}
-                                        >
-                                            {Constants['skinTypes'].map((s, i) => (
-                                                <option key={"data-skin" + i} value={s} selected={s == participantInfo['skin_type']}>{s}</option>
-                                            ))}
-                                        </select>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td className="participant-table-left">Eye color</td>
-                                    <td className="participant-table-right">
-                                        <select className="session-data-selector"
-                                            disabled={hasCompletedSession}
-                                            onChange={(e) => updateValue("/participants/" + participantId, { eye_color: e.currentTarget.value })}
-                                        >
-                                            {Constants['eyeColors'].map((s, i) => (
-                                                <option key={"data-eye" + i} value={s} selected={s == participantInfo['eye_color']}>{s}</option>
-                                            ))}
-                                        </select>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td className="participant-table-left">Facial type</td>
-                                    <td className="participant-table-right">
-                                        <select className="session-data-selector"
-                                            disabled={hasCompletedSession}
-                                            onChange={(e) => updateValue("/participants/" + participantId, { facial_hair: e.currentTarget.value })}
-                                        >
-                                            {Constants['facialHairs'].map((s, i) => (
-                                                <option key={"data-fch" + i} value={s} selected={s == participantInfo['facial_hair']}>{s}</option>
-                                            ))}
-                                        </select>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td className="participant-table-left">Hair color</td>
-                                    <td className="participant-table-right">
-                                        <select className="session-data-selector"
-                                            disabled={hasCompletedSession}
-                                            onChange={(e) => updateValue("/participants/" + participantId, { hair_color: e.currentTarget.value })}
-                                        >
-                                            {Constants['hairColors'].map((s, i) => (
-                                                <option key={"data-hair-color" + i} value={s} selected={s == participantInfo['hair_color']}>{s}</option>
-                                            ))}
-                                        </select>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td className="participant-table-left">Hair length</td>
-                                    <td className="participant-table-right">
-                                        <select className="session-data-selector"
-                                            disabled={hasCompletedSession}
-                                            onChange={(e) => updateValue("/participants/" + participantId, { hair_length: e.currentTarget.value })}
-                                        >
-                                            {Constants['hairLengths'].map((s, i) => (
-                                                <option key={"data-hair-length" + i} value={s} selected={s == participantInfo['hair_length']}>{s}</option>
-                                            ))}
-                                        </select>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td className="participant-table-left">Hair density</td>
-                                    <td className="participant-table-right">
-                                        <select className="session-data-selector"
-                                            disabled={hasCompletedSession}
-                                            onChange={(e) => updateValue("/participants/" + participantId, { hair_density: e.currentTarget.value })}
-                                        >
-                                            {Constants['hairDensities'].map((s, i) => (
-                                                <option key={"data-hair-density" + i} value={s} selected={s == participantInfo['hair_density']}>{s}</option>
-                                            ))}
-                                        </select>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td className="participant-table-left">Hair diameter</td>
-                                    <td className="participant-table-right">
-                                        <select className="session-data-selector"
-                                            disabled={hasCompletedSession}
-                                            onChange={(e) => updateValue("/participants/" + participantId, { hair_diameter: e.currentTarget.value })}
-                                        >
-                                            {Constants['hairDiameters'].map((s, i) => (
-                                                <option key={"data-hair-diameter" + i} value={s} selected={s == participantInfo['hair_diameter']}>{s}</option>
-                                            ))}
-                                        </select>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td className="participant-table-left">Hair type</td>
-                                    <td className="participant-table-right">
-                                        <select className="session-data-selector"
-                                            disabled={hasCompletedSession}
-                                            onChange={(e) => updateValue("/participants/" + participantId, { hair_type: e.currentTarget.value })}
-                                        >
-                                            {Constants['hairTypes'].map((s, i) => (
-                                                <option key={"data-hair-type" + i} value={s} selected={s == participantInfo['hair_type']}>{s}</option>
-                                            ))}
-                                        </select>
-                                    </td>
-                                </tr>
-                                */}
                                 {participantInfo['gender'] == "Female" &&
                                     <tr>
                                         <td className="participant-table-left">Pregnant</td>
@@ -682,8 +568,8 @@ function UpdateSession({ database, updateSession, setUpdateSession, setCheckDocu
                                                 <td className="participant-table-left">
                                                     Vision correction
                                                 </td>
-                                                <td className={"participant-table-right" + (selectedContribution['answers'].filter(answer => answer['slug'] == 'vision_correction')[0]['values'].join(",").replace("Glasses - Progressive", "Glasses - pr/ bf/ mf").replace("Glasses - Reading", "None").replace("Contact Lens", "Contact lenses").toLowerCase() != participantInfo['vision_correction'].replace("Glasses - reading", "None").replace("progressive, bifocal or multifocal", "pr/ bf/ mf").toLowerCase() ? " not-matching-client-data" : "")}>
-                                                    {selectedContribution['answers'].filter(answer => answer['slug'] == 'vision_correction')[0]['values'].join(",").replace("Glasses - Progressive", "Glasses - pr/ bf/ mf").replace("Contact Lens", "Contact lenses")}
+                                                <td className={"participant-table-right" + (Constants['clientVisionCorrections'][selectedContribution['answers'].filter(answer => answer['slug'] == 'vision_correction')[0]['values'].join(",")] != participantInfo['vision_correction'] ? " not-matching-client-data" : "")}>
+                                                    {Constants['clientVisionCorrections'][selectedContribution['answers'].filter(answer => answer['slug'] == 'vision_correction')[0]['values'].join(",")]}
                                                 </td>
                                             </tr>
                                             <tr className='client-info-container'>

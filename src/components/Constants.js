@@ -46,7 +46,7 @@ const Constants = {
     "None",
     "Contact lenses",
     "Glasses - distance",
-    "Glasses - progressive, bifocal or multifocal",
+    "Glasses - pr/ bf/ mf",
     "Glasses - reading"
   ],
   documentStatuses: [
@@ -71,75 +71,6 @@ const Constants = {
     "Withdrawn",
     "Failed - Comp.",
     "Failed - No Comp."
-  ],
-  visionCorrections: [
-    "Contact lenses",
-    "Glasses - distance",
-    "Glasses - progressive, bifocal or multifocal",
-    "Glasses - reading",
-    "None"
-  ],
-  skinTypes: [
-    1,
-    2,
-    3,
-    4,
-    5,
-    6,
-    7,
-    8,
-    9,
-    10
-  ],
-  eyeColors: [
-    "Black",
-    "Blue",
-    "Brown",
-    "Green",
-    "Grey",
-    "Hazel",
-    "Yellow",
-    "Other"
-  ],
-  facialHairs: [
-    "Beard",
-    "Stubble",
-    "Goatee",
-    "None",
-    "N/A"
-  ],
-  hairColors: [
-    "Black",
-    "Blond",
-    "Brown",
-    "Grey",
-    "White",
-    "Red",
-    "Colorful",
-    "N/A"
-  ],
-  hairLengths: [
-    "None",
-    "Short",
-    "Medium",
-    "Long"
-  ],
-  hairDensities: [
-    "Thin",
-    "Medium",
-    "Thick"
-  ],
-  hairDiameters: [
-    "Thin",
-    "Medium",
-    "Thick"
-  ],
-  hairTypes: [
-    "Straight",
-    "Wavy",
-    "Curly",
-    "Coily",
-    "N/A"
   ],
   pregnant: [
     "Yes",
@@ -301,6 +232,20 @@ const Constants = {
     'White - Southern European': 'White - Southern European',
     'Prefer not to state': 'Prefer not to state'
   },
+  clientVisionCorrections: {
+    "Contact Lens": "Contact lenses",
+    "Glasses - Progressive": "Glasses - pr/ bf/ mf",
+    "Glasses - Distance": "Glasses - distance",
+    "Glasses - Reading": "Glasses - reading",
+    "None": "None"
+  },
+  clientContributionStatuses: {
+    0: "New",
+    1: "In Progress",
+    2: "Completed",
+    3: "Archived",
+    4: "Failed"
+  },
   superAdmins: [
     'zoltan.bathori@telusinternational.com',
     'german.milla01@telusinternational.com',
@@ -308,14 +253,7 @@ const Constants = {
     'axel.romeo@telusinternational.com',
     'jessica.tucker@telusinternational.com',
     'sheiby.molina@telusinternational.com'
-  ],
-  clientContributionStatuses: {
-    0: "New",
-    1: "In Progress",
-    2: "Completed",
-    3: "Archived",
-    4: "Failed"
-  }
+  ]
 }
 
 export default Constants;

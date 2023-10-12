@@ -76,7 +76,7 @@ function Goodwork({ database }) {
                     <td className="center-tag">{participantInfo['gender']}</td>
                     <td className="center-tag">{participantInfo['age_range']}</td>
                     <td>{participantInfo['ethnicities']}</td>
-                    <td>{participantInfo['vision_correction'].replace("progressive, bifocal or multifocal", "pr/ bf/ mf")}</td>
+                    <td>{participantInfo['vision_correction']}</td>
                     <td className="center-tag">{participantInfo['date'].substring(0, 10)}</td>
                     <td className={"center-tag " + (!participantInfo['icf'] ? "gw-missing-icf" : "")}>
                       {(!participantInfo['icf'] ? "Missing ICF" : "")}

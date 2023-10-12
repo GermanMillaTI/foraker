@@ -10,7 +10,7 @@ import Constants from './Constants';
 import BookSession from './BookSession';
 import TableFilter from './Core/TableFilter';
 import LogEvent from './Core/LogEvent';
-import FormattingFunctions from './Core/FormattingFunctions';
+import SessionInfo from './Tooltips/SessionInfo';
 
 const filterReducer = (state, event) => {
 
@@ -237,46 +237,6 @@ function Scheduler({ database, setUpdateSession }) {
               .map((key, index, array) => {
                 const participantId = database['timeslots'][key]['participant_id'];
                 const participantInfo = database['participants'][participantId] || {};
-                const externalId = participantInfo['external_id'] || "";
-                const clientContributons = database['client']['contributions'][externalId] || [];
-                let clientParticipantInfo = {};
-                if (clientContributons.length == 1) {
-                  clientParticipantInfo = clientContributons[clientContributons.length - 1];
-                } else if (clientContributons.length > 1) {
-                  const telusDate = new Date(key.substring(0, 4) + "-" + key.substring(4, 6) + "-" + key.substring(6, 8) + " " + key.substring(9, 11) + ":" + key.substring(11, 13));
-
-                  var diff = 1000000;
-
-                  clientContributons.map(contribution => {
-                    const appleDateRaw = contribution['d'];
-                    if (appleDateRaw) {
-                      let appleDate = new Date(appleDateRaw);
-                      appleDate.setTime(appleDate.getTime() - (7 * 60 * 60 * 1000));
-                      //console.log(appleDate);
-
-                      const diffTime = Math.abs(telusDate - appleDate);
-                      const diffMinutes = Math.abs(Math.ceil(diffTime / (1000 * 60)));
-                      if (diffMinutes <= diff) {
-                        diff = diffMinutes;
-                        clientParticipantInfo = contribution;
-                      };
-                    }
-                  })
-
-                  /*
-                  if (clientParticipantInfo !== {}) {
-                    // Check if the ppt or the session has different info from the client
-                      if (participantInfo['gender'] != clientParticipantInfo['g'] ||
-                      participantInfo['date_of_birth'].substring(0, 10) != clientParticipantInfo['b'] ||
-                        (participantInfo['demo_bin'] != clientParticipantInfo['db'] && clientParticipantInfo['db']) ||
-                        (participantInfo['vision_correction'].toLowerCase() != (clientParticipantInfo['v'] ? clientParticipantInfo['v'].replace("Glasses - Progressive", "Glasses - pr/ bf/ mf").replace("Contact Lens", "Contact lenses").toLowerCase() : "") && clientParticipantInfo['v'])) {
-                        temp['timeslots'][sessionId]['discrepancy'] = true;
-
-                    }
-                  }
-                  */
-                }
-
                 return (
                   <tr key={"schedule-row-" + index} className={(justBookedSession == key ? "highlighted-session-row" : "") + (index < array.length - 1 ? (key.substring(0, 13) != array[index + 1].substring(0, 13) ? " day-separator" : "") : "")}>
                     <td className="center-tag no-wrap">
@@ -305,97 +265,7 @@ function Scheduler({ database, setUpdateSession }) {
                     <td className="center-tag">
                       {participantInfo['status'] || ""}
                     </td>
-                    {database['timeslots'][key]['participant_id'] ?
-                      <Tooltip
-                        disableInteractive
-                        TransitionProps={{ timeout: 100 }}
-                        componentsProps={{ tooltip: { sx: { fontSize: '1em', maxWidth: '100em' }, } }}
-                        title={
-                          <table className="popup-table-participant-info center-tag">
-                            {externalId && <thead>
-                              <tr>
-                                <th>Property</th>
-                                <th>Telus</th>
-                                {externalId && <th>Apple</th>}
-                              </tr>
-                            </thead>}
-                            <tbody>
-                              {externalId && <tr>
-                                <th>ID</th>
-                                <td>{participantId}</td>
-                                {externalId && <td>{externalId || ""}</td>}
-                              </tr>}
-                              <tr>
-                                <th>Demo bin</th>
-                                <td>{participantInfo['demo_bin'] || ""}</td>
-                                {externalId && <td>{clientParticipantInfo['db'] || ""}</td>}
-                              </tr>
-                              <tr>
-                                <th>Date of birth</th>
-                                <td>{participantInfo['date_of_birth'].substring(0, 10)}</td>
-                                {externalId && <td>{clientParticipantInfo['b'] || ""}</td>}
-                              </tr>
-                              <tr>
-                                <th>Gender</th>
-                                <td>{participantInfo['gender']}</td>
-                                {externalId && <td>{clientParticipantInfo['g'] || ""}</td>}
-                              </tr>
-                              <tr>
-                                <th>Ethnicity</th>
-                                <td>{participantInfo['ethnicities']}</td>
-                                {externalId && <td>{clientParticipantInfo['e'] ? (Constants['clientEthnicities'][clientParticipantInfo['e']] || clientParticipantInfo['e']) : ""}</td>}
-                              </tr>
-                              <tr>
-                                <th>Vision corr.</th>
-                                <td>{participantInfo['vision_correction'].replace("progressive, bifocal or multifocal", "pr/ bf/ mf")}</td>
-                                {externalId && <td>{clientParticipantInfo['v'] ? clientParticipantInfo['v'].replace("Glasses - Progressive", "Glasses - pr/ bf/ mf").replace("Contact Lens", "Contact lenses") : ""}</td>}
-                              </tr>
-                              <tr>
-                                <th>Phase</th>
-                                <td>{participantInfo['phase'] ? "Phase " + participantInfo['phase'] : ""}</td>
-                                {externalId && <td>{clientParticipantInfo['p'] ? "Phase " + clientParticipantInfo['p'] : ""}</td>}
-                              </tr>
-                              <tr>
-                                <th>Date of info</th>
-                                <td>Realtime</td>
-                                {externalId && <td>{FormattingFunctions.ClientTimeslotFormat(clientParticipantInfo['d'])}</td>}
-                              </tr>
-
-                              {clientContributons.length > 0 && <>
-                                <tr colSpan="3">
-                                  <td>&nbsp;</td>
-                                </tr>
-                                <tr colSpan="3">
-                                  <td>&nbsp;</td>
-                                </tr>
-                                <tr>
-                                  <th>Day</th>
-                                  <th>Telus</th>
-                                  <th>Apple</th>
-                                </tr>
-                                {clientContributons.map(contribution => {
-                                  const appleContributionDate = FormattingFunctions.ClientTimeslotFormat(contribution['d']);
-                                  const appleContributionStatus = Constants['clientContributionStatuses'][contribution['s']];
-                                  const telusContributions = participantInfo['sessions'];
-                                  const sameDayTelusContribution = (Object.keys(telusContributions).filter(sessionId => sessionId.startsWith(appleContributionDate.substring(0, 10).replaceAll("-", ""))) || [])[0];
-                                  const sameDayTelusContributionDate = FormattingFunctions.TimeSlotFormat(sameDayTelusContribution);
-                                  const sameDayTelusContributionStatus = sameDayTelusContribution ? database['timeslots'][sameDayTelusContribution]['status'] : "";
-
-                                  return <tr>
-                                    <th>{appleContributionDate.substring(0, 11)}</th>
-                                    <td>{sameDayTelusContributionDate.substring(11) + ": " + sameDayTelusContributionStatus}</td>
-                                    <td>{appleContributionDate.substring(11) + ": " + appleContributionStatus}</td>
-                                  </tr>
-                                })}
-                              </>
-                              }
-
-                            </tbody>
-                          </table>
-                        }
-                      >
-                        <td className={"center-tag" + (database['timeslots'][key]['discrepancy'] ? " session-discrepancy" : "")}>{database['timeslots'][key]['participant_id']}</td>
-                      </Tooltip> : <td></td>}
+                    {database['timeslots'][key]['participant_id'] ? <SessionInfo database={database} participantId={database['timeslots'][key]['participant_id']} sessionId={key} /> : <td></td>}
                     <td>
                       {participantId ? (participantInfo['first_name'] + " " + participantInfo['last_name']) : ""}
                       {participantId &&
@@ -407,7 +277,7 @@ function Scheduler({ database, setUpdateSession }) {
                     </td>
                     <td className={"center-tag " + ((highlightedTimeslots[key.substring(0, 13)] > 4 && database['timeslots'][key]['glasses']) ? "glasses-highlighted" : "")}>
                       {participantId ?
-                        participantInfo['vision_correction'].replace("progressive, bifocal or multifocal", "pr/ bf/ mf")
+                        participantInfo['vision_correction']
                         : ""}
                     </td>
                     <td className="center-tag">

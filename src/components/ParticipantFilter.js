@@ -387,7 +387,7 @@ function ParticipantFilter({ database, setShownParticipants, filterDataFromStats
         {Constants['visionCorrections'].map((val, i) => {
           return <div key={"filter-vc" + i} className="filter-object">
             <input id={"filter-vc-" + val} name={val} type="checkbox" alt="visionCorrections" onChange={setFilterData} checked={filterData['visionCorrections'].includes(val)} />
-            <label htmlFor={"filter-vc-" + val}>{val.replace("progressive, bifocal or multifocal", "pr/ bf/ mf") + " (" + filterStats['visionCorrections'][val] + ")"}</label>
+            <label htmlFor={"filter-vc-" + val}>{val + " (" + filterStats['visionCorrections'][val] + ")"}</label>
             <button name={val} alt="visionCorrections" className="filter-this-button" onClick={setFilterData}>!</button>
           </div>
         })}

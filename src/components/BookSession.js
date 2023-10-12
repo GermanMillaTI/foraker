@@ -33,7 +33,7 @@ function BookSession({ database, setShowBookSession, selectedSessionId, setJustB
 
     function bookSession(pid) {
         let visionCorrection = database['participants'][pid]['vision_correction'];
-        let glasses = ['Glasses - distance', 'Glasses - progressive, bifocal or multifocal'].includes(visionCorrection);
+        let glasses = ['Glasses - distance', 'Glasses - pr/ bf/ mf'].includes(visionCorrection);
         let backupSession = database['timeslots'][selectedSessionId]['backup'] === true;
 
         Swal.fire({

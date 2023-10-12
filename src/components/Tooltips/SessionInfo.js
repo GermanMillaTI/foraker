@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useRef } from "react";
 import Tooltip, { tooltipClasses } from '@mui/material/Tooltip';
+import format from 'date-fns/format';
 
 import './SessionInfo.css';
 import Constants from '../Constants';
@@ -31,7 +32,6 @@ function SessionInfo({ database, participantId, sessionId }) {
             const appleDateRaw = contribution['d'];
             if (appleDateRaw) {
                 let appleDate = new Date(appleDateRaw);
-                appleDate.setTime(appleDate.getTime() - (7 * 60 * 60 * 1000));
 
                 const diffTime = Math.abs(telusDate - appleDate);
                 const diffMinutes = Math.abs(Math.ceil(diffTime / (1000 * 60)));
@@ -53,6 +53,74 @@ function SessionInfo({ database, participantId, sessionId }) {
         if (participantInfo['phase'] != clientParticipantInfo['p'] && clientParticipantInfo['p']) discrepancies['phase'] = true;
     }
     var discrepancy = Object.values(discrepancies).includes(true);
+
+    var listedContributions = [];
+    var listedContributionDays = {};
+    if (externalId) {
+        Object.keys(participantInfo['sessions']).map(item => {
+            const day = item.substring(0, 8);
+            const counter = Object.keys(participantInfo['sessions']).filter(x => x.substring(0, 8) == day).length;
+            if ((listedContributionDays[day] || 0) < counter) listedContributionDays[day] = counter;
+        })
+
+        clientContributons.map(item => {
+            const appleDateRaw = item['d'];
+            if (appleDateRaw) {
+                let appleDate = new Date(appleDateRaw);
+                const day = format(appleDate, "yyyyMMdd");
+
+                const counter = clientContributons.filter(x => {
+                    const appleDateRaw = x['d'];
+                    let appleDate = new Date(appleDateRaw);
+                    const day2 = format(appleDate, "yyyyMMdd");
+                    return day == day2;
+                }).length
+
+                if ((listedContributionDays[day] || 0) < counter) listedContributionDays[day] = counter;
+            }
+        })
+
+        Object.keys(listedContributionDays).map(day => {
+            const counter = listedContributionDays[day];
+            for (var x = 0; x < counter; x++) {
+
+                const appleContribution = clientContributons.filter(item => item['d'].replaceAll('-', '').startsWith(day))[x];
+                let appleContributionDate = "";
+                let appleContributionStatus = "";
+                let appleSessionOutput = "";
+                if (appleContribution) {
+                    appleContributionDate = FormattingFunctions.ClientTimeslotFormat(appleContribution['d']);
+                    appleContributionStatus = Constants['clientContributionStatuses'][appleContribution['s']];
+                    appleSessionOutput = appleContributionDate.substring(11) + ": " + appleContributionStatus;
+                }
+
+                const telusContributionKey = Object.keys(participantInfo['sessions']).filter(item => item.startsWith(day))[x];
+                let sameDayTelusContributionDate = "";
+                let sameDayTelusContributionStatus = "";
+                let telusSessionOutput = "";
+                if (telusContributionKey) {
+                    sameDayTelusContributionDate = FormattingFunctions.TimeSlotFormat(telusContributionKey);
+                    sameDayTelusContributionStatus = database['timeslots'][telusContributionKey]['status'];
+                    telusSessionOutput = sameDayTelusContributionDate.substring(11) + ": " + sameDayTelusContributionStatus
+                }
+
+                var statusDiscrepancy = false;
+                if (sameDayTelusContributionStatus.replace("Failed - Comp.", "Failed").replace("Failed - No Comp.", "Failed") != appleContributionStatus) {
+                    statusDiscrepancy = true;
+                    discrepancy = true;
+                }
+
+
+                listedContributions.push({
+                    sameday: sessionId.startsWith(day),
+                    statusDiscrepancy: statusDiscrepancy,
+                    date: day.substring(0, 4) + "-" + day.substring(4, 6) + "-" + day.substring(6, 8),
+                    telus: telusSessionOutput,
+                    apple: appleSessionOutput
+                })
+            }
+        })
+    }
 
     return (
         <Tooltip
@@ -107,10 +175,12 @@ function SessionInfo({ database, participantId, sessionId }) {
                         <tr>
                             <th>Date of info</th>
                             <td>Realtime</td>
-                            {externalId && <td>{FormattingFunctions.ClientTimeslotFormat(clientParticipantInfo['d'])}</td>}
+                            {externalId && <td className={sessionId.startsWith((clientParticipantInfo['d'] || "--").substring(0, 10).replaceAll("-", "")) ? "" : "session-item-discrepancy"}>
+                                {FormattingFunctions.ClientTimeslotFormat(clientParticipantInfo['d'])}
+                            </td>}
                         </tr>
 
-                        {clientContributons.length > 0 && <>
+                        {listedContributions.length > 0 && <>
                             <tr colSpan="3">
                                 <td>&nbsp;</td>
                             </tr>
@@ -122,18 +192,11 @@ function SessionInfo({ database, participantId, sessionId }) {
                                 <th>Telus</th>
                                 <th>Apple</th>
                             </tr>
-                            {clientContributons.map(contribution => {
-                                const appleContributionDate = FormattingFunctions.ClientTimeslotFormat(contribution['d']);
-                                const appleContributionStatus = Constants['clientContributionStatuses'][contribution['s']];
-                                const telusContributions = participantInfo['sessions'];
-                                const sameDayTelusContribution = (Object.keys(telusContributions).filter(sessionId => sessionId.startsWith(appleContributionDate.substring(0, 10).replaceAll("-", ""))) || [])[0];
-                                const sameDayTelusContributionDate = FormattingFunctions.TimeSlotFormat(sameDayTelusContribution);
-                                const sameDayTelusContributionStatus = sameDayTelusContribution ? database['timeslots'][sameDayTelusContribution]['status'] : "";
-
+                            {listedContributions.map(contribution => {
                                 return <tr>
-                                    <th>{appleContributionDate.substring(0, 11)}</th>
-                                    <td>{sameDayTelusContributionDate.substring(11) + ": " + sameDayTelusContributionStatus}</td>
-                                    <td>{appleContributionDate.substring(11) + ": " + appleContributionStatus}</td>
+                                    <th className={contribution['sameday'] ? "session-item-sameday" : ""}>{contribution['date']}</th>
+                                    <td className={contribution['statusDiscrepancy'] ? "session-item-discrepancy" : ""}>{contribution['telus']}</td>
+                                    <td className={contribution['statusDiscrepancy'] ? "session-item-discrepancy" : ""}>{contribution['apple']}</td>
                                 </tr>
                             })}
                         </>

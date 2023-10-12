@@ -48,8 +48,6 @@ const ClientTimeslotFormat = (timeslot) => {
     if (typeof timeslot === "undefined") return "";
 
     let parsedDate = new Date(timeslot);
-    // -7 hours due to the time zone difference they have
-    parsedDate.setTime(parsedDate.getTime() - (7 * 60 * 60 * 1000));
 
     return format(parsedDate, "yyyy-MM-dd hh:mm a");
 }

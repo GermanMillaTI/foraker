@@ -46,7 +46,8 @@ function Scheduler({ database, setUpdateSession }) {
   const [justBookedSession, setJustBookedSession] = useState("");
   const [csvData, setCsvData] = useState([[]]);
   const [filterData, setFilterData] = useReducer(filterReducer, {
-    date: [format(new Date(), "yyyy-MM-dd")]
+    date: [format(new Date(), "yyyy-MM-dd")],
+    phase: Constants['phases']
   });
 
   useMemo(() => {
@@ -148,8 +149,12 @@ function Scheduler({ database, setUpdateSession }) {
   }
 
   function filterFunction(timeslotId) {
-    let timeslotDate = timeslotId.substring(0, 4) + "-" + timeslotId.substring(4, 6) + "-" + timeslotId.substring(6, 8);
-    return filterData['date'].includes(timeslotDate);
+    const timeslotDate = timeslotId.substring(0, 4) + "-" + timeslotId.substring(4, 6) + "-" + timeslotId.substring(6, 8);
+    const participantId = database['timeslots'][timeslotId]['participant_id'];
+    const participant = database['participants'][participantId] || {};
+    const phase = participant['phase'] ? "Phase " + participant['phase'] : "Blank";
+    return filterData['phase'].includes(phase) &&
+      filterData['date'].includes(timeslotDate);
   }
 
   function sendReminder(timeslotId) {
@@ -225,7 +230,15 @@ function Scheduler({ database, setUpdateSession }) {
               <th>Participant ID</th>
               <th>Name</th>
               <th>Vision corr.</th>
-              <th>Phase</th>
+              <th>
+                <TableFilter
+                  filterName="Phase"
+                  alt="phase"
+                  values={Constants['phases']}
+                  filterData={filterData}
+                  setFilterData={setFilterData}
+                />
+              </th>
               <th>Session comments</th>
               <th>Functions</th>
             </tr>
@@ -281,7 +294,7 @@ function Scheduler({ database, setUpdateSession }) {
                         : ""}
                     </td>
                     <td className="center-tag">
-                      {participantInfo['phase'] ? "Ph. " + participantInfo['phase'] : ""}
+                      {participantInfo['phase'] ? "Phase " + participantInfo['phase'] : ""}
                     </td>
                     <td>
                       {database['timeslots'][key]['comments']}

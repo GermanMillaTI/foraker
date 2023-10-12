@@ -47,7 +47,9 @@ function Scheduler({ database, setUpdateSession }) {
   const [csvData, setCsvData] = useState([[]]);
   const [filterData, setFilterData] = useReducer(filterReducer, {
     date: [format(new Date(), "yyyy-MM-dd")],
-    phase: Constants['phases']
+    phase: Constants['phases'],
+    sessionStatuses: ['Blank', ...Constants['sessionStatuses']],
+    participantStatuses: ['Blank', ...Constants['participantStatuses']]
   });
 
   useMemo(() => {
@@ -150,10 +152,18 @@ function Scheduler({ database, setUpdateSession }) {
 
   function filterFunction(timeslotId) {
     const timeslotDate = timeslotId.substring(0, 4) + "-" + timeslotId.substring(4, 6) + "-" + timeslotId.substring(6, 8);
-    const participantId = database['timeslots'][timeslotId]['participant_id'];
+    const session = database['timeslots'][timeslotId];
+    const sessionStatus = session['status'] || "Blank";
+
+
+    const participantId = session['participant_id'];
     const participant = database['participants'][participantId] || {};
-    const phase = participant['phase'] ? "Phase " + participant['phase'] : "Blank";
-    return filterData['phase'].includes(phase) &&
+    const phase = participant['phase'] ? 'Phase ' + participant['phase'] : 'Blank';
+    const participantStatus = participant['status'] || 'Blank';
+
+    return filterData['participantStatuses'].includes(participantStatus) &&
+      filterData['sessionStatuses'].includes(sessionStatus) &&
+      filterData['phase'].includes(phase) &&
       filterData['date'].includes(timeslotDate);
   }
 
@@ -225,8 +235,24 @@ function Scheduler({ database, setUpdateSession }) {
                 />
               </th>
               <th>Station</th>
-              <th>Session status</th>
-              <th>Participant status</th>
+              <th>
+                <TableFilter
+                  filterName="Session status"
+                  alt="sessionStatuses"
+                  values={['Blank', ...Constants['sessionStatuses']]}
+                  filterData={filterData}
+                  setFilterData={setFilterData}
+                />
+              </th>
+              <th>
+                <TableFilter
+                  filterName="Participant status"
+                  alt="participantStatuses"
+                  values={['Blank', ...Constants['participantStatuses']]}
+                  filterData={filterData}
+                  setFilterData={setFilterData}
+                />
+              </th>
               <th>Participant ID</th>
               <th>Name</th>
               <th>Vision corr.</th>

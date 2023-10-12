@@ -189,12 +189,14 @@ function Scheduler({ database, setUpdateSession }) {
               .sort((a, b) => (a.length == 15 ? (a.substring(0, 14) + "0" + a.substring(14)) : a) < (b.length == 15 ? (b.substring(0, 14) + "0" + b.substring(14)) : b) ? -1 : 1)
               .map((key, index, array) => {
                 return <SchedulerRow
+                  key={"sch-row-" + key}
                   database={database}
                   sessionId={key}
                   index={index}
                   array={array}
                   setUpdateSession={setUpdateSession}
-                  highlightedTimeslots={highlightedTimeslots} />
+                  highlightedTimeslots={highlightedTimeslots}
+                />
               })}
           </tbody>
         </table>

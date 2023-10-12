@@ -110,7 +110,6 @@ function SessionInfo({ database, participantId, sessionId }) {
                     discrepancy = true;
                 }
 
-
                 listedContributions.push({
                     sameday: sessionId.startsWith(day),
                     statusDiscrepancy: statusDiscrepancy,

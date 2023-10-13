@@ -146,6 +146,7 @@ function Scheduler({ database, setUpdateSession }) {
                   values={days}
                   filterData={filterData}
                   setFilterData={setFilterData}
+                  selectedEach={true}
                 />
               </th>
               <th>Station</th>
@@ -156,6 +157,7 @@ function Scheduler({ database, setUpdateSession }) {
                   values={['Blank', ...Constants['sessionStatuses']]}
                   filterData={filterData}
                   setFilterData={setFilterData}
+                  selectedEach={false}
                 />
               </th>
               <th>
@@ -165,6 +167,7 @@ function Scheduler({ database, setUpdateSession }) {
                   values={['Blank', ...Constants['participantStatuses']]}
                   filterData={filterData}
                   setFilterData={setFilterData}
+                  selectedEach={false}
                 />
               </th>
               <th>Participant ID</th>
@@ -177,6 +180,7 @@ function Scheduler({ database, setUpdateSession }) {
                   values={Constants['phases']}
                   filterData={filterData}
                   setFilterData={setFilterData}
+                  selectedEach={false}
                 />
               </th>
               <th>Session comments</th>

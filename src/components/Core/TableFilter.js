@@ -2,9 +2,9 @@ import React, { useEffect, useState, useRef } from "react";
 
 import './TableFilter.css';
 
-function TableFilter({ filterName, alt, values, filterData, setFilterData }) {
+function TableFilter({ filterName, alt, values, filterData, setFilterData, selectedEach }) {
     const [filterIsOpen, setFilterIsOpen] = useState(false);
-    const [each, setEach] = useState(true);
+    const [each, setEach] = useState(selectedEach);
     const [scroller, setScroller] = useState(false);
     const myRef = useRef();
 

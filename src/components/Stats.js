@@ -88,8 +88,8 @@ function Stats({ database, setActivePage, setShowStats, setFilterDataFromStats }
 
             if (!filterData['phases'].includes(phase)) return;
             if (goodWorkOnly && !goodWorkParticipant) return;
-
-            for (let x = 0; x < ethnicities.length; x++) {
+                for (let x = 0; x < ethnicities.length; x++) {
+                
                 let ethnicity = ethnicities[x].trim();
                 if (!Constants['listOfAgeRanges'].includes(ageRange)) continue;
                 tempStats[ethnicity][ageRange][gender][status] += ethValue;

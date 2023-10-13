@@ -65,7 +65,6 @@ function Participants({
       //: "-"
     ])
 
-    console.log(database['participants'])
     for (var i in data) {
       output.push(data[i])
 

@@ -191,6 +191,44 @@ function UpdateSession({ database, updateSession, setUpdateSession, setCheckDocu
         })
     }
 
+    function updateDOB() {
+        const pInfo = database['participants'][participantId];
+        const dob = pInfo['date_of_birth'];
+        let selectedDate = dob.substring(0, 10);
+
+        const HTMLContent = () => {
+            
+            return <>
+                <input type="date" id="newDOB" defaultValue={selectedDate} ></input>
+            </>
+        }
+
+        const saveDOB = () => {
+            selectedDate = document.getElementById("newDOB").value;
+            let formattedDOB = new Date(selectedDate).toISOString();
+
+            updateValue("/participants/" + participantId, { date_of_birth: formattedDOB });
+
+            LogEvent({
+                pid: participantId,
+                action: "Participant date of birth: '" + formattedDOB.substring(0, 10) + "'"
+            })
+        }
+        
+
+        Swal.fire({
+            title: "Updating Date of Birth",
+            confirmButtonText: "Save",
+            showCancelButton: true,
+            html: renderToString(<HTMLContent />)
+        }).then((result) => {
+            if (result.isConfirmed) {
+                saveDOB();
+            }
+        });
+    }
+
+
     function getClientInfo(externalIdForAPI) {
         setExternalIdForAPI(externalIdForAPI);
         setIsLoading(true);
@@ -323,6 +361,10 @@ function UpdateSession({ database, updateSession, setUpdateSession, setCheckDocu
                                     <td className="participant-table-right">{participantInfo['city_of_residence']}</td>
                                 </tr>
                                 <tr>
+                                    <td className="participant-table-left">Registration Source</td>
+                                    <td className="participant-table-right">{Constants['sources'][(participantInfo['source'] || 'Other')]}</td>
+                                </tr>
+                                <tr>
                                     <td className="participant-table-left">Documents</td>
                                     <td className="participant-table-right"><a href="" className="signature-link" onClick={(e) => { e.preventDefault(); openDocuments(participantId); }}>Open Documents</a>
                                     </td>
@@ -369,10 +411,20 @@ function UpdateSession({ database, updateSession, setUpdateSession, setCheckDocu
                                 <tr>
                                     <td className="participant-table-left">Demo bin</td>
                                     <td className="participant-table-right">{participantInfo['demo_bin']}</td>
+
                                 </tr>
                                 <tr>
                                     <td className="participant-table-left">Date of birth</td>
-                                    <td className="participant-table-right">{participantInfo['date_of_birth'].substring(0, 10)}</td>
+                                    <td className="participant-table-right">
+                                        {participantInfo['date_of_birth'].substring(0, 10)}
+                                        <a className="copy-email-link fas fa-edit"
+                                            title="Update ethnicity"
+                                            onClick={(e) => {
+                                                e.preventDefault();
+                                                if (hasCompletedSession) return;
+                                                updateDOB();
+                                            }} target="_blank" />
+                                    </td>
                                 </tr>
                                 <tr>
                                     <td className="participant-table-left">Gender</td>

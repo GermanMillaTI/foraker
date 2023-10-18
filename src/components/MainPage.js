@@ -215,6 +215,8 @@ function MainPage() {
 
         let nr = Object.keys(participant['sessions']).length + 1;
         participant['sessions'][sessionId] = nr;
+
+
       }
 
       //console.log(temp['participants']['27946903']);
@@ -261,7 +263,6 @@ function MainPage() {
     }
     return ageRange;
   }
-
 
 
   return (

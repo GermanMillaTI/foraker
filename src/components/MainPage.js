@@ -83,10 +83,13 @@ function MainPage() {
 
         let gender = participant['gender'];
         let ethnicities = participant['ethnicities'].split(",");
-        var demoBin = [];
+
+        //var demoBin = [];
+        var demoBin = calculateDemoBin(ageRange, ethnicities, gender);
         var demoBinOpen = true;
 
         ethnicities.map(ethnicity => {
+          /*
           let demoEthnicity = Constants['demoBinsEthnicities'][ethnicity.trim()];
           let demoGender = Constants['demoBinsGenders'][gender];
           let demoAgeRange = Constants['demoBinsAgeRanges'][ageRange];
@@ -96,6 +99,7 @@ function MainPage() {
           } else {
             demoBin.push("#NA");
           }
+          */
 
           if (demoBinOpen && ['Female', 'Male'].includes(gender)) {
             let tempEth = Constants['bonusEthnicities'][ethnicity.trim()];
@@ -106,7 +110,9 @@ function MainPage() {
             }
           }
         })
-        temp['participants'][participantId]['demo_bin'] = demoBin.join(",");
+
+        //temp['participants'][participantId]['demo_bin'] = demoBin.join(",");
+        temp['participants'][participantId]['demo_bin'] = demoBin;
         temp['participants'][participantId]['open_demo_bin'] = demoBinOpen;
 
         // Adding the bonus information
@@ -144,10 +150,17 @@ function MainPage() {
       const dateNow = parseInt(format(new Date(), "yyyyMMdd"));
       var sessionDictionary = {};
       for (let sessionId in temp['timeslots']) {
-        let session = temp['timeslots'][sessionId];
-        let participantId = session['participant_id'];
+        const session = temp['timeslots'][sessionId];
+        const participantId = session['participant_id'];
+
         if (!participantId) continue;
-        let participant = temp['participants'][participantId];
+        const participant = temp['participants'][participantId];
+        const ageRange = calculateAgeRange(participant['date_of_birth'], sessionId.substring(0, 4) + "-" + sessionId.substring(4, 6) + "-" + sessionId.substring(6, 8));
+        const ethnicities = participant['ethnicities'].split(",");
+        const gender = participant['gender'];
+        const demoBin = calculateDemoBin(ageRange, ethnicities, gender);
+        temp['timeslots'][sessionId]['age_range'] = ageRange;
+        temp['timeslots'][sessionId]['demo_bin'] = demoBin;
 
         let status = session['status'];
         let sessionDate = parseInt(sessionId.substring(0, 8));
@@ -231,12 +244,31 @@ function MainPage() {
     }
   }, [])
 
-  function calculateAgeRange(dateOfBirth) {
+  function calculateDemoBin(ageRange, ethnicities, gender) {
+    var demoBin = [];
+    const demoAgeRange = Constants['demoBinsAgeRanges'][ageRange];
+    const demoGender = Constants['demoBinsGenders'][gender];
+
+    ethnicities.map(ethnicity => {
+      let demoEthnicity = Constants['demoBinsEthnicities'][ethnicity.trim()];
+      if (demoEthnicity && demoGender && demoAgeRange) {
+        const demoStr = demoEthnicity + demoAgeRange + demoGender;
+        if (!demoBin.includes(demoStr)) demoBin.push(demoStr);
+      } else {
+        demoBin.push("#NA");
+      }
+    })
+
+    return demoBin.join(',');
+  }
+
+  function calculateAgeRange(dateOfBirth, baseDate) {
 
     var dob = new Date(dateOfBirth);
-    var month_diff = Date.now() - dob.getTime();
-    var age_dt = new Date(month_diff);
-    var year = age_dt.getUTCFullYear();
+    var diff = (baseDate ? (new Date(baseDate)).getTime() : Date.now()) - dob.getTime();
+    //var diff = (new Date(baseDate || "")).getTime() - dob.getTime();
+    var diffAge = new Date(diff);
+    var year = diffAge.getUTCFullYear();
     var age = Math.abs(year - 1970);
 
     let ageRange = "";

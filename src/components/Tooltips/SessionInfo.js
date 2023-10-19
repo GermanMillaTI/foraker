@@ -10,6 +10,7 @@ function SessionInfo({ database, participantId, sessionId }) {
     const participantInfo = database['participants'][participantId] || {};
     const externalId = participantInfo['external_id'] || "";
     const clientContributons = database['client']['contributions'][externalId] || [];
+    const sessionInfo = database['timeslots'][sessionId];
 
     var discrepancies = {
         demoBin: false,
@@ -45,7 +46,7 @@ function SessionInfo({ database, participantId, sessionId }) {
 
     if (clientParticipantInfo !== {} && externalId) {
         // Check if the ppt or the session has different info from the client
-        if (participantInfo['demo_bin'] != clientParticipantInfo['db'] && clientParticipantInfo['db']) discrepancies['demoBin'] = true;
+        if (sessionInfo['demo_bin'] != clientParticipantInfo['db'] && clientParticipantInfo['db']) discrepancies['demoBin'] = true;
         if (participantInfo['date_of_birth'].substring(0, 10) != clientParticipantInfo['b']) discrepancies['dateOfBirth'] = true;
         if (participantInfo['gender'] != clientParticipantInfo['g']) discrepancies['gender'] = true;
         if (participantInfo['ethnicities'] != clientParticipantInfo['e']) discrepancies['ethnicity'] = true;
@@ -143,7 +144,7 @@ function SessionInfo({ database, participantId, sessionId }) {
                         </tr>}
                         <tr className={discrepancies['demoBin'] ? "session-item-discrepancy" : ""}>
                             <th>Demo bin</th>
-                            <td>{participantInfo['demo_bin'] || ""}</td>
+                            <td>{sessionInfo['demo_bin'] || ""}</td>
                             {externalId && <td>{clientParticipantInfo['db'] || ""}</td>}
                         </tr>
                         <tr className={discrepancies['dateOfBirth'] ? "session-item-discrepancy" : ""}>
@@ -173,7 +174,7 @@ function SessionInfo({ database, participantId, sessionId }) {
                         </tr>
                         <tr>
                             <th>Date of info</th>
-                            <td>Realtime</td>
+                            <td>{FormattingFunctions.TimeSlotFormat(sessionId)}</td>
                             {externalId && <td className={sessionId.startsWith((clientParticipantInfo['d'] || "--").substring(0, 10).replaceAll("-", "")) ? "" : "session-item-discrepancy"}>
                                 {FormattingFunctions.ClientTimeslotFormat(clientParticipantInfo['d'])}
                             </td>}
@@ -205,7 +206,7 @@ function SessionInfo({ database, participantId, sessionId }) {
                 </table>
             }
         >
-            <td className={"center-tag" + (discrepancy ? " session-discrepancy" : "")}>{database['timeslots'][sessionId]['participant_id']}</td>
+            <td className={"center-tag" + (discrepancy ? " session-discrepancy" : "")}>{sessionInfo['participant_id']}</td>
         </Tooltip>
     )
 }

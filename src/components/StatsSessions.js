@@ -86,7 +86,7 @@ function StatsSessions({ database, setActivePage, setShowStatsSessions, setFilte
 
             let participant = participants[participantId];
             let gender = participant['gender'];
-            let ageRange = participant['age_range'];
+            let ageRange = session['age_range'];
             let ethnicities = participant['ethnicities'].split(',');
             let ethValue = 1 / ethnicities.length;
             let status = session['status'] || "Blank";

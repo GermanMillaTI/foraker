@@ -60,7 +60,7 @@ function Navbar({ database, setActivePage, setShowStats, setShowStatsSessions, s
       {['zoltan.bathori@telusinternational.com', 'sari.kiiskinen@telusinternational.com'].includes(auth.currentUser.email) && <button className="navbar-button" onClick={() => setShowBonuses(true)}>Bonus $</button>}
       {(role == "admin" || role == "goodwork") && <button className="navbar-button" onClick={() => setActivePage("Goodwork")}>Goodwork</button>}
       {(role == "external") && <button className="navbar-button" onClick={() => setActivePage("Scheduler External")}>Scheduler external</button>}
-      {(role == "external") && <button className="navbar-button" onClick={() => setActivePage("External")}>External report</button>}
+      {/*(role == "external") && <button className="navbar-button" onClick={() => setActivePage("External")}>External report</button>*/}
       {Constants.superAdmins.includes(auth.currentUser.email) && <button className='navbar-button' onClick={() => {
         setActivityLog(true);
         setIdForLog("");

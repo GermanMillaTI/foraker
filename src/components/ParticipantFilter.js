@@ -127,7 +127,7 @@ function ParticipantFilter({ database, setShownParticipants, filterDataFromStats
       highlighted: { 'Yes': 0, 'No': 0 },
       stillInterested: { 'Yes': 0, 'No': 0, 'N/A': 0 },
       unsubscribed: { 'Yes': 0, 'No': 0 },
-      unreadEmails: {'Yes': 0, 'No': 0}
+      unreadEmails: { 'Yes': 0, 'No': 0 }
     }
   }
 

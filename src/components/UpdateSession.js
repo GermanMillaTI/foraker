@@ -197,7 +197,7 @@ function UpdateSession({ database, updateSession, setUpdateSession, setCheckDocu
         let selectedDate = dob.substring(0, 10);
 
         const HTMLContent = () => {
-            
+
             return <>
                 <input type="date" id="newDOB" defaultValue={selectedDate} ></input>
             </>
@@ -214,7 +214,7 @@ function UpdateSession({ database, updateSession, setUpdateSession, setCheckDocu
                 action: "Participant date of birth: '" + formattedDOB.substring(0, 10) + "'"
             })
         }
-        
+
 
         Swal.fire({
             title: "Updating Date of Birth",
@@ -410,7 +410,7 @@ function UpdateSession({ database, updateSession, setUpdateSession, setCheckDocu
 
                                 <tr>
                                     <td className="participant-table-left">Demo bin</td>
-                                    <td className="participant-table-right">{participantInfo['demo_bin']}</td>
+                                    <td className="participant-table-right">{sessionInfo['demo_bin']}</td>
 
                                 </tr>
                                 <tr>
@@ -585,7 +585,7 @@ function UpdateSession({ database, updateSession, setUpdateSession, setCheckDocu
                                                 </td>
                                                 <td className={"participant-table-right" + ((selectedContribution['answers'].filter(answer => answer['slug'] == 'demo_bin').length > 0 ?
                                                     selectedContribution['answers'].filter(answer => answer['slug'] == 'demo_bin')[0]['values'].join(",")
-                                                    : "") != participantInfo['demo_bin'] ? " not-matching-client-data" : "")}>
+                                                    : "") != sessionInfo['demo_bin'] ? " not-matching-client-data" : "")}>
 
                                                     {selectedContribution['answers'].filter(answer => answer['slug'] == 'demo_bin').length > 0 ?
                                                         selectedContribution['answers'].filter(answer => answer['slug'] == 'demo_bin')[0]['values'].join(",")

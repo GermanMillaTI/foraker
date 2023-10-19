@@ -102,8 +102,8 @@ function SchedulerExternal({ database }) {
                     <td className="center-tag">
                       {key.substring(0, 4) + "-" + key.substring(4, 6) + "-" + key.substring(6, 8) + " " + Constants['bookingDictionary'][key.substring(9, 11) + ":" + key.substring(11, 13)]}
                     </td>
-                    <td className="center-tag">
-                      Station {key.substring(14)}
+                    <td className={"center-tag no-wrap" + (key.substring(14) == "101" ? " backup-timeslot" : "")}>
+                      {key.substring(14) == "101" ? "Backup" : "Station " + key.substring(14)}
                     </td>
                     <td className="center-tag">
                       {database['timeslots'][key]['status']}
@@ -146,12 +146,7 @@ function SchedulerExternal({ database }) {
                       }
                     </td>
                     <td className="center-tag">
-                      {database['timeslots'][key]['participant_id'] ?
-                        (database['participants'][database['timeslots'][key]['participant_id']]['sessions'] ?
-                          database['participants'][database['timeslots'][key]['participant_id']]['demo_bin']
-                          : "")
-                        : ""}
-
+                      {database['timeslots'][key]['demo_bin']}
                     </td>
                   </tr>
                 )

@@ -198,9 +198,8 @@ function UpdateSession({ database, updateSession, setUpdateSession, setCheckDocu
 
         const HTMLContent = () => {
 
-            return <>
-                <input type="date" id="newDOB" defaultValue={selectedDate} ></input>
-            </>
+            return <input type="date" id="newDOB" defaultValue={selectedDate} ></input>
+    
         }
 
         const saveDOB = () => {

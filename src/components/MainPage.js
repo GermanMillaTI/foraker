@@ -57,6 +57,7 @@ function MainPage() {
         let email = participant['email'];
         if (allEmails.includes(email)) {
           duplicateEmails.push(email);
+          
         } else {
           allEmails.push(email);
         }
@@ -69,11 +70,18 @@ function MainPage() {
         }
       }
 
+      
+
       for (let participantId in temp['participants']) {
         let participant = temp['participants'][participantId];
 
         let email = participant['email'];
         temp['participants'][participantId]['email_counter'] = duplicateEmails.includes(email) ? 2 : 1;
+        /*Added by German, used to filter duplicates
+        if(temp['participants'][participantId]['email_counter'] === 2 && !temp['participants'][participantId].hasOwnProperty('dup_ids')){
+          temp['participants'][participantId]['dup_ids'] = Object.entries(temp['participants']).filter(SubArray => SubArray[1]['email'] == temp['participants'][participantId]['email'] &&  SubArray[1]['registered_as'] != "parent").map(SubArray => SubArray[0])
+        }
+        */
 
         let phone = participant['phone'];
         temp['participants'][participantId]['phone_counter'] = duplicatePhones.includes(phone) ? 2 : 1;
@@ -141,12 +149,42 @@ function MainPage() {
           highlightReason.push("Missing phase");
         }
 
+        let allPpts = {}
+
+        /* Added by German, used to filter duplicates
+        if (temp['participants'][participantId]['email_counter'] == 2){
+          
+          let dupIDs = temp['participants'][participantId]['dup_ids'];
+          
+          dupIDs.forEach(key =>{
+            if(temp['participants'][key]['date_of_birth'] === temp['participants'][participantId]['date_of_birth']){
+              allPpts[key] = temp['participants'][key];
+            }
+          })
+          
+          
+          if(Object.keys(allPpts).length>1){
+            const hasDuplicate = Object.keys(allPpts).some(key => allPpts[key]['status'] === "Duplicate" || allPpts[key]['status'] === "Rejected" || allPpts[key]['status'] === "Withdrawn");
+            
+            if(!hasDuplicate){
+              highlightReason.push("Duplicated emails");    
+            }
+          }
+          
+          
+        }
+        */
+
+
         if (highlightReason != "") {
           temp['participants'][participantId]['highlight_reason'] = highlightReason;
           temp['participants'][participantId]['highlighted'] = true;
         }
+
+
       }
 
+      
       const dateNow = parseInt(format(new Date(), "yyyyMMdd"));
       var sessionDictionary = {};
       for (let sessionId in temp['timeslots']) {

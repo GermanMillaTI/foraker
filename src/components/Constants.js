@@ -8,7 +8,8 @@ const Constants = {
     "Not Selected",
     "Rejected",
     "Duplicate",
-    "Withdrawn"
+    "Withdrawn",
+    "Qualified for upcoming phase"
   ],
   genders: [
     "Male",

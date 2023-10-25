@@ -199,7 +199,7 @@ function UpdateSession({ database, updateSession, setUpdateSession, setCheckDocu
         const HTMLContent = () => {
 
             return <input type="date" id="newDOB" defaultValue={selectedDate} ></input>
-    
+
         }
 
         const saveDOB = () => {
@@ -417,7 +417,7 @@ function UpdateSession({ database, updateSession, setUpdateSession, setCheckDocu
                                     <td className="participant-table-right">
                                         {participantInfo['date_of_birth'].substring(0, 10)}
                                         <a className="copy-email-link fas fa-edit"
-                                            title="Update ethnicity"
+                                            title="Update Date of Birth"
                                             onClick={(e) => {
                                                 e.preventDefault();
                                                 if (hasCompletedSession) return;

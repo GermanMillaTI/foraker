@@ -4,6 +4,7 @@ import { useState } from 'react';
 import Swal from 'sweetalert2';
 import md5 from 'md5';
 import Tooltip, { tooltipClasses } from '@mui/material/Tooltip';
+import { renderToString } from 'react-dom/server';
 
 import './ParticipantCard.css';
 import Constants from './Constants';
@@ -133,6 +134,42 @@ function ParticipantCard({ database, participantId, index, setShowBookSession2, 
         )
     }
 
+    function updateDOB() {
+        const pInfo = database['participants'][participantId];
+        const dob = pInfo['date_of_birth'];
+        let selectedDate = dob.substring(0, 10);
+
+        const HTMLContent = () => {
+
+            return <input type="date" id="newDOB" defaultValue={selectedDate} ></input>
+
+        }
+
+        const saveDOB = () => {
+            selectedDate = document.getElementById("newDOB").value;
+            let formattedDOB = new Date(selectedDate).toISOString();
+
+            updateValue("/participants/" + participantId, { date_of_birth: formattedDOB });
+
+            LogEvent({
+                pid: participantId,
+                action: "Participant date of birth: '" + formattedDOB.substring(0, 10) + "'"
+            })
+        }
+
+
+        Swal.fire({
+            title: "Updating Date of Birth",
+            confirmButtonText: "Save",
+            showCancelButton: true,
+            html: renderToString(<HTMLContent />)
+        }).then((result) => {
+            if (result.isConfirmed) {
+                saveDOB();
+            }
+        });
+    }
+
 
 
     return (
@@ -245,7 +282,14 @@ function ParticipantCard({ database, participantId, index, setShowBookSession2, 
                     <span className="field-label">Age range / Gender</span><span>{participantInfo['age_range'] + " / " + participantInfo['gender']}</span>
                 </div>
                 <div className="participant-attribute-container">
-                    <span className="field-label">Date of birth</span><span>{participantInfo['date_of_birth'].substring(0, 10)}</span>
+                    <span className="field-label">Date of birth</span><span>{participantInfo['date_of_birth'].substring(0, 10)}
+                        <a className="copy-email-link fas fa-edit"
+                            title="Update Date of Birth"
+                            onClick={(e) => {
+                                e.preventDefault();
+                                updateDOB();
+                            }} target="_blank" />
+                    </span>
                 </div>
                 <div className="participant-attribute-container">
                     <span className="field-label">Country, State</span><span>{participantInfo['country_of_residence'] + ", " + participantInfo['state_of_residence']}</span>
@@ -524,7 +568,7 @@ function ParticipantCard({ database, participantId, index, setShowBookSession2, 
                 </div>
 
                 {!participantInfo['icf'] &&
-                    !["Rejected", "Withdrawn", "Not Selected"].includes(participantInfo['status']) &&
+                    !["Rejected", "Withdrawn", "Not Selected"].includes(participantInfo['status']) && participantInfo['unsubscribed_comms'] !== "Yes" &&
                     <div className="participant-attribute-container">
                         <span className="field-label">Communication</span>
                         {
@@ -535,7 +579,7 @@ function ParticipantCard({ database, participantId, index, setShowBookSession2, 
                 }
 
                 {participantInfo['icf'] &&
-                    participantInfo['document_approval'] != "Pass" &&
+                    participantInfo['document_approval'] != "Pass" && participantInfo['unsubscribed_comms'] !== "Yes" &&
                     !["Contacted", "Rejected", "Withdrawn", "Completed", "Not Selected", "Duplicate"].includes(participantInfo['status']) &&
                     <div className="participant-attribute-container">
                         <span className="field-label">Communication</span>
@@ -546,7 +590,7 @@ function ParticipantCard({ database, participantId, index, setShowBookSession2, 
                 }
 
                 {participantInfo['icf'] &&
-                    participantInfo['document_approval'] == "Pass" &&
+                    participantInfo['document_approval'] == "Pass" && participantInfo['unsubscribed_comms'] !== "Yes" &&
                     !["Rejected", "Withdrawn", "Completed", "Not Selected", "Duplicate"].includes(participantInfo['status']) &&
                     <div className="participant-attribute-container">
                         <span className="field-label">Communication</span>

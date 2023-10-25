@@ -45,6 +45,9 @@ function MainPage() {
       var allPhones = [];
       var duplicatePhones = [];
 
+      // Added by Zoltan to check the duplicates 2023-10-25
+      var emailCollection = {};
+
       for (let participantId in temp['participants']) {
         let participant = temp['participants'][participantId];
 
@@ -57,7 +60,6 @@ function MainPage() {
         let email = participant['email'];
         if (allEmails.includes(email)) {
           duplicateEmails.push(email);
-          
         } else {
           allEmails.push(email);
         }
@@ -68,9 +70,26 @@ function MainPage() {
         } else {
           allPhones.push(phone);
         }
+
+
+        // Added by Zoltan to check the duplicates 2023-10-25
+        let duplicateStatus = participant['status'] == 'Duplicate' ? 'Duplicate' : 'Not duplicate';
+        if (participant['registered_as'] != 'parent') {
+
+          if (!emailCollection[email]) {
+            emailCollection[email] = { [duplicateStatus]: 1 }
+          } else {
+
+            if (!emailCollection[email][duplicateStatus]) {
+              emailCollection[email][duplicateStatus] = 0;
+            } else {
+              emailCollection[email][duplicateStatus]++;
+            }
+
+          }
+        }
       }
 
-      
 
       for (let participantId in temp['participants']) {
         let participant = temp['participants'][participantId];
@@ -149,31 +168,42 @@ function MainPage() {
           highlightReason.push("Missing phase");
         }
 
-        let allPpts = {}
-
         /* Added by German, used to filter duplicates
+        let allPpts = {}
         if (temp['participants'][participantId]['email_counter'] == 2){
-          
+
           let dupIDs = temp['participants'][participantId]['dup_ids'];
-          
+
           dupIDs.forEach(key =>{
             if(temp['participants'][key]['date_of_birth'] === temp['participants'][participantId]['date_of_birth']){
               allPpts[key] = temp['participants'][key];
             }
           })
-          
-          
+
+
           if(Object.keys(allPpts).length>1){
             const hasDuplicate = Object.keys(allPpts).some(key => allPpts[key]['status'] === "Duplicate" || allPpts[key]['status'] === "Rejected" || allPpts[key]['status'] === "Withdrawn");
-            
+
             if(!hasDuplicate){
-              highlightReason.push("Duplicated emails");    
+              highlightReason.push("Duplicated emails");
             }
           }
-          
-          
+
+
         }
         */
+
+        // Added by Zoltan to check the duplicates 2023-10-25
+        if (participant['registered_as'] != 'parent') {
+          if ((emailCollection[email]['Not duplicate'] || 0) > 1 && participant['status'] != "Duplicate") {
+            if (temp['participants'][participantId]['highlight_reason']) {
+              temp['participants'][participantId]['highlight_reason'].push("Possible duplicate");
+            } else {
+              temp['participants'][participantId]['highlight_reason'] = ["Possible duplicate"];
+              temp['participants'][participantId]['highlighted'] = true;
+            }
+          }
+        }
 
 
         if (highlightReason != "") {
@@ -184,7 +214,7 @@ function MainPage() {
 
       }
 
-      
+
       const dateNow = parseInt(format(new Date(), "yyyyMMdd"));
       var sessionDictionary = {};
       for (let sessionId in temp['timeslots']) {

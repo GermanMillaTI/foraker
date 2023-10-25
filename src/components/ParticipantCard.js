@@ -601,7 +601,7 @@ function ParticipantCard({ database, participantId, index, setShowBookSession2, 
 
             {((participantInfo['icf'] &&
                 participantInfo['document_approval'] == "Pass" &&
-                !["Rejected", "Withdrawn", "Completed", "Not Selected"].includes(participantInfo['status'])) ||
+                !["Rejected", "Withdrawn", "Completed", "Not Selected", "Duplicate"].includes(participantInfo['status'])) ||
                 nrOfTimeslotsOfParticipant > 0) &&
                 <div className="participant-card-column column-4">
                     <span className="participant-attribute-header">Sessions {participantInfo['external_id'] ? " (" + participantInfo['external_id'] + ")" : ""}</span>

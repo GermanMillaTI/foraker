@@ -47,9 +47,14 @@ function MainPage() {
 
       // Added by Zoltan to check the duplicates 2023-10-25
       var emailCollection = {};
+      var phoneCollection = {};
+      var nameCollection = {};
 
       for (let participantId in temp['participants']) {
         let participant = temp['participants'][participantId];
+
+        //Added by German, creating full name as a new property
+        temp['participants'][participantId]['full_name'] = temp['participants'][participantId]['first_name'] + " " + temp['participants'][participantId]['last_name'];
 
         if (!participant['date']) {
           console.log("Removing: " + participantId);
@@ -58,6 +63,8 @@ function MainPage() {
         }
 
         let email = participant['email'];
+        let phoneNumber = participant['phone'];
+        let fullName = participant['first_name'] + " " + participant['last_name'];
         if (allEmails.includes(email)) {
           duplicateEmails.push(email);
         } else {
@@ -73,29 +80,47 @@ function MainPage() {
 
 
         // Added by Zoltan to check the duplicates 2023-10-25
-        let duplicateStatus = (participant['status'] == 'Duplicate' || participant['status'] == 'Rejected' || participant['status'] == 'Withdrawn' || participant['status'] == 'Completed') ? 'Duplicate' : 'Not duplicate';
+        let duplicateStatus = (participant['status'] == 'Duplicate' || participant['status'] == 'Rejected' || participant['status'] == 'Withdrawn') ? 'Duplicate' : 'Not duplicate';
         if (participant['registered_as'] != 'parent') {
 
           if (!emailCollection[email]) {
             emailCollection[email] = { [duplicateStatus]: 1 }
-
           } else {
-
             if (!emailCollection[email][duplicateStatus]) {
               emailCollection[email][duplicateStatus] = 0;
             } else {
               emailCollection[email][duplicateStatus]++;
-
             }
-
-
           }
+        }
 
+        if (participant['registered_as'] != 'parent') {
 
+          if (!phoneCollection[phoneNumber]) {
+            phoneCollection[phoneNumber] = { [duplicateStatus]: 1 }
+          } else {
+            if (!phoneCollection[phoneNumber][duplicateStatus]) {
+              phoneCollection[phoneNumber][duplicateStatus] = 0;
+            } else {
+              phoneCollection[phoneNumber][duplicateStatus]++;
+            }
+          }
+        }
+
+        if (participant['registered_as'] != 'parent') {
+
+          if (!nameCollection[fullName]) {
+            nameCollection[fullName] = { [duplicateStatus]: 1 }
+          } else {
+            if (!nameCollection[fullName][duplicateStatus]) {
+              nameCollection[fullName][duplicateStatus] = 0;
+            } else {
+              nameCollection[fullName][duplicateStatus]++;
+            }
+          }
         }
       }
 
-      console.log(emailCollection)
 
       for (let participantId in temp['participants']) {
         let participant = temp['participants'][participantId];
@@ -105,6 +130,8 @@ function MainPage() {
 
         let phone = participant['phone'];
         temp['participants'][participantId]['phone_counter'] = duplicatePhones.includes(phone) ? 2 : 1;
+
+        let fullName = participant['full_name'];
 
         let ageRange = calculateAgeRange(participant['date_of_birth']);
         temp['participants'][participantId]['age_range'] = ageRange;
@@ -173,11 +200,11 @@ function MainPage() {
 
         // Added by Zoltan to check the duplicates 2023-10-25
         if (participant['registered_as'] != 'parent') {
-          if ((emailCollection[email]['Not duplicate'] || 0) > 1 && participant['status'] != "Duplicate" && participant['status'] != "Rejected" && participant['status'] != "Withdrawn") {
+          if ((emailCollection[email]['Not duplicate'] || 0) > 1 && (phoneCollection[phone]['Not duplicate'] || 0) > 1 && (nameCollection[fullName]['Not duplicate'] || 0) > 1 && participant['status'] != "Duplicate" && participant['status'] != "Rejected" && participant['status'] != "Withdrawn") {
             if (temp['participants'][participantId]['highlight_reason']) {
-              temp['participants'][participantId]['highlight_reason'].push("Possible duplicate");
+              temp['participants'][participantId]['highlight_reason'].push("Potential duplicate");
             } else {
-              temp['participants'][participantId]['highlight_reason'] = ["Possible duplicate"];
+              temp['participants'][participantId]['highlight_reason'] = ["Potential duplicate"];
               temp['participants'][participantId]['highlighted'] = true;
             }
           }

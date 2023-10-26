@@ -73,23 +73,29 @@ function MainPage() {
 
 
         // Added by Zoltan to check the duplicates 2023-10-25
-        let duplicateStatus = (participant['status'] == 'Duplicate' || participant['status'] == 'Rejected' || participant['status'] == 'Withdrawn') ? 'Duplicate' : 'Not duplicate';
+        let duplicateStatus = (participant['status'] == 'Duplicate' || participant['status'] == 'Rejected' || participant['status'] == 'Withdrawn' || participant['status'] == 'Completed') ? 'Duplicate' : 'Not duplicate';
         if (participant['registered_as'] != 'parent') {
 
           if (!emailCollection[email]) {
             emailCollection[email] = { [duplicateStatus]: 1 }
+
           } else {
 
             if (!emailCollection[email][duplicateStatus]) {
               emailCollection[email][duplicateStatus] = 0;
             } else {
               emailCollection[email][duplicateStatus]++;
+
             }
 
+
           }
+
+
         }
       }
 
+      console.log(emailCollection)
 
       for (let participantId in temp['participants']) {
         let participant = temp['participants'][participantId];
@@ -166,7 +172,7 @@ function MainPage() {
 
 
         // Added by Zoltan to check the duplicates 2023-10-25
-        /*if (participant['registered_as'] != 'parent') {
+        if (participant['registered_as'] != 'parent') {
           if ((emailCollection[email]['Not duplicate'] || 0) > 1 && participant['status'] != "Duplicate" && participant['status'] != "Rejected" && participant['status'] != "Withdrawn") {
             if (temp['participants'][participantId]['highlight_reason']) {
               temp['participants'][participantId]['highlight_reason'].push("Possible duplicate");
@@ -175,7 +181,7 @@ function MainPage() {
               temp['participants'][participantId]['highlighted'] = true;
             }
           }
-        }*/
+        }
 
 
         if (highlightReason != "") {

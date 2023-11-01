@@ -19,6 +19,7 @@ import StatsSessions from './StatsSessions';
 import Bonuses from './Bonuses';
 import Bins from './Bins';
 import ActivityLog from './ActivityLog';
+import UsersAdmin from './UsersAdmin'
 
 function MainPage() {
   const [database, setDatabase] = useState({});
@@ -417,7 +418,7 @@ function MainPage() {
         {showBins && <Bins database={database} setShowBins={setShowBins} />}
         {showBonuses && <Bonuses database={database} setShowBonuses={setShowBonuses} />}
         {showStatsSessions && <StatsSessions database={database} setActivePage={setActivePage} setShowStatsSessions={setShowStatsSessions} setFilterDataFromStats={setFilterDataFromStats} />}
-
+        {activePage == "UsersAdmin" && (<UsersAdmin database={database}></UsersAdmin>)}
       </div>
     </div>
   );

@@ -66,6 +66,7 @@ function Navbar({ database, setActivePage, setShowStats, setShowStatsSessions, s
         setIdForLog("");
         setTimeslotforLog("");
       }}>Activity log</button>}
+      {role == "admin" && <button className="navbar-button" onClick={() => setActivePage("UsersAdmin")}>Users Administration</button>}
       <button className="navbar-button" onClick={handleLogout}>Logout</button>
     </div>
   );

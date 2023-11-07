@@ -10,7 +10,6 @@ import Scheduler from './Scheduler';
 import SchedulerOverview from './SchedulerOverview';
 import SchedulerExternal from './SchedulerExternal';
 import External from './External';
-import Goodwork from './Goodwork';
 import CheckDocuments from './CheckDocuments';
 import UpdateSession from './UpdateSession';
 import Stats from './Stats';
@@ -193,12 +192,6 @@ function MainPage() {
           highlightReason.push("Wrong document status");
         }
 
-        if (!participant['phase'] && ["Contacted", "Scheduled", "Completed"].includes(participant['status'])) {
-          highlightReason.push("Missing phase");
-        }
-
-
-
         // Added by Zoltan to check the duplicates 2023-10-25
         if (participant['registered_as'] != 'parent') {
           if ((emailCollection[email]['Not duplicate'] || 0) > 1 && (phoneCollection[phone]['Not duplicate'] || 0) > 1 && (nameCollection[fullName]['Not duplicate'] || 0) > 1 && participant['status'] != "Duplicate" && participant['status'] != "Rejected" && participant['status'] != "Withdrawn") {
@@ -249,32 +242,6 @@ function MainPage() {
             temp['participants'][participantId]['highlight_reason'].push("'Rescheduled' session in the future");
           } else {
             temp['participants'][participantId]['highlight_reason'] = ["'Rescheduled' session in the future"];
-            temp['participants'][participantId]['highlighted'] = true;
-          }
-        }
-
-        if (participant['phase'] == 2 && (sessionDictionary[participantId]['Scheduled'] || 0) > 1 && status == 'Scheduled') {
-          if (temp['participants'][participantId]['highlight_reason']) {
-            if (!temp['participants'][participantId]['highlight_reason'].includes("There are more 'Scheduled' sessions")) {
-              temp['participants'][participantId]['highlight_reason'].push("There are more 'Scheduled' sessions");
-            }
-          } else {
-            temp['participants'][participantId]['highlight_reason'] = ["There are more 'Scheduled' sessions"];
-            temp['participants'][participantId]['highlighted'] = true;
-          }
-        }
-
-        if (participant['phase'] == 2 && (
-          (sessionDictionary[participantId]['Scheduled'] || 0) +
-          (sessionDictionary[participantId]['Checked In'] || 0) +
-          (sessionDictionary[participantId]['Completed'] || 0)
-        ) > 1) {
-          if (temp['participants'][participantId]['highlight_reason']) {
-            if (!temp['participants'][participantId]['highlight_reason'].includes("There are more sessions for phase 2")) {
-              temp['participants'][participantId]['highlight_reason'].push("There are more sessions for phase 2");
-            }
-          } else {
-            temp['participants'][participantId]['highlight_reason'] = ["There are more sessions for phase 2"];
             temp['participants'][participantId]['highlighted'] = true;
           }
         }
@@ -346,12 +313,10 @@ function MainPage() {
     var age = Math.abs(year - 1970);
 
     let ageRange = "";
-    if (age < 13) {
-      ageRange = "<13"
-    } else if (age >= 13 && age <= 14) {
-      ageRange = "13-14"
-    } else if (age >= 15 && age <= 20) {
-      ageRange = "15-20"
+    if (age < 18) {
+      ageRange = "<18"
+    } else if (age >= 18 && age <= 20) {
+      ageRange = "18-20"
     } else if (age >= 21 && age <= 30) {
       ageRange = "21-30"
     } else if (age >= 31 && age <= 40) {
@@ -411,7 +376,6 @@ function MainPage() {
         {activePage == "Scheduler Overview" && (<SchedulerOverview database={database} />)}
         {activePage == "Scheduler External" && (<SchedulerExternal database={database} />)}
         {activePage == "External" && (<External database={database} setCheckDocuments />)}
-        {activePage == "Goodwork" && (<Goodwork database={database} />)}
         {checkDocuments && <CheckDocuments database={database} checkDocuments={checkDocuments} setCheckDocuments={setCheckDocuments} />}
         {updateSession && <UpdateSession database={database} updateSession={updateSession} setUpdateSession={setUpdateSession} checkDocuments={checkDocuments} setCheckDocuments={setCheckDocuments} setActivityLog={setActivityLog} setIdForLog={setIdForLog} setTimeslotforLog={setTimeslotforLog} timeslotforLog={timeslotforLog} />}
         {showStats && <Stats database={database} setActivePage={setActivePage} setShowStats={setShowStats} setFilterDataFromStats={setFilterDataFromStats} />}

@@ -39,7 +39,6 @@ function Scheduler({ database, setUpdateSession }) {
   const [highlightedTimeslots, setHighlightedTimeslots] = useState([]);
   const [filterData, setFilterData] = useReducer(filterReducer, {
     date: [format(new Date(), "yyyy-MM-dd")],
-    phase: Constants['phases'],
     sessionStatuses: ['Blank', ...Constants['sessionStatuses']],
     participantStatuses: ['Blank', ...Constants['participantStatuses']]
   });
@@ -84,9 +83,6 @@ function Scheduler({ database, setUpdateSession }) {
           } else if (c == 3) {
             temp.push('Participant status');
             continue;
-          } else if (c == 7) {
-            temp.push('Phase');
-            continue;
           }
         }
         if (c == 4 && r > 0) {
@@ -116,12 +112,10 @@ function Scheduler({ database, setUpdateSession }) {
 
     const participantId = session['participant_id'];
     const participant = database['participants'][participantId] || {};
-    const phase = participant['phase'] ? 'Phase ' + participant['phase'] : 'Blank';
     const participantStatus = participant['status'] || 'Blank';
 
     return filterData['participantStatuses'].includes(participantStatus) &&
       filterData['sessionStatuses'].includes(sessionStatus) &&
-      filterData['phase'].includes(phase) &&
       filterData['date'].includes(timeslotDate);
   }
 
@@ -173,16 +167,6 @@ function Scheduler({ database, setUpdateSession }) {
               <th>Participant ID</th>
               <th>Name</th>
               <th>Vision corr.</th>
-              <th>
-                <TableFilter
-                  filterName="Phase"
-                  alt="phase"
-                  values={Constants['phases']}
-                  filterData={filterData}
-                  setFilterData={setFilterData}
-                  selectedEach={false}
-                />
-              </th>
               <th>Session comments</th>
               <th>Functions</th>
             </tr>

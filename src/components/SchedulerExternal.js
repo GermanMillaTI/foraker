@@ -86,9 +86,6 @@ function SchedulerExternal({ database }) {
                 Session
               </th>
               <th>
-                Phase
-              </th>
-              <th>
                 Demo Bin
               </th>
             </tr>
@@ -138,12 +135,6 @@ function SchedulerExternal({ database }) {
                           database['participants'][database['timeslots'][key]['participant_id']]['sessions'][key]
                           : "")
                         : ""}
-                    </td>
-                    <td className="center-tag">
-                      {database['timeslots'][key]['participant_id'] ?
-                        (database['participants'][database['timeslots'][key]['participant_id']]['phase'] ? "Phase " + database['participants'][database['timeslots'][key]['participant_id']]['phase'] : "")
-                        : ""
-                      }
                     </td>
                     <td className="center-tag">
                       {database['timeslots'][key]['demo_bin']}

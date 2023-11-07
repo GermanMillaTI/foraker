@@ -16,7 +16,6 @@ const filterReducer = (state, event) => {
       ageRanges: Constants['listOfAgeRanges'],
       statuses: ["Blank", ...Constants['participantStatuses']],
       icfs: ['Yes', 'No'],
-      phases: Constants['phases'],
       demoBinStatuses: Constants['demoBinStatuses'],
       sources: Object.keys(Constants['sources']),
       documentStatuses: ["Blank", ...Constants['documentStatuses']],
@@ -88,7 +87,6 @@ function ParticipantFilter({ database, setShownParticipants, filterDataFromStats
     ageRanges: Constants['listOfAgeRanges'],
     statuses: ["Blank", ...Constants['participantStatuses']],
     icfs: ['Yes', 'No'],
-    phases: Constants['phases'],
     demoBinStatuses: Constants['demoBinStatuses'],
     sources: Object.keys(Constants['sources']),
     documentStatuses: ["Blank", ...Constants['documentStatuses']],
@@ -113,11 +111,10 @@ function ParticipantFilter({ database, setShownParticipants, filterDataFromStats
     return {
       ethnicities: Object.assign({}, ...Constants['ethnicities'].map(k => ({ [k]: 0 }))),
       multipleEthnicities: { 'Yes': 0, 'No': 0 },
-      ageRanges: Object.assign({}, ...[...['<13', ...Constants['listOfAgeRanges']], ...['75+']].map(k => ({ [k]: 0 }))),
+      ageRanges: Object.assign({}, ...[...['<18', ...Constants['listOfAgeRanges']], ...['75+']].map(k => ({ [k]: 0 }))),
       genders: Object.assign({}, ...Constants['genders'].map(k => ({ [k]: 0 }))),
       statuses: Object.assign({}, ...Constants['participantStatuses'].map(k => ({ [k || "Blank"]: 0 }))),
       icfs: { Yes: 0, No: 0 },
-      phases: Object.assign({}, ...Constants['phases'].map(k => ({ [k]: 0 }))),
       demoBinStatuses: Object.assign({}, ...Constants['demoBinStatuses'].map(k => ({ [k]: 0 }))),
       sources: Object.assign({}, ...Object.keys(Constants['sources']).map(k => ({ [k]: 0 }))),
       documentStatuses: Object.assign({}, ...Constants['documentStatuses'].map(k => ({ [k || "Blank"]: 0 }))),
@@ -149,7 +146,6 @@ function ParticipantFilter({ database, setShownParticipants, filterDataFromStats
     let email = participantInfo['email'].toLowerCase();
     let phone = participantInfo['phone'].toLowerCase();
     let visionCorrection = participantInfo['vision_correction'];
-    let phase = participantInfo['phase'] ? "Phase " + participantInfo['phase'] : 'Blank';
     let source = participantInfo['source'] || 'Other';
     let demoBinStatus = participantInfo['open_demo_bin'] ? 'Open' : 'Closed';
     let highlighted = participantInfo['highlighted'] ? 'Yes' : 'No';
@@ -229,7 +225,6 @@ function ParticipantFilter({ database, setShownParticipants, filterDataFromStats
       filterData['visionCorrections'].includes(visionCorrection) &&
       icfSignedIsOk &&
       filterData['statuses'].includes(status) &&
-      filterData['phases'].includes(phase) &&
       filterData['demoBinStatuses'].includes(demoBinStatus) &&
       filterData['sources'].includes(source) &&
       filterData['documentStatuses'].includes(documentStatus) &&
@@ -263,7 +258,6 @@ function ParticipantFilter({ database, setShownParticipants, filterDataFromStats
       let visionCorrection = participantInfo['vision_correction'];
       let parentRegistered = participantInfo['parent_first_name'] ? "Yes" : "No";
       let hasNewDocument = participantInfo['documents']['pending'] ? "Yes" : "No";
-      let phase = participantInfo['phase'] ? "Phase " + participantInfo['phase'] : 'Blank';
       let demoBinStatus = participantInfo['open_demo_bin'] ? 'Open' : 'Closed';
       let source = participantInfo['source'] || 'Other';
       let highlighted = participantInfo['highlighted'] ? 'Yes' : 'No';
@@ -282,7 +276,6 @@ function ParticipantFilter({ database, setShownParticipants, filterDataFromStats
 
       output['multipleEthnicities'][multipleEthnicities]++;
       output['genders'][gender]++;
-      output['phases'][phase]++;
       output['demoBinStatuses'][demoBinStatus]++;
       output['sources'][source]++;
       output['visionCorrections'][visionCorrection]++;
@@ -331,10 +324,10 @@ function ParticipantFilter({ database, setShownParticipants, filterDataFromStats
       </div>
       <div className="filter-element gap">
         <span>Date of session(s)</span>
-        <input name="dateOfSessionsFrom" type="date" className="main-input" onChange={setFilterData} min="2023-04-14" max="2024-12-31" value={filterData['dateOfSessionsFrom'] || ""} />
+        <input name="dateOfSessionsFrom" type="date" className="main-input" onChange={setFilterData} min="2023-07-13" max="2024-12-31" value={filterData['dateOfSessionsFrom'] || ""} />
       </div>
       <div className="filter-element">
-        <input name="dateOfSessionsTo" type="date" className="main-input" onChange={setFilterData} min="2023-04-15" max="2024-12-31" value={filterData['dateOfSessionsTo'] || ""} />
+        <input name="dateOfSessionsTo" type="date" className="main-input" onChange={setFilterData} min="2023-07-13" max="2024-12-31" value={filterData['dateOfSessionsTo'] || ""} />
       </div>
       <div className="filter-element">
         <button name="resetFilter" className="reset-filter-button" onClick={setFilterData}>Reset filter</button>
@@ -371,7 +364,7 @@ function ParticipantFilter({ database, setShownParticipants, filterDataFromStats
     <div className="filter-container">
       <div className="filter-element">
         <span className="filter-container-header">Age range</span>
-        {[...['<13', ...Constants['listOfAgeRanges']], ...['75+']].map((val, i) => {
+        {[...['<18', ...Constants['listOfAgeRanges']], ...['75+']].map((val, i) => {
           return <div key={"filter-age" + i} className="filter-object">
             <input id={"filter-" + val} name={val} type="checkbox" alt="ageRanges" onChange={setFilterData} checked={filterData['ageRanges'].includes(val)} />
             <label htmlFor={"filter-" + val}>{val + " (" + filterStats['ageRanges'][val] + ")"}</label>
@@ -454,17 +447,6 @@ function ParticipantFilter({ database, setShownParticipants, filterDataFromStats
           <label htmlFor="filter-docs-no">No ({filterStats['newDocuments']['No']})</label>
           <button name="No" alt="newDocuments" className="filter-this-button" onClick={setFilterData}>!</button>
         </div>
-      </div>
-
-      <div className="filter-element gap">
-        <span className="filter-container-header">Phase</span>
-        {Constants['phases'].map((val) => {
-          return <div className="filter-object">
-            <input id={"filter-phases-" + val} name={val} type="checkbox" alt="phases" onChange={setFilterData} checked={filterData['phases'].includes(val)} />
-            <label htmlFor={"filter-phases-" + val}>{val} ({filterStats['phases'][val]})</label>
-            <button name={val} alt="phases" className="filter-this-button" onClick={setFilterData}>!</button>
-          </div>
-        })}
       </div>
 
       <div className="filter-element gap">

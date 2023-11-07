@@ -143,14 +143,7 @@
     box-shadow: 1px 2px 5px rgba(0, 0, 0, .31);
     cursor: pointer;
     outline: none;
-}
-
-.lite-session {
     background-color: #264e82;
-}
-
-.full-session {
-    background-color: #b92424;
 }
 
 .book-session-button {
@@ -274,4 +267,8 @@
     color: white;
     text-align: center;
     font-weight: bold;
+}
+
+.denali-session-from-past {
+    background-color: rgba(247, 161, 2, 0.315);
 }

@@ -9,7 +9,7 @@ const Constants = {
     "Rejected",
     "Duplicate",
     "Withdrawn",
-    "Qualified for upcoming phase"
+    "Denali PPT"
   ],
   genders: [
     "Male",
@@ -18,8 +18,7 @@ const Constants = {
     "Prefer not to say"
   ],
   listOfAgeRanges: [
-    "13-14",
-    "15-20",
+    "18-20",
     "21-30",
     "31-40",
     "41-50",
@@ -81,9 +80,10 @@ const Constants = {
     "Afr./Afr-Am./Black": [
       "African/African-American/Black"
     ],
-    "Med / Mid East": [
+    "Med / Mid East & N. European": [
       "Middle Eastern/North African",
-      "White - Southern European"
+      "White - Southern European",
+      "White - Northern European"
     ],
     "Latin / S. Amer": [
       "Hispanic/Latin American/Spanish"
@@ -94,17 +94,18 @@ const Constants = {
     "South Asian": [
       "South Asian"
     ],
-    "N. European": [
-      "White - Northern European"
+    "Southeast Asian": [
+      "Southeast Asian"
     ],
     "Total": [
       "African/African-American/Black",
       "Middle Eastern/North African",
       "White - Southern European",
+      "White - Northern European",
       "Hispanic/Latin American/Spanish",
       "East Asian",
       "South Asian",
-      "White - Northern European"
+      "Southeast Asian"
     ]
   },
   possibleNumberOfSessions: [
@@ -149,31 +150,25 @@ const Constants = {
     "African/African-American/Black": "1",
     "Middle Eastern/North African": "2",
     "White - Southern European": "2",
+    "White - Northern European": "2",
     "Hispanic/Latin American/Spanish": "3",
     "East Asian": "4",
     "South Asian": "5",
-    "White - Northern European": "6"
+    "Southeast Asian": "6"
   },
   demoBinsAgeRanges: {
-    "13-14": "1",
-    "15-20": "2",
-    "21-30": "3",
-    "31-40": "4",
-    "41-50": "5",
-    "51-60": "6",
-    "61-70": "7",
-    "71-75": "8"
+    "18-20": "1",
+    "21-30": "2",
+    "31-40": "3",
+    "41-50": "4",
+    "51-60": "5",
+    "61-70": "6",
+    "71-75": "7"
   },
   demoBinsGenders: {
     "Female": "0",
     "Male": "1"
   },
-  phases: [
-    "Blank",
-    "Phase 1",
-    "Phase 2",
-    "Phase 2 Recall"
-  ],
   sources: {
     "goodwork": "Goodwork",
     "recruiter1": "Recruiter 1",
@@ -194,21 +189,21 @@ const Constants = {
     "East Asian": "EastAsian",
     "Hispanic/Latin American/Spanish": "LatinSAmer",
     "Native Hawaiian/Pacific Islander/Indigenous people of Oceania": "",
-    "Middle Eastern/North African": "MedMidEast",
+    "Middle Eastern/North African": "MedMidEast&NEuropean",
     "South Asian": "SouthAsian",
-    "Southeast Asian": "",
-    "White - Northern European": "NEuropean",
-    "White - Southern European": "MedMidEast",
+    "Southeast Asian": "SoutheastAsian",
+    "White - Northern European": "MedMidEast&NEuropean",
+    "White - Southern European": "MedMidEast&NEuropean",
     "Prefer not to state": "",
     "Other": ""
   },
   bonusEthnicities2: {
     "Afr./Afr-Am./Black": "AfrAfrAmBlack",
-    "Med / Mid East": "MedMidEast",
+    "Med / Mid East & N. European": "MedMidEast&NEuropean",
     "East Asian": "EastAsian",
     "Latin / S. Amer": "LatinSAmer",
     "South Asian": "SouthAsian",
-    "N. European": "NEuropean"
+    "Southeast Asian": "SoutheastAsian"
   },
   demoBinStatuses: [
     'Open',

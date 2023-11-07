@@ -102,12 +102,6 @@
     color: rgb(0, 121, 16);
 }
 
-.goodwork-participants-only-filter,
-.phase-filter {
-    margin-top: .5em;
-    color: red;
-}
-
 .stats-demo-bin-cell {
     position: relative;
 }

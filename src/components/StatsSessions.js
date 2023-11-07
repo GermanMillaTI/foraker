@@ -26,11 +26,9 @@ const filterReducer = (state, event) => {
 function StatsSessions({ database, setActivePage, setShowStatsSessions, setFilterDataFromStats }) {
     const [stats, setStats] = useState(getDefaultNumbers());
     const [stats2, setStats2] = useState(getDefaultNumbers());
-    const [goodWorkOnly, setGoodWorkOnly] = useState(database['users'][auth.currentUser.uid] == "goodwork");
     const [filterData, setFilterData] = useReducer(filterReducer, {
         statuses: ["Scheduled", "Checked In"],
-        statuses2: ["Completed"],
-        phases: Constants['phases']
+        statuses2: ["Completed"]
     });
 
     function getDefaultNumbers() {
@@ -56,9 +54,8 @@ function StatsSessions({ database, setActivePage, setShowStatsSessions, setFilte
             ageRanges: ageRange,
             statuses: ["Blank", ...Constants['participantStatuses']],
             icfs: ['Yes', 'No'],
-            phases: filterData['phases'],
             demoBinStatuses: Constants['demoBinStatuses'],
-            sources: goodWorkOnly ? ['goodwork'] : Object.keys(Constants['sources']),
+            sources: Object.keys(Constants['sources']),
             documentStatuses: ["Blank", ...Constants['documentStatuses']],
             visionCorrections: Constants['visionCorrections'],
             parentRegistered: ['Yes', 'No'],
@@ -90,8 +87,6 @@ function StatsSessions({ database, setActivePage, setShowStatsSessions, setFilte
             let ethnicities = participant['ethnicities'].split(',');
             let ethValue = 1 / ethnicities.length;
             let status = session['status'] || "Blank";
-            let phase = participant['phase'] ? "Phase " + participant['phase'] : "Blank";
-            let goodWorkParticipant = participant['source'] == 'goodwork';
 
             // The following loop fills up the object of stats2 -- it's used for the backgound highlights only...
             for (let x = 0; x < ethnicities.length; x++) {
@@ -99,9 +94,6 @@ function StatsSessions({ database, setActivePage, setShowStatsSessions, setFilte
                 if (!Constants['listOfAgeRanges'].includes(ageRange)) continue;
                 tempStats2[ethnicity][ageRange][gender][status] += ethValue;
             }
-
-            if (!filterData['phases'].includes(phase)) return;
-            if (goodWorkOnly && !goodWorkParticipant) return;
 
             for (let x = 0; x < ethnicities.length; x++) {
                 let ethnicity = ethnicities[x].trim();
@@ -112,7 +104,7 @@ function StatsSessions({ database, setActivePage, setShowStatsSessions, setFilte
 
         setStats(tempStats);
         setStats2(tempStats2);
-    }, [goodWorkOnly, filterData['phases'].length])
+    }, [])
 
     function getBackgroundColor(number, columnName, totalRow) {
         return 0;
@@ -181,24 +173,6 @@ function StatsSessions({ database, setActivePage, setShowStatsSessions, setFilte
                         return <div key={"filter-status" + i}>
                             <input id={"stats-filter2-participant-status-" + (val || "Blank")} name={val || "Blank"} type="checkbox" alt="statuses2" onChange={setFilterData} checked={val == "" ? filterData['statuses2'].includes("Blank") : filterData['statuses2'].includes(val)} />
                             <label className="second-number" htmlFor={"stats-filter2-participant-status-" + (val || "Blank")}>{(val || "Blank")}</label>
-                        </div>
-                    })}
-                </div>
-
-                {(database['users'][auth.currentUser.uid] == "admin") &&
-                    <div className="stats-filter-element">
-                        <div className="goodwork-participants-only-filter">
-                            <input id="stats-filter2-participant-status-goodwork-only" type="checkbox" onChange={(e) => setGoodWorkOnly(e.target.checked)} checked={goodWorkOnly} />
-                            <label htmlFor="stats-filter2-participant-status-goodwork-only">Goodwork participants only</label>
-                        </div>
-                    </div>
-                }
-
-                <div className="stats-filter-element phase-filter">
-                    {Constants['phases'].map((val, i) => {
-                        return <div key={"filter-status" + i}>
-                            <input id={"stats-filter2-phase-" + val} name={val} type="checkbox" alt="phases" onChange={setFilterData} checked={filterData['phases'].includes(val)} />
-                            <label htmlFor={"stats-filter2-phase-" + val}>{val.replace("Blank", "Phase NA")}</label>
                         </div>
                     })}
                 </div>

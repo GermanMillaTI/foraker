@@ -66,6 +66,9 @@ function SchedulerRow({ database, sessionId, index, array, setUpdateSession, hig
 
 
   function sendReminder(timeslotId) {
+    Swal.fire('Not available function yet...', '', '');
+    return;
+
     let pid = database['timeslots'][timeslotId]['participant_id'];
     let participantInfo = database['participants'][pid];
     Swal.fire({
@@ -152,9 +155,6 @@ function SchedulerRow({ database, sessionId, index, array, setUpdateSession, hig
       {participantId ?
         participantInfo['vision_correction']
         : ""}
-    </td>
-    <td className="center-tag">
-      {participantInfo['phase'] ? "Phase " + participantInfo['phase'] : ""}
     </td>
     <td>
       {database['timeslots'][sessionId]['comments']}

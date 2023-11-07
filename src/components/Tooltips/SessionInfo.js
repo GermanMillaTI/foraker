@@ -17,8 +17,7 @@ function SessionInfo({ database, participantId, sessionId }) {
         dateOfBirth: false,
         gender: false,
         ethnicity: false,
-        visionCorrection: false,
-        phase: false
+        visionCorrection: false
     }
 
     let clientParticipantInfo = {};
@@ -44,14 +43,13 @@ function SessionInfo({ database, participantId, sessionId }) {
         })
     }
 
-    if (clientParticipantInfo !== {} && externalId) {
+    if (clientParticipantInfo != {} && externalId) {
         // Check if the ppt or the session has different info from the client
         if (sessionInfo['demo_bin'] != clientParticipantInfo['db'] && clientParticipantInfo['db']) discrepancies['demoBin'] = true;
         if (participantInfo['date_of_birth'].substring(0, 10) != clientParticipantInfo['b']) discrepancies['dateOfBirth'] = true;
         if (participantInfo['gender'] != clientParticipantInfo['g']) discrepancies['gender'] = true;
         if (participantInfo['ethnicities'] != clientParticipantInfo['e']) discrepancies['ethnicity'] = true;
         if (participantInfo['vision_correction'] != clientParticipantInfo['v'] && clientParticipantInfo['v']) discrepancies['visionCorrection'] = true;
-        if (participantInfo['phase'] != clientParticipantInfo['p'] && clientParticipantInfo['p']) discrepancies['phase'] = true;
     }
     var discrepancy = Object.values(discrepancies).includes(true);
 
@@ -166,11 +164,6 @@ function SessionInfo({ database, participantId, sessionId }) {
                             <th>Vision corr.</th>
                             <td>{participantInfo['vision_correction']}</td>
                             {externalId && <td>{clientParticipantInfo['v'] || ""}</td>}
-                        </tr>
-                        <tr className={discrepancies['phase'] ? "session-item-discrepancy" : ""}>
-                            <th>Phase</th>
-                            <td>{participantInfo['phase'] ? "Phase " + participantInfo['phase'] : ""}</td>
-                            {externalId && <td>{clientParticipantInfo['p'] ? "Phase " + clientParticipantInfo['p'] : ""}</td>}
                         </tr>
                         <tr>
                             <th>Date of info</th>

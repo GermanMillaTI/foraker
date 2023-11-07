@@ -1,6 +1,6 @@
 {
-  "name": "denali",
-  "version": "22.0.0",
+  "name": "elbert",
+  "version": "1.0.0",
   "private": true,
   "dependencies": {
     "@emotion/react": "^11.11.0",

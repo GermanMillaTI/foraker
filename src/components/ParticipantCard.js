@@ -31,6 +31,8 @@ function ParticipantCard({ database, participantId, index, setShowBookSession2, 
     }
 
     function sendMail(pid, kind) {
+        Swal.fire('Not available function yet...', '', '');
+        return;
 
         let bonus = database['participants'][pid]['currently_offered_bonus'];
 
@@ -101,48 +103,13 @@ function ParticipantCard({ database, participantId, index, setShowBookSession2, 
         })
     }
 
-    function updateGoodworkComment(e) {
-        e.preventDefault();
-        let participantInfo = database['participants'][participantId];
-        let goodworkComment = participantInfo['goodwork_comment_internal'] || "";
-
-        Swal.fire({
-            title: 'Goodwork comment (' + participantId + ")",
-            html: '<textarea id="goodworkCommentInput" style="width: 20em; height: 10em; padding: .2em; font-size: 1em;">' + goodworkComment + '</textarea>',
-            showCancelButton: true,
-            confirmButtonText: 'Save',
-            allowEnterKey: true,
-            didOpen: () => {
-                let textarea = document.getElementById('goodworkCommentInput');
-                textarea.focus();
-                textarea.select();
-            }
-        }).then((result) => {
-            if (result.isConfirmed) {
-                let newValue = document.getElementById("goodworkCommentInput").value;
-                let path = "/participants/" + participantId;
-                let data = {
-                    goodwork_comment_internal: newValue
-                };
-                updateValue(path, data);
-                /*LogEvent({
-                    pid: participantId,
-                    action: "Goodwork comment: '" + newValue + "'"
-                })*/
-            }
-        }
-        )
-    }
-
     function updateDOB() {
         const pInfo = database['participants'][participantId];
         const dob = pInfo['date_of_birth'];
         let selectedDate = dob.substring(0, 10);
 
         const HTMLContent = () => {
-
-            return <input type="date" id="newDOB" defaultValue={selectedDate} ></input>
-
+            return <input type="date" id="newDOB" defaultValue={selectedDate} />
         }
 
         const saveDOB = () => {
@@ -278,17 +245,22 @@ function ParticipantCard({ database, participantId, index, setShowBookSession2, 
                         <span className="field-label">Unlisted ethnicity</span><span>{participantInfo['unlisted_ethnicity']}</span>
                     </div>
                 }
-                <div className="participant-attribute-container">
+                {participantInfo['status'] == 'Denali PPT' && <div className="participant-attribute-container">
+                    <span className="field-label">Gender</span><span>{participantInfo['gender']}</span>
+                </div>}
+                {participantInfo['status'] != 'Denali PPT' && <div className="participant-attribute-container">
                     <span className="field-label">Age range / Gender</span><span>{participantInfo['age_range'] + " / " + participantInfo['gender']}</span>
-                </div>
+                </div>}
+
                 <div className="participant-attribute-container">
                     <span className="field-label">Date of birth</span><span>{participantInfo['date_of_birth'].substring(0, 10)}
-                        <a className="copy-email-link fas fa-edit"
+                        {participantInfo['status'] != 'Denali PPT' && <a className="copy-email-link fas fa-edit"
                             title="Update Date of Birth"
                             onClick={(e) => {
                                 e.preventDefault();
                                 updateDOB();
                             }} target="_blank" />
+                        }
                     </span>
                 </div>
                 <div className="participant-attribute-container">
@@ -302,18 +274,6 @@ function ParticipantCard({ database, participantId, index, setShowBookSession2, 
                 <div className="participant-attribute-container">
                     <span className="field-label">Registration source</span>
                     <span>{Constants['sources'][(participantInfo['source'] || 'Other')]}</span>
-                    {participantInfo['source'] == "goodwork" &&
-                        <Tooltip
-                            disableInteractive
-                            TransitionProps={{ timeout: 100 }}
-                            componentsProps={{ tooltip: { sx: { width: '30em', minHeight: '3em', fontSize: '1.2em' }, } }}
-                            title={
-                                <span>{participantInfo['goodwork_comment_internal'] || ""}</span>
-                            }
-                        >
-                            <a className="copy-email-link fas fa-comment-dots" onClick={(e) => updateGoodworkComment(e)} target="_blank" />
-                        </Tooltip>
-                    }
                 </div>
 
                 <div className="participant-attribute-container">
@@ -430,7 +390,7 @@ function ParticipantCard({ database, participantId, index, setShowBookSession2, 
                     <span className="field-label">Documents</span>
 
                     <select className="participant-data-selector"
-                        disabled={nrOfTimeslotsOfParticipant > 0}
+                        disabled={nrOfTimeslotsOfParticipant > 0 || participantInfo['status'] == 'Denali PPT'}
                         onChange={(e) => {
                             updateValue("/participants/" + participantId, { document_approval: e.currentTarget.value });
                             LogEvent({
@@ -462,7 +422,8 @@ function ParticipantCard({ database, participantId, index, setShowBookSession2, 
                     <span className="field-label">Vision correction</span>
 
                     <select className="participant-data-selector min-width-selector"
-                        disabled={Object.keys(timeslotsOfParticipant).filter(timeslotId => timeslotsOfParticipant[timeslotId]['status'] == "Completed").length > 0}
+                        disabled={Object.keys(timeslotsOfParticipant).filter(timeslotId => timeslotsOfParticipant[timeslotId]['status'] == "Completed").length > 0 ||
+                            participantInfo['status'] == 'Denali PPT'}
                         onChange={(e) => {
                             updateValue("/participants/" + participantId, { vision_correction: e.currentTarget.value });
                             LogEvent({
@@ -481,6 +442,7 @@ function ParticipantCard({ database, participantId, index, setShowBookSession2, 
                     <span className="field-label">Target of sessions</span>
 
                     <select className="participant-data-selector min-width-selector"
+                        disabled={participantInfo['status'] == 'Denali PPT'}
                         onChange={(e) => {
                             updateValue("/participants/" + participantId, { multiple_times: parseInt(e.currentTarget.value) });
                             LogEvent({
@@ -499,6 +461,7 @@ function ParticipantCard({ database, participantId, index, setShowBookSession2, 
                     <span className="field-label">Participant status</span>
 
                     <select className="participant-data-selector min-width-selector"
+                        disabled={participantInfo['status'] == 'Denali PPT'}
                         onChange={(e) => {
                             updateValue("/participants/" + participantId, { status: e.currentTarget.value });
                             if (e.currentTarget.value == "Duplicate" && participantInfo['not_duplicate']) {
@@ -535,50 +498,22 @@ function ParticipantCard({ database, participantId, index, setShowBookSession2, 
                     />
                 </div>}
 
-                <div className="participant-attribute-container">
-                    <span className="field-label">Phase</span>
-                    <select className="session-data-selector"
-                        onChange={(e) => {
-                            updateValue("/participants/" + participantId, { phase: e.currentTarget.value });
-
-                            LogEvent({
-                                pid: participantId,
-                                action: "Phase: '" + (e.currentTarget.value || "Blank") + "'"
-                            })
-
-                            if (e.currentTarget.value == 2 && participantInfo['multiple_times'] && participantInfo['multiple_times'] != 1) {
-                                updateValue("/participants/" + participantId, { multiple_times: "1" });
-                                LogEvent({
-                                    pid: participantId,
-                                    action: "Target of sessions: '1'"
-                                })
-                            }
-                        }}
-                        disabled={participantInfo['phase_fixed']}
-                    >
-                        {["", "1", "2", "2 Recall"].map((s, i) => (
-                            <option key={"data-ppt-phase_" + i} value={s} selected={s == participantInfo['phase']}>{s ? "Phase " + s : ""}</option>
-                        ))}
-                    </select>
-                </div>
-
-                <div className="participant-attribute-container">
-                    <span className="field-label">Demo bin</span>
-                    <span>{participantInfo['demo_bin']} {participantInfo['open_demo_bin'] ? " (open)" : "(closed)"}</span>
-                </div>
+                {participantInfo['status'] != "Denali PPT" &&
+                    <div className="participant-attribute-container">
+                        <span className="field-label">Demo bin</span>
+                        <span>{participantInfo['demo_bin']} {participantInfo['open_demo_bin'] ? " (open)" : "(closed)"}</span>
+                    </div>
+                }
 
                 {!participantInfo['icf'] &&
                     !["Rejected", "Withdrawn", "Not Selected"].includes(participantInfo['status']) && participantInfo['unsubscribed_comms'] !== "Yes" &&
                     <div className="participant-attribute-container">
                         <span className="field-label">Communication</span>
-                        {
-                            <button className="email-button icf-reminder-button" onClick={() => sendMail(participantId, "ICF Reminder", "")}>ICF Reminder</button>
-
-                        }
+                        <button className="email-button icf-reminder-button" onClick={() => sendMail(participantId, "ICF Reminder", "")}>ICF Reminder</button>
                     </div>
                 }
 
-                {participantInfo['icf'] &&
+                {participantInfo['icf'] && participantInfo['status'] != "Denali PPT" &&
                     participantInfo['document_approval'] != "Pass" && participantInfo['unsubscribed_comms'] !== "Yes" &&
                     !["Contacted", "Rejected", "Withdrawn", "Completed", "Not Selected", "Duplicate"].includes(participantInfo['status']) &&
                     <div className="participant-attribute-container">
@@ -589,7 +524,7 @@ function ParticipantCard({ database, participantId, index, setShowBookSession2, 
                     </div>
                 }
 
-                {participantInfo['icf'] &&
+                {participantInfo['icf'] && participantInfo['status'] != "Denali PPT" &&
                     participantInfo['document_approval'] == "Pass" && participantInfo['unsubscribed_comms'] !== "Yes" &&
                     !["Rejected", "Withdrawn", "Completed", "Not Selected", "Duplicate"].includes(participantInfo['status']) &&
                     <div className="participant-attribute-container">
@@ -599,6 +534,9 @@ function ParticipantCard({ database, participantId, index, setShowBookSession2, 
                                 <button className="email-button handoff-button" onClick={() => sendMail(participantId, "Handoff")}>Send handoff email</button>
                                 <a className="copy-booking-link fas fa-copy" onClick={(e) => {
                                     e.preventDefault();
+                                    Swal.fire('Not available function yet...', '', '');
+                                    return;
+
                                     let url = "https://denali-appointments.web.app/#" + participantId + "&" + md5('p_' + participantId)
                                     navigator.clipboard.writeText(url);
 
@@ -622,6 +560,7 @@ function ParticipantCard({ database, participantId, index, setShowBookSession2, 
                 }
                 <div className="participant-attribute-container">
                     <textarea className="participant-comment" defaultValue={participantInfo['comment']}
+                        disabled={participantInfo['status'] == 'Denali PPT'}
                         onBlur={(e) => {
                             updateValue("/participants/" + participantId, { comment: e.currentTarget.value });
                             LogEvent({
@@ -643,9 +582,31 @@ function ParticipantCard({ database, participantId, index, setShowBookSession2, 
 
             </div>
 
+            {participantInfo['status'] == "Denali PPT" &&
+                <div className="participant-card-column column-4 denali-session-from-past">
+                    <span className="participant-attribute-header">Denali sessions {participantInfo['external_id'] ? " (" + participantInfo['external_id'] + ")" : ""}</span>
+                    {Object.keys(participantInfo['denali_sessions'] || {}).map(timeslotId => {
+                        let sessionString = timeslotId.substring(0, 4) + "-" +
+                            timeslotId.substring(4, 6) + "-" +
+                            timeslotId.substring(6, 8) + " " +
+                            Constants['bookingDictionary'][timeslotId.substring(9, 11) + ":" + timeslotId.substring(11, 13)] +
+                            " (" + timeslotId.substring(14) + ")";
+                        return (
+                            <button
+                                key={"session" + timeslotId}
+                                className="session-button"
+                                onClick={() => Swal.fire('Archived session!', '', '')}
+                            >
+                                {sessionString + ": " + participantInfo['denali_sessions'][timeslotId]['status']}
+                            </button>
+                        )
+                    })}
+                </div>
+            }
+
             {((participantInfo['icf'] &&
                 participantInfo['document_approval'] == "Pass" &&
-                !["Rejected", "Withdrawn", "Completed", "Not Selected", "Duplicate"].includes(participantInfo['status'])) ||
+                !["Rejected", "Withdrawn", "Completed", "Not Selected", "Duplicate", "Denali PPT"].includes(participantInfo['status'])) ||
                 nrOfTimeslotsOfParticipant > 0) &&
                 <div className="participant-card-column column-4">
                     <span className="participant-attribute-header">Sessions {participantInfo['external_id'] ? " (" + participantInfo['external_id'] + ")" : ""}</span>
@@ -680,8 +641,7 @@ function ParticipantCard({ database, participantId, index, setShowBookSession2, 
             }
 
 
-            {
-                participantInfo['history'] &&
+            {participantInfo['history'] &&
                 <div className="participant-card-column column-5">
                     <span className="participant-attribute-header">Email history</span>
                     {participantInfo['history'] && Object.keys(participantInfo['history']).map((t) => {
@@ -710,11 +670,11 @@ function ParticipantCard({ database, participantId, index, setShowBookSession2, 
                         return <div key={participantId + t} className="participant-attribute-container">
                             <span className="field-label">{t.substring(0, 16).replaceAll('_', ' ')}</span>
                             <span className="email-history-content">
-                                <span>{emailTitle} {emailTitle.includes("DR: ") && participantInfo['document_approval'] !== "Pass" ?
+                                <span>{emailTitle} {emailTitle.includes("DR: ") && participantInfo['document_approval'] !== "Pass" && participantInfo['status'] != 'Denali PPT' ?
                                     <a className='copy-email-link fas fa-link'
                                         title='Open upload link'
                                         href={uploadURL}
-                                        target="_blank"></a> : ""} </span>
+                                        target="_blank" /> : ""} </span>
                                 {appointmentTime && <span>{appointmentTime}</span>}
                             </span>
                         </div>

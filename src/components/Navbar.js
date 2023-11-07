@@ -53,14 +53,13 @@ function Navbar({ database, setActivePage, setShowStats, setShowStatsSessions, s
 
       {role == "admin" && <button className="navbar-button" onClick={() => setActivePage("Participants")}>Participants</button>}
       {role == "admin" && <button className="navbar-button" onClick={() => setActivePage("Scheduler")}>Scheduler</button>}
-      {(role == "admin" || role == "external") && <button className="navbar-button" onClick={() => setActivePage("Scheduler Overview")}>Overview</button>}
+      {["external", "admin"].includes(role) && <button className="navbar-button" onClick={() => setActivePage("Scheduler Overview")}>Overview</button>}
       <button className="navbar-button" onClick={() => setShowStats(true)}>Participant stats</button>
       <button className="navbar-button" onClick={() => setShowStatsSessions(true)}>Session stats</button>
       {Constants.superAdmins.includes(auth.currentUser.email) && <button className="navbar-button" onClick={() => setShowBins(true)}>Demo bins</button>}
       {['zoltan.bathori@telusinternational.com', 'sari.kiiskinen@telusinternational.com'].includes(auth.currentUser.email) && <button className="navbar-button" onClick={() => setShowBonuses(true)}>Bonus $</button>}
-      {(role == "admin" || role == "goodwork") && <button className="navbar-button" onClick={() => setActivePage("Goodwork")}>Goodwork</button>}
-      {(role == "external") && <button className="navbar-button" onClick={() => setActivePage("Scheduler External")}>Scheduler external</button>}
-      {/*(role == "external") && <button className="navbar-button" onClick={() => setActivePage("External")}>External report</button>*/}
+      {["external"].includes(role) && <button className="navbar-button" onClick={() => setActivePage("Scheduler External")}>Scheduler external</button>}
+      {["external"].includes(role) && <button className="navbar-button" onClick={() => setActivePage("External")}>External report</button>}
       {Constants.superAdmins.includes(auth.currentUser.email) && <button className='navbar-button' onClick={() => {
         setActivityLog(true);
         setIdForLog("");

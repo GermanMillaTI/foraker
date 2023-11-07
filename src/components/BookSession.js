@@ -138,7 +138,10 @@ function BookSession({ database, setShowBookSession, selectedSessionId, setJustB
                                     return a < b ? -1 : 1;
                                 })
                                 .map(key => {
-                                    let filterResult = participantFilter(key);
+                                    const participantStatus = database['participants'][key]['status'];
+                                    if (participantStatus == 'Denali PPT') return null;
+
+                                    const filterResult = participantFilter(key);
                                     if (filterResult.length > 0) return (
                                         <tr onClick={() => bookSession(key)}>
                                             <td className={(filterResult.includes('Participant ID') ? "filter-highlighted-cell" : "") + " center-tag"}>

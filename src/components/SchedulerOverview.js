@@ -14,7 +14,7 @@ function SchedulerOverview({ database }) {
 
   useEffect(() => {
     var temp = Object.assign({}, ...[...Object.keys(database['timeslots']), 'Total'].map(k => ({
-      [k.substring(0, 8)]: Object.assign({}, ...[...Constants['sessionStatuses'], 'Free', 'Completed (Minors only)'].map(k => ({ [k]: 0 })))
+      [k.substring(0, 8)]: Object.assign({}, ...[...Constants['sessionStatuses'], 'Free'].map(k => ({ [k]: 0 })))
     })))
     //console.log(temp);
 
@@ -28,11 +28,6 @@ function SchedulerOverview({ database }) {
       let participantId = timeslot['participant_id'];
       if (participantId) {
         let participant = database['participants'][participantId];
-        let minorParticipant = participant['registered_as'] == "parent";
-        if (minorParticipant && status == 'Completed') {
-          temp[day]['Completed (Minors only)']++;
-          temp['Total']['Completed (Minors only)']++;
-        }
       }
     })
     setDays(temp);
@@ -70,8 +65,8 @@ function SchedulerOverview({ database }) {
           <thead >
             <tr>
               <th>Date</th>
-              {['Scheduled', 'Checked In', 'Completed', 'Completed (Minors only)', 'Rescheduled', 'NoShow'].map(status => {
-                return <th>{status === 'Completed' ? 'Completed (All)' : status}</th>
+              {['Scheduled', 'Checked In', 'Completed', 'Rescheduled', 'NoShow'].map(status => {
+                return <th>{status === 'Completed' ? 'Completed' : status}</th>
               })}
             </tr>
           </thead>
@@ -82,7 +77,7 @@ function SchedulerOverview({ database }) {
                   <td className={"center-tag" + (key == 'Total' ? ' total-row' : '')}>
                     {key == "Total" ? key : key.substring(0, 4) + "-" + key.substring(4, 6) + "-" + key.substring(6, 8)}
                   </td>
-                  {['Scheduled', 'Checked In', 'Completed', 'Completed (Minors only)', 'Rescheduled', 'NoShow'].map(status => {
+                  {['Scheduled', 'Checked In', 'Completed', 'Rescheduled', 'NoShow'].map(status => {
                     return <td className={"center-tag" + (key == 'Total' ? ' total-row' : '')}>
                       {days[key][status] ? days[key][status] : ''}
                     </td>

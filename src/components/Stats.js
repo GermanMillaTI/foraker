@@ -25,11 +25,9 @@ const filterReducer = (state, event) => {
 
 function Stats({ database, setActivePage, setShowStats, setFilterDataFromStats }) {
     const [stats, setStats] = useState(getDefaultNumbers());
-    const [goodWorkOnly, setGoodWorkOnly] = useState(database['users'][auth.currentUser.uid] == "goodwork");
     const [filterData, setFilterData] = useReducer(filterReducer, {
         statuses: ["Blank", "Document Requested", "Not Selected"],
-        statuses2: ["Contacted", "Scheduled", "Completed"],
-        phases: Constants['phases']
+        statuses2: ["Contacted", "Scheduled", "Completed"]
     });
 
     function getDefaultNumbers() {
@@ -55,9 +53,8 @@ function Stats({ database, setActivePage, setShowStats, setFilterDataFromStats }
             ageRanges: ageRange,
             statuses: statuses,
             icfs: ['Yes', 'No'],
-            phases: filterData['phases'],
             demoBinStatuses: Constants['demoBinStatuses'],
-            sources: goodWorkOnly ? ['goodwork'] : Object.keys(Constants['sources']),
+            sources: Object.keys(Constants['sources']),
             documentStatuses: ["Blank", ...Constants['documentStatuses']],
             visionCorrections: Constants['visionCorrections'],
             parentRegistered: ['Yes', 'No'],
@@ -83,11 +80,7 @@ function Stats({ database, setActivePage, setShowStats, setFilterDataFromStats }
             let ethnicities = participant['ethnicities'].split(',');
             let ethValue = 1 / ethnicities.length;
             let status = participant['status'] || "Blank";
-            let phase = participant['phase'] ? "Phase " + participant['phase'] : "Blank";
-            let goodWorkParticipant = participant['source'] == 'goodwork';
 
-            if (!filterData['phases'].includes(phase)) return;
-            if (goodWorkOnly && !goodWorkParticipant) return;
             for (let x = 0; x < ethnicities.length; x++) {
 
                 let ethnicity = ethnicities[x].trim();
@@ -97,7 +90,7 @@ function Stats({ database, setActivePage, setShowStats, setFilterDataFromStats }
         })
 
         setStats(tempStats);
-    }, [goodWorkOnly, filterData['phases'].length])
+    }, [])
 
     return ReactDOM.createPortal((
         <div className="modal-stats-backdrop" onClick={(e) => { if (e.target.className == "modal-stats-backdrop") setShowStats("") }}>
@@ -122,24 +115,6 @@ function Stats({ database, setActivePage, setShowStats, setFilterDataFromStats }
                         return <div key={"filter-status" + i}>
                             <input id={"stats-filter2-participant-status-" + (val || "Blank")} name={val || "Blank"} type="checkbox" alt="statuses2" onChange={setFilterData} checked={val == "" ? filterData['statuses2'].includes("Blank") : filterData['statuses2'].includes(val)} />
                             <label className="second-number" htmlFor={"stats-filter2-participant-status-" + (val || "Blank")}>{(val || "Blank")}</label>
-                        </div>
-                    })}
-                </div>
-
-                {(database['users'][auth.currentUser.uid] == "admin") &&
-                    <div className="stats-filter-element">
-                        <div className="goodwork-participants-only-filter">
-                            <input id="stats-filter2-goodwork-only" type="checkbox" onChange={(e) => setGoodWorkOnly(e.target.checked)} checked={goodWorkOnly} />
-                            <label htmlFor="stats-filter2-goodwork-only">Goodwork participants only</label>
-                        </div>
-                    </div>
-                }
-
-                <div className="stats-filter-element phase-filter">
-                    {Constants['phases'].map((val, i) => {
-                        return <div key={"filter-status" + i}>
-                            <input id={"stats-filter2-phase-" + val} name={val} type="checkbox" alt="phases" onChange={setFilterData} checked={filterData['phases'].includes(val)} />
-                            <label htmlFor={"stats-filter2-phase-" + val}>{val.replace("Blank", "Phase NA")}</label>
                         </div>
                     })}
                 </div>

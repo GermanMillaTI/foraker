@@ -623,19 +623,6 @@ function UpdateSession({ database, updateSession, setUpdateSession, setCheckDocu
                                                     {Constants['clientVisionCorrections'][selectedContribution['answers'].filter(answer => answer['slug'] == 'vision_correction')[0]['values'].join(",")]}
                                                 </td>
                                             </tr>
-                                            <tr className='client-info-container'>
-                                                <td className="participant-table-left">
-                                                    Phase
-                                                </td>
-                                                <td className={"participant-table-right" + ((selectedContribution['answers'].filter(answer => answer['slug'] == 'study_phase').length > 0 ?
-                                                    selectedContribution['answers'].filter(answer => answer['slug'] == 'study_phase')[0]['values'].join(",")
-                                                    : "") != ("Phase " + participantInfo['phase']) ? " not-matching-client-data" : "")}>
-
-                                                    {selectedContribution['answers'].filter(answer => answer['slug'] == 'study_phase').length > 0 ?
-                                                        selectedContribution['answers'].filter(answer => answer['slug'] == 'study_phase')[0]['values'].join(",")
-                                                        : ""}
-                                                </td>
-                                            </tr>
                                         </>}
                                     </>
                                 }
@@ -741,33 +728,6 @@ function UpdateSession({ database, updateSession, setUpdateSession, setCheckDocu
                                     </td>
                                 </tr>
 
-                                <tr>
-                                    <td className="participant-table-left">Phase</td>
-                                    <td className="participant-table-right">
-                                        <select className="session-data-selector"
-                                            onChange={(e) => {
-                                                updateValue("/participants/" + participantId, { phase: e.currentTarget.value });
-                                                LogEvent({
-                                                    pid: participantId,
-                                                    action: "Phase: '" + (e.currentTarget.value || "Blank") + "'"
-                                                })
-
-                                                if (e.currentTarget.value == 2 && participantInfo['multiple_times'] && participantInfo['multiple_times'] != 1) {
-                                                    updateValue("/participants/" + participantId, { multiple_times: "1" });
-                                                    LogEvent({
-                                                        pid: participantId,
-                                                        action: "Target of sessions: '1'"
-                                                    })
-                                                }
-                                            }}
-                                            disabled={participantInfo['phase_fixed']}
-                                        >
-                                            {["", "1", "2", "2 Recall"].map((s, i) => (
-                                                <option key={"data-ppt-phase_" + i} value={s} selected={s == participantInfo['phase']}>{s ? "Phase " + s : ""}</option>
-                                            ))}
-                                        </select>
-                                    </td>
-                                </tr>
                                 <tr>
                                     <td className="participant-table-left">Session comment</td>
                                 </tr>

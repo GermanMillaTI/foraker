@@ -7,6 +7,7 @@ import Swal from 'sweetalert2';
 import './BookSession.css';
 import Constants from './Constants';
 import LogEvent from './Core/LogEvent';
+import FormattingFunctions from './Core/FormattingFunctions';
 
 function BookSession({ database, setShowBookSession, selectedSessionId, setJustBookedSession }) {
     const [searchBarText, setSearchBarText] = useState("");
@@ -40,12 +41,7 @@ function BookSession({ database, setShowBookSession, selectedSessionId, setJustB
             title: "Booking an appointment",
             showCancelButton: true,
             confirmButtonText: backupSession ? 'Yes (backup)' : 'Yes',
-            html: "<b>" + (
-                selectedSessionId.substring(0, 4) + "-" +
-                selectedSessionId.substring(4, 6) + "-" +
-                selectedSessionId.substring(6, 8) + " " +
-                Constants['bookingDictionary'][selectedSessionId.substring(9, 11) + ":" + selectedSessionId.substring(11, 13)]
-            ) +
+            html: "<b>" + FormattingFunctions.TimeSlotFormat(selectedSessionId) +
                 "<br/>Station: " + selectedSessionId.substring(14) + "<br/>" +
                 database['participants'][pid]['full_name'] + "</b>" +
                 (backupSession ? "<br/><br/><b><u>!!! BACKUP SESSION !!!</u></b><br/>" : ""),
@@ -54,7 +50,6 @@ function BookSession({ database, setShowBookSession, selectedSessionId, setJustB
 
         }).then((result) => {
             if (result.isConfirmed) {
-                let userEmail = auth.currentUser.email;
                 let data = {
                     status: 'Scheduled',
                     participant_id: pid,
@@ -88,11 +83,7 @@ function BookSession({ database, setShowBookSession, selectedSessionId, setJustB
                 <div
                     className="modal-book-session-sub-header">
                     Station {selectedSessionId.substring(14)}:&nbsp;
-                    {selectedSessionId.substring(0, 4) + "-" +
-                        selectedSessionId.substring(4, 6) + "-" +
-                        selectedSessionId.substring(6, 8) + " " +
-                        Constants['bookingDictionary'][selectedSessionId.substring(9, 11) + ":" + selectedSessionId.substring(11, 13)]
-                    }
+                    {FormattingFunctions.TimeSlotFormat(selectedSessionId)}
                 </div>
                 <input
                     className="search-bar-for-schedule"

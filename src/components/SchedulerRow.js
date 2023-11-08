@@ -9,6 +9,7 @@ import Constants from './Constants';
 import BookSession from './BookSession';
 import LogEvent from './Core/LogEvent';
 import SessionInfo from './Tooltips/SessionInfo';
+import FormattingFunctions from './Core/FormattingFunctions';
 
 
 function SchedulerRow({ database, sessionId, index, array, setUpdateSession, highlightedTimeslots }) {
@@ -114,7 +115,7 @@ function SchedulerRow({ database, sessionId, index, array, setUpdateSession, hig
 
   return (<tr key={"schedule-row-" + index} className={(justBookedSession == sessionId ? "highlighted-session-row" : "") + (index < array.length - 1 ? (sessionId.substring(0, 13) != array[index + 1].substring(0, 13) ? " day-separator" : "") : "")}>
     <td className="center-tag no-wrap">
-      {sessionId.substring(0, 4) + "-" + sessionId.substring(4, 6) + "-" + sessionId.substring(6, 8) + " " + Constants['bookingDictionary'][sessionId.substring(9, 11) + ":" + sessionId.substring(11, 13)]}
+      {FormattingFunctions.TimeSlotFormat(sessionId)}
       {database['timeslots'][sessionId]['booked_today'] && format(new Date(), "yyyyMMdd") == sessionId.substring(0, 8) &&
         <Tooltip
           disableInteractive

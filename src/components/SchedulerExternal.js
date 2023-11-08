@@ -7,6 +7,7 @@ import { CSVLink } from 'react-csv';
 import './SchedulerExternal.css';
 import Constants from './Constants';
 import BookSession from './BookSession';
+import FormattingFunctions from './Core/FormattingFunctions';
 
 function SchedulerExternal({ database }) {
   const [showBookSession, setShowBookSession] = useState(false);
@@ -97,7 +98,7 @@ function SchedulerExternal({ database }) {
                 return (
                   <tr className={(justBookedSession == key ? "highlighted-session-row" : "") + (index < array.length - 1 ? (key.substring(0, 13) != array[index + 1].substring(0, 13) ? " day-separator" : "") : "")}>
                     <td className="center-tag">
-                      {key.substring(0, 4) + "-" + key.substring(4, 6) + "-" + key.substring(6, 8) + " " + Constants['bookingDictionary'][key.substring(9, 11) + ":" + key.substring(11, 13)]}
+                      {FormattingFunctions.TimeSlotFormat(key)}
                     </td>
                     <td className={"center-tag no-wrap" + (key.substring(14) == "101" ? " backup-timeslot" : "")}>
                       {key.substring(14) == "101" ? "Backup" : "Station " + key.substring(14)}

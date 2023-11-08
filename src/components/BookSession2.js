@@ -7,6 +7,7 @@ import Swal from 'sweetalert2';
 import './BookSession2.css';
 import Constants from './Constants';
 import LogEvent from './Core/LogEvent';
+import FormattingFunctions from './Core/FormattingFunctions';
 
 function BookSession2({ database, setShowBookSession2, participantId }) {
     const [days, setDays] = useState([]);
@@ -22,12 +23,7 @@ function BookSession2({ database, setShowBookSession2, participantId }) {
             title: "Booking an appointment",
             showCancelButton: true,
             confirmButtonText: backupSession ? 'Yes (backup)' : 'Yes',
-            html: "<b>" + (
-                sessionId.substring(0, 4) + "-" +
-                sessionId.substring(4, 6) + "-" +
-                sessionId.substring(6, 8) + " " +
-                Constants['bookingDictionary'][sessionId.substring(9, 11) + ":" + sessionId.substring(11, 13)]
-            ) +
+            html: "<b>" + FormattingFunctions.TimeSlotFormat(sessionId) +
                 "<br/>Station: " + sessionId.substring(14) + "<br/>" +
                 database['participants'][participantId]['full_name'] + "</b>" +
                 (backupSession ? "<br/><br/><b><u>!!! BACKUP SESSION !!!</u></b><br/>" : ""),
@@ -116,7 +112,7 @@ function BookSession2({ database, setShowBookSession2, participantId }) {
                                 return (
                                     <tr>
                                         <th className="session2-table-header-cell">
-                                            {Constants['bookingDictionary'][timeslot]}
+                                            {FormattingFunctions.FormatTime(timeslot)}
                                         </th>
                                         {days.map(day => {
                                             let sessionId = day.replaceAll('-', '') + '_' + timeslot.replaceAll(':', '') + '_';

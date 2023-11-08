@@ -14,13 +14,12 @@ const DateFromLog = (rawString) => {
             formattedTime += ":";
         }
     }
+
     formattedKey = "20" + formattedKey + "T" + formattedTime;
     const parsedDate = new Date(formattedKey);
-    parsedDate.setHours(parsedDate.getHours() - 7);
-
+    parsedDate.setHours(parsedDate.getUTCHours() - 6);
     return format(parsedDate, "yyyy-MM-dd  hh:mm a");
-};
-
+}
 
 const StationFromSlot = (timeslot) => {
     let station = null;
@@ -29,26 +28,26 @@ const StationFromSlot = (timeslot) => {
             station = "Backup" :
             station = "St. " + timeslot.substring(14) :
         station = "";
-
-    return station
+    return station;
 }
 
 const TimeSlotFormat = (timeslot) => {
-
     if (typeof timeslot === "undefined") return "";
-
-    let formattedslot = `${timeslot.substring(0, 4)}-${timeslot.substring(4, 6)}-${timeslot.substring(6, 8)}T${timeslot.substring(9, 11)}:${timeslot.substring(11, 13)}`;
+    const formattedslot = `${timeslot.substring(0, 4)}-${timeslot.substring(4, 6)}-${timeslot.substring(6, 8)}T${timeslot.substring(9, 11)}:${timeslot.substring(11, 13)}`;
     const parsedDate = new Date(formattedslot);
-
     return format(parsedDate, "yyyy-MM-dd hh:mm a");
 }
 
+const FormatTime = (timestamp) => {
+    if (typeof timestamp === "undefined") return "";
+    const parsedDate = new Date("2023-01-01T" + timestamp);
+    console.log(parsedDate);
+    return format(parsedDate, "hh:mm a");
+}
+
 const ClientTimeslotFormat = (timeslot) => {
-
     if (typeof timeslot === "undefined") return "";
-
-    let parsedDate = new Date(timeslot);
-
+    const parsedDate = new Date(timeslot);
     return format(parsedDate, "yyyy-MM-dd hh:mm a");
 }
 
@@ -56,5 +55,6 @@ export default {
     DateFromLog,
     StationFromSlot,
     TimeSlotFormat,
+    FormatTime,
     ClientTimeslotFormat
 };

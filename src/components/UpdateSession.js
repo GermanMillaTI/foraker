@@ -9,6 +9,7 @@ import './UpdateSession.css';
 import Constants from './Constants';
 import LogEvent from './Core/LogEvent';
 import ActivityLog from './ActivityLog';
+import FormattingFunctions from './Core/FormattingFunctions';
 
 function UpdateSession({ database, updateSession, setUpdateSession, setCheckDocuments, setActivityLog, setIdForLog, setTimeslotforLog, timeslotforLog }) {
     const [participantId, setParticipantId] = useState(database['timeslots'][updateSession]['participant_id']);
@@ -638,16 +639,12 @@ function UpdateSession({ database, updateSession, setUpdateSession, setCheckDocu
                                 <tr>
                                     <td className="participant-table-left">Time</td>
                                     <td className="participant-table-right">
-                                        {updateSession.substring(0, 4) + "-" +
-                                            updateSession.substring(4, 6) + "-" +
-                                            updateSession.substring(6, 8) + " " +
-                                            Constants['bookingDictionary'][updateSession.substring(9, 11) + ":" + updateSession.substring(11, 13)]
-                                        }
+                                        {FormattingFunctions.TimeSlotFormat(updateSession)}
                                     </td>
                                 </tr>
                                 <tr>
                                     <td className="participant-table-left">Station</td>
-                                    <td className="participant-table-right">{updateSession.substring(14, 20) + (sessionInfo['backup'] ? " (backup session)" : "")}</td>
+                                    <td className="participant-table-right">{updateSession.substring(14) + (sessionInfo['backup'] ? " (backup session)" : "")}</td>
                                 </tr>
                                 {(['Checked In', 'Completed'].includes(database['timeslots'][updateSession]['status']) &&
                                     database['timeslots'][updateSession]['backup']) &&

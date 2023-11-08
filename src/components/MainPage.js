@@ -45,18 +45,16 @@ function MainPage() {
       var allPhones = [];
       var duplicatePhones = [];
 
-      // Added by Zoltan to check the duplicates 2023-10-25
       var emailCollection = {};
       var phoneCollection = {};
       var nameCollection = {};
 
       for (let participantId in temp['participants']) {
         let participant = temp['participants'][participantId];
+        let fullName = participant['first_name'] + " " + participant['last_name'];
 
-        temp['participants'][participantId]['full_name'] = temp['participants'][participantId]['first_name'] + " " + temp['participants'][participantId]['last_name'];
-        if (temp['participants'][participantId]['parent_first_name']) {
-          temp['participants'][participantId]['parent_full_name'] = temp['participants'][participantId]['parent_first_name'] + " " + temp['participants'][participantId]['parent_last_name'];
-        }
+        temp['participants'][participantId]['full_name'] = fullName;
+        if (participant['parent_first_name']) temp['participants'][participantId]['parent_full_name'] = participant['parent_first_name'] + " " + participant['parent_last_name'];
 
         if (!participant['date']) {
           console.log("Removing: " + participantId);
@@ -66,7 +64,6 @@ function MainPage() {
 
         let email = participant['email'];
         let phoneNumber = participant['phone'];
-        let fullName = participant['first_name'] + " " + participant['last_name'];
         if (allEmails.includes(email)) {
           duplicateEmails.push(email);
         } else {
@@ -80,8 +77,6 @@ function MainPage() {
           allPhones.push(phone);
         }
 
-
-        // Added by Zoltan to check the duplicates 2023-10-25
         let duplicateStatus = (participant['status'] == 'Duplicate' || participant['status'] == 'Rejected' || participant['status'] == 'Withdrawn') ? 'Duplicate' : 'Not duplicate';
         if (participant['registered_as'] != 'parent') {
 
@@ -193,14 +188,11 @@ function MainPage() {
           if (Object.keys(bonusEmails).length > 0) temp['participants'][participantId]['bonus_amount'] = parseInt(bonusEmails.pop()['title'].replace('Handoff and Bonus (', '').replace(')', ''));
         }
 
-
-        // it needs to be updated
         let highlightReason = [];
         if (participant['document_approval'] != "Pass" && ["Contacted", "Scheduled", "Completed"].includes(participant['status'])) {
           highlightReason.push("Wrong document status");
         }
 
-        // Added by Zoltan to check the duplicates 2023-10-25
         if (participant['registered_as'] != 'parent') {
           if ((emailCollection[email]['Not duplicate'] || 0) > 1 && (phoneCollection[phone]['Not duplicate'] || 0) > 1 && (nameCollection[fullName]['Not duplicate'] || 0) > 1 && participant['status'] != "Duplicate" && participant['status'] != "Rejected" && participant['status'] != "Withdrawn") {
             if (temp['participants'][participantId]['highlight_reason']) {

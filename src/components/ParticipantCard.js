@@ -586,7 +586,7 @@ function ParticipantCard({ database, participantId, index, setShowBookSession2, 
                 <div className="participant-card-column column-4 denali-session-from-past">
                     <span className="participant-attribute-header">Denali sessions {participantInfo['external_id'] ? " (" + participantInfo['external_id'] + ")" : ""}</span>
                     {Object.keys(participantInfo['denali_sessions'] || {}).map(timeslotId => {
-                        let station = parseInt(timeslotId.substring(14)) > 100 ? 'Backup' : timeslotId.substring(14);
+                        const station = parseInt(timeslotId.substring(14)) > 100 ? 'Backup' : timeslotId.substring(14);
                         return (
                             <button
                                 key={"session" + timeslotId}
@@ -607,16 +607,12 @@ function ParticipantCard({ database, participantId, index, setShowBookSession2, 
                 <div className="participant-card-column column-4">
                     <span className="participant-attribute-header">Sessions {participantInfo['external_id'] ? " (" + participantInfo['external_id'] + ")" : ""}</span>
                     {Object.keys(participantInfo['sessions'] || {}).map(timeslotId => {
-                        let session = database['timeslots'][timeslotId];
-                        let sessionString = timeslotId.substring(0, 4) + "-" +
-                            timeslotId.substring(4, 6) + "-" +
-                            timeslotId.substring(6, 8) + " " +
-                            Constants['bookingDictionary'][timeslotId.substring(9, 11) + ":" + timeslotId.substring(11, 13)] +
-                            " (" + timeslotId.substring(14) + ")";
+                        const session = database['timeslots'][timeslotId];
+                        const station = parseInt(timeslotId.substring(14)) > 100 ? 'Backup' : timeslotId.substring(14);
                         return (
                             <button
                                 key={"session" + timeslotId}
-                                className={"session-button" + (sessionString.includes('Full') ? " full-session" : " lite-session")}
+                                className="session-button"
                                 onClick={
                                     () => {
                                         setUpdateSession(timeslotId);
@@ -624,7 +620,7 @@ function ParticipantCard({ database, participantId, index, setShowBookSession2, 
                                     }
                                 }
                             >
-                                {sessionString + ": " + session['status']}
+                                {FormattingFunctions.TimeSlotFormat(timeslotId) + " (" + station + ")" + ": " + session['status']}
                             </button>
                         )
                     })}
@@ -648,19 +644,22 @@ function ParticipantCard({ database, participantId, index, setShowBookSession2, 
                                 : emailTitle === "DR: ID & Vision Correction" ? 0
                                     : ""
                             }&id435=${participantId}`;
-                        if (emailTitle.startsWith('Confirmation') && emailTitle.length > 15) {
+                        if (emailTitle.startsWith('Handoff')) {
+                            emailTitle = emailTitle.replace("(", "($ ");
+                        }
+                        else if (emailTitle.startsWith('Confirmation') && emailTitle.length > 15) {
                             appointmentTime = emailTitle.substring(13, 17) + "-" +
                                 emailTitle.substring(17, 19) + "-" +
                                 emailTitle.substring(19, 21) + " " +
-                                Constants['bookingDictionary'][emailTitle.substring(22, 24) + ":" + emailTitle.substring(24, 26)] +
-                                " (" + emailTitle.substring(27) + ")";
+                                FormattingFunctions.FormatTime(emailTitle.substring(22, 24) + ":" + emailTitle.substring(24, 26)) +
+                                " (" + (parseInt(emailTitle.substring(27)) > 100 ? 'Backup' : emailTitle.substring(27)) + ")";
                             emailTitle = 'Confirmation';
                         } else if (emailTitle.startsWith('Reminder') && emailTitle.length > 15) {
                             appointmentTime = emailTitle.substring(9, 13) + "-" +
                                 emailTitle.substring(13, 15) + "-" +
                                 emailTitle.substring(15, 17) + " " +
-                                Constants['bookingDictionary'][emailTitle.substring(18, 20) + ":" + emailTitle.substring(20, 22)] +
-                                " (" + emailTitle.substring(23) + ")";
+                                FormattingFunctions.FormatTime(emailTitle.substring(18, 20) + ":" + emailTitle.substring(20, 22)) +
+                                " (" + (parseInt(emailTitle.substring(23)) > 100 ? 'Backup' : emailTitle.substring(23)) + ")";
                             emailTitle = 'Reminder';
                         }
                         return <div key={participantId + t} className="participant-attribute-container">

@@ -27,7 +27,8 @@ function Stats({ database, setActivePage, setShowStats, setFilterDataFromStats }
     const [stats, setStats] = useState(getDefaultNumbers());
     const [filterData, setFilterData] = useReducer(filterReducer, {
         statuses: ["Blank", "Document Requested", "Not Selected"],
-        statuses2: ["Contacted", "Scheduled", "Completed"]
+        statuses2: ["Contacted", "Scheduled", "Completed"],
+        stillInterested: Constants['stillInterestedValues']
     });
 
     function getDefaultNumbers() {
@@ -51,6 +52,7 @@ function Stats({ database, setActivePage, setShowStats, setFilterDataFromStats }
             multipleEthnicities: ['Yes', 'No'],
             genders: [gender],
             ageRanges: ageRange,
+            over18: ['Yes'],
             statuses: statuses,
             icfs: ['Yes', 'No'],
             demoBinStatuses: Constants['demoBinStatuses'],
@@ -60,7 +62,7 @@ function Stats({ database, setActivePage, setShowStats, setFilterDataFromStats }
             parentRegistered: ['Yes', 'No'],
             newDocuments: ['Yes', 'No'],
             highlighted: ['Yes', 'No'],
-            stillInterested: ['Yes', 'No', 'N/A'],
+            stillInterested: filterData['stillInterested'],
             unsubscribed: ['Yes', 'No'],
             unreadEmails: ['Yes', 'No']
         });
@@ -70,6 +72,7 @@ function Stats({ database, setActivePage, setShowStats, setFilterDataFromStats }
     }
 
     useEffect(() => {
+        console.log("a")
         // Fill stats
         let tempStats = getDefaultNumbers();
 
@@ -80,6 +83,9 @@ function Stats({ database, setActivePage, setShowStats, setFilterDataFromStats }
             let ethnicities = participant['ethnicities'].split(',');
             let ethValue = 1 / ethnicities.length;
             let status = participant['status'] || "Blank";
+            let stillInterested = participant['still_interested'] || "N/A";
+            if (!participant['over18']) return;
+            if (!filterData['stillInterested'].includes(stillInterested)) return;
 
             for (let x = 0; x < ethnicities.length; x++) {
 
@@ -90,7 +96,7 @@ function Stats({ database, setActivePage, setShowStats, setFilterDataFromStats }
         })
 
         setStats(tempStats);
-    }, [])
+    }, [filterData['stillInterested']])
 
     return ReactDOM.createPortal((
         <div className="modal-stats-backdrop" onClick={(e) => { if (e.target.className == "modal-stats-backdrop") setShowStats("") }}>
@@ -115,6 +121,16 @@ function Stats({ database, setActivePage, setShowStats, setFilterDataFromStats }
                         return <div key={"filter-status" + i}>
                             <input id={"stats-filter2-participant-status-" + (val || "Blank")} name={val || "Blank"} type="checkbox" alt="statuses2" onChange={setFilterData} checked={val == "" ? filterData['statuses2'].includes("Blank") : filterData['statuses2'].includes(val)} />
                             <label className="second-number" htmlFor={"stats-filter2-participant-status-" + (val || "Blank")}>{(val || "Blank")}</label>
+                        </div>
+                    })}
+                </div>
+
+                <div className="still-interested-participants-only-filter">
+                    <div><span className="still-interested-row">Still interested:</span></div>
+                    {Constants['stillInterestedValues'].map((val, i) => {
+                        return <div key={"filter-status-" + i}>
+                            <input id={"stats-filter-still-interested-" + val} name={val} type="checkbox" alt="stillInterested" onChange={setFilterData} checked={filterData['stillInterested'].includes(val)} />
+                            <label className="still-interested-row" htmlFor={"stats-filter-still-interested-" + val}>{val}</label>
                         </div>
                     })}
                 </div>

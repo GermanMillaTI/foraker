@@ -52,12 +52,9 @@ const ClientTimeslotFormat = (timeslot) => {
     return format(parsedDate, "yyyy-MM-dd hh:mm a");
 }
 
-const FormattingFunctions = {
+export default {
     DateFromLog,
     StationFromSlot,
     TimeSlotFormat,
     ClientTimeslotFormat
-}
-
-
-export default FormattingFunctions;
+};

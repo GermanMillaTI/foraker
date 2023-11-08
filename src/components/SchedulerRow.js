@@ -143,12 +143,12 @@ function SchedulerRow({ database, sessionId, index, array, setUpdateSession, hig
       <SessionInfo database={database} participantId={database['timeslots'][sessionId]['participant_id']} sessionId={sessionId} />
       : <td></td>}
     <td>
-      {participantId ? (participantInfo['first_name'] + " " + participantInfo['last_name']) : ""}
+      {participantId ? (participantInfo['full_name']) : ""}
       {participantId &&
         <a className="copy-email-link fas fa-search"
           title="Google"
           target="_blank"
-          href={("https://www.google.com/search?q=" + participantInfo['first_name'] + " " + participantInfo['last_name'] + " Los Angeles").replaceAll(" ", "%20")}
+          href={("https://www.google.com/search?q=" + participantInfo['full_name'] + " Los Angeles").replaceAll(" ", "%20")}
         />}
     </td>
     <td className={"center-tag " + ((highlightedTimeslots[sessionId.substring(0, 13)] > 4 && database['timeslots'][sessionId]['glasses']) ? "glasses-highlighted" : "")}>

@@ -11,6 +11,7 @@ import Constants from './Constants';
 import LogEvent from './Core/LogEvent';
 
 import ActivityLog from './ActivityLog';
+import FormattingFunctions from './Core/FormattingFunctions';
 
 
 function ParticipantCard({ database, participantId, index, setShowBookSession2, setCheckDocuments, setUpdateSession, setActivityLog, activityLog, idforLog, setIdForLog, setTimeslotforLog, timeslotforLog }) {
@@ -149,7 +150,7 @@ function ParticipantCard({ database, participantId, index, setShowBookSession2, 
                 {participantInfo['unsubscribed_comms'] === "Yes" && <span className="unsubscribed" title="Participant requested to not receive further comms">Unsubscribed participant</span>}
                 <div className="participant-attribute-container">
                     <span className="field-label"># {participantId} </span>
-                    <span>{participantInfo['first_name'] + " " + participantInfo['last_name']}
+                    <span>{participantInfo['full_name']}
                         <a
                             className="copy-email-link fas fa-file-export"
                             title="Open log"
@@ -183,7 +184,7 @@ function ParticipantCard({ database, participantId, index, setShowBookSession2, 
                         <a className="copy-email-link fas fa-search"
                             title="Google"
                             target="_blank"
-                            href={("https://www.google.com/search?q=" + participantInfo['first_name'] + " " + participantInfo['last_name'] + " Los Angeles").replaceAll(" ", "%20")}
+                            href={("https://www.google.com/search?q=" + participantInfo['full_name'] + " Los Angeles").replaceAll(" ", "%20")}
                         />
                         {database['mailbox_unread']['items'].includes(participantId) && <a className="fas fa-envelope" style={{ color: "red", position: "relative", left: "5%" }} title="Participant has unread emails in the shared mailbox" />}
                     </span>
@@ -245,12 +246,10 @@ function ParticipantCard({ database, participantId, index, setShowBookSession2, 
                         <span className="field-label">Unlisted ethnicity</span><span>{participantInfo['unlisted_ethnicity']}</span>
                     </div>
                 }
-                {participantInfo['status'] == 'Denali PPT' && <div className="participant-attribute-container">
-                    <span className="field-label">Gender</span><span>{participantInfo['gender']}</span>
-                </div>}
-                {participantInfo['status'] != 'Denali PPT' && <div className="participant-attribute-container">
+                <div className="participant-attribute-container">
                     <span className="field-label">Age range / Gender</span><span>{participantInfo['age_range'] + " / " + participantInfo['gender']}</span>
-                </div>}
+                </div>
+
 
                 <div className="participant-attribute-container">
                     <span className="field-label">Date of birth</span><span>{participantInfo['date_of_birth'].substring(0, 10)}
@@ -261,6 +260,7 @@ function ParticipantCard({ database, participantId, index, setShowBookSession2, 
                                 updateDOB();
                             }} target="_blank" />
                         }
+                        {!participantInfo['over18'] && <span className="under18">Under 18</span>}
                     </span>
                 </div>
                 <div className="participant-attribute-container">
@@ -316,11 +316,11 @@ function ParticipantCard({ database, participantId, index, setShowBookSession2, 
                         <div className="participant-attribute-container">
                             <span className="field-label">Parent Name</span>
                             <span>
-                                {participantInfo['parent_first_name'] + " " + participantInfo['parent_last_name']}
+                                {participantInfo['parent_full_name']}
                                 <a className="copy-email-link fas fa-search"
                                     title="Google"
                                     target="_blank"
-                                    href={("https://www.google.com/search?q=" + participantInfo['parent_first_name'] + " " + participantInfo['parent_last_name'] + " Los Angeles").replaceAll(" ", "%20")}
+                                    href={("https://www.google.com/search?q=" + participantInfo['parent_full_name'] + " Los Angeles").replaceAll(" ", "%20")}
                                 />
                             </span>
                         </div>
@@ -476,7 +476,7 @@ function ParticipantCard({ database, participantId, index, setShowBookSession2, 
                                 action: "Participant status: '" + (e.currentTarget.value || "Blank") + "'"
                             })
                         }}>
-                        {Constants['participantStatuses'].map((s, i) => (
+                        {Constants['participantStatuses'].filter(status => status != "Denali PPT" || participantInfo['status'] == "Denali PPT").map((s, i) => (
                             <option key={"status" + i} value={s} selected={s == participantInfo['status']}>{s}</option>
                         ))}
                     </select>
@@ -586,18 +586,14 @@ function ParticipantCard({ database, participantId, index, setShowBookSession2, 
                 <div className="participant-card-column column-4 denali-session-from-past">
                     <span className="participant-attribute-header">Denali sessions {participantInfo['external_id'] ? " (" + participantInfo['external_id'] + ")" : ""}</span>
                     {Object.keys(participantInfo['denali_sessions'] || {}).map(timeslotId => {
-                        let sessionString = timeslotId.substring(0, 4) + "-" +
-                            timeslotId.substring(4, 6) + "-" +
-                            timeslotId.substring(6, 8) + " " +
-                            Constants['bookingDictionary'][timeslotId.substring(9, 11) + ":" + timeslotId.substring(11, 13)] +
-                            " (" + timeslotId.substring(14) + ")";
+                        let station = parseInt(timeslotId.substring(14)) > 100 ? 'Backup' : timeslotId.substring(14);
                         return (
                             <button
                                 key={"session" + timeslotId}
                                 className="session-button"
                                 onClick={() => Swal.fire('Archived session!', '', '')}
                             >
-                                {sessionString + ": " + participantInfo['denali_sessions'][timeslotId]['status']}
+                                {FormattingFunctions.TimeSlotFormat(timeslotId) + " (" + station + ")" + ": " + participantInfo['denali_sessions'][timeslotId]['status']}
                             </button>
                         )
                     })}

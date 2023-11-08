@@ -286,7 +286,7 @@ function UpdateSession({ database, updateSession, setUpdateSession, setCheckDocu
                             <tbody className="participant-table">
                                 <tr>
                                     <td className="participant-table-left">{"# " + participantId}</td>
-                                    <td className="participant-table-right">{participantInfo['first_name'] + " " + participantInfo['last_name']}
+                                    <td className="participant-table-right">{participantInfo['full_name']}
                                         <a
                                             className="copy-email-link fas fa-file-export"
                                             title="Open log"
@@ -299,7 +299,7 @@ function UpdateSession({ database, updateSession, setUpdateSession, setCheckDocu
                                         <a className="copy-email-link fas fa-search"
                                             title="Google"
                                             target="_blank"
-                                            href={("https://www.google.com/search?q=" + participantInfo['first_name'] + " " + participantInfo['last_name'] + " Los Angeles").replaceAll(" ", "%20")}
+                                            href={("https://www.google.com/search?q=" + participantInfo['full_name'] + " Los Angeles").replaceAll(" ", "%20")}
                                         />
                                     </td>
                                 </tr>
@@ -708,7 +708,7 @@ function UpdateSession({ database, updateSession, setUpdateSession, setCheckDocu
                                                 })
                                             }}
                                         >
-                                            {Constants['participantStatuses'].map((s, i) => (
+                                            {Constants['participantStatuses'].filter(status => status != "Denali PPT").map((s, i) => (
                                                 <option key={"data-ppt-status_" + i} value={s} selected={s == participantInfo['status']}>{s}</option>
                                             ))}
                                         </select>
@@ -819,7 +819,7 @@ function UpdateSession({ database, updateSession, setUpdateSession, setCheckDocu
                                             <span className="same-external-id-error-message">The same external ID is used for multiple people:</span><br /><br />
                                             {externalIdParticipants.map(participantId => {
                                                 const ppt = database['participants'][participantId];
-                                                return <><span>{participantId + ": " + ppt['first_name'] + " " + ppt['last_name'] + (ppt["registered_as"] == "parent" ? "  (child)" : "")}</span><br /></>
+                                                return <><span>{participantId + ": " + ppt['full_name'] + (ppt["registered_as"] == "parent" ? "  (child)" : "")}</span><br /></>
                                             })}
                                         </td>
                                     </tr>

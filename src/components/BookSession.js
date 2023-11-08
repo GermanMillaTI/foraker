@@ -16,7 +16,7 @@ function BookSession({ database, setShowBookSession, selectedSessionId, setJustB
         if (!searchBarText) return false;
 
         let pInfo = database['participants'][pid];
-        let pName = pInfo['first_name'].toLocaleLowerCase() + " " + pInfo['last_name'].toLocaleLowerCase();
+        let pName = pInfo['full_name'].toLocaleLowerCase();
         let email = pInfo['email'];
         let phone = pInfo['phone'].replaceAll('T: ', '').replaceAll(' ', '');
         let dateOfBirth = pInfo['date_of_birth'].substring(0, 10);
@@ -47,7 +47,7 @@ function BookSession({ database, setShowBookSession, selectedSessionId, setJustB
                 Constants['bookingDictionary'][selectedSessionId.substring(9, 11) + ":" + selectedSessionId.substring(11, 13)]
             ) +
                 "<br/>Station: " + selectedSessionId.substring(14) + "<br/>" +
-                database['participants'][pid]['first_name'] + " " + database['participants'][pid]['last_name'] + "</b>" +
+                database['participants'][pid]['full_name'] + "</b>" +
                 (backupSession ? "<br/><br/><b><u>!!! BACKUP SESSION !!!</u></b><br/>" : ""),
 
 
@@ -148,7 +148,7 @@ function BookSession({ database, setShowBookSession, selectedSessionId, setJustB
                                                 {key}
                                             </td>
                                             <td className={filterResult.includes('Name') ? "filter-highlighted-cell" : ""}>
-                                                {database['participants'][key]['first_name'] + " " + database['participants'][key]['last_name']}
+                                                {database['participants'][key]['full_name']}
                                             </td>
                                             <td className={filterResult.includes('E-mail') ? "filter-highlighted-cell" : ""}>
                                                 {database['participants'][key]['email']}

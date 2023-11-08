@@ -53,8 +53,10 @@ function MainPage() {
       for (let participantId in temp['participants']) {
         let participant = temp['participants'][participantId];
 
-        //Added by German, creating full name as a new property
         temp['participants'][participantId]['full_name'] = temp['participants'][participantId]['first_name'] + " " + temp['participants'][participantId]['last_name'];
+        if (temp['participants'][participantId]['parent_first_name']) {
+          temp['participants'][participantId]['parent_full_name'] = temp['participants'][participantId]['parent_first_name'] + " " + temp['participants'][participantId]['parent_last_name'];
+        }
 
         if (!participant['date']) {
           console.log("Removing: " + participantId);
@@ -133,7 +135,13 @@ function MainPage() {
 
         let fullName = participant['full_name'];
 
-        let ageRange = calculateAgeRange(participant['date_of_birth']);
+        let ageDetails = calculateAgeDetails(participant['date_of_birth']);
+        let age = ageDetails['age'];
+        let over18 = age >= 18;
+        temp['participants'][participantId]['over18'] = over18;
+
+
+        let ageRange = ageDetails['ageRange'];
         temp['participants'][participantId]['age_range'] = ageRange;
 
         let gender = participant['gender'];
@@ -222,7 +230,8 @@ function MainPage() {
 
         if (!participantId) continue;
         const participant = temp['participants'][participantId];
-        const ageRange = calculateAgeRange(participant['date_of_birth'], sessionId.substring(0, 4) + "-" + sessionId.substring(4, 6) + "-" + sessionId.substring(6, 8));
+        const ageDetails = calculateAgeDetails(participant['date_of_birth'], sessionId.substring(0, 4) + "-" + sessionId.substring(4, 6) + "-" + sessionId.substring(6, 8));
+        const ageRange = ageDetails['ageRange'];
         const ethnicities = participant['ethnicities'].split(",");
         const gender = participant['gender'];
         const demoBin = calculateDemoBin(ageRange, ethnicities, gender);
@@ -303,20 +312,22 @@ function MainPage() {
     return demoBin.join(',');
   }
 
-  function calculateAgeRange(dateOfBirth, baseDate) {
+  function calculateAgeDetails(dateOfBirth, baseDate) {
 
-    var dob = new Date(dateOfBirth);
-    var diff = (baseDate ? (new Date(baseDate)).getTime() : Date.now()) - dob.getTime();
+    const dob = new Date(dateOfBirth);
+    const diff = (baseDate ? (new Date(baseDate)).getTime() : Date.now()) - dob.getTime();
     //var diff = (new Date(baseDate || "")).getTime() - dob.getTime();
-    var diffAge = new Date(diff);
-    var year = diffAge.getUTCFullYear();
-    var age = Math.abs(year - 1970);
+    const diffAge = new Date(diff);
+    const year = diffAge.getUTCFullYear();
+    const age = Math.abs(year - 1970);
 
     let ageRange = "";
-    if (age < 18) {
-      ageRange = "<18"
-    } else if (age >= 18 && age <= 20) {
-      ageRange = "18-20"
+    if (age < 13) {
+      ageRange = "<13"
+    } else if (age >= 13 && age <= 14) {
+      ageRange = "13-14"
+    } else if (age >= 15 && age <= 20) {
+      ageRange = "15-20"
     } else if (age >= 21 && age <= 30) {
       ageRange = "21-30"
     } else if (age >= 31 && age <= 40) {
@@ -332,7 +343,10 @@ function MainPage() {
     } else if (age > 75) {
       ageRange = "75+"
     }
-    return ageRange;
+    return {
+      ageRange: ageRange,
+      age: age
+    };
   }
 
 

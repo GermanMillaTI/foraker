@@ -68,6 +68,7 @@
     background: white;
 }
 
+.still-interested-participants-only-filter,
 .stats-filter-element {
     margin: .2em auto;
     display: inline-flex;
@@ -75,19 +76,26 @@
     flex-direction: row;
 }
 
+.still-interested-participants-only-filter {
+    margin-top: 1em;
+}
+
 .stats-filter-element div {
     display: flex;
 }
 
+.still-interested-participants-only-filter span,
 .stats-filter-element span {
     font-weight: bold;
     width: 8em;
 }
 
+.still-interested-participants-only-filter input[type=checkbox],
 .stats-filter-element input[type=checkbox] {
     cursor: pointer;
 }
 
+.still-interested-participants-only-filter label,
 .stats-filter-element label {
     padding-left: .3em;
     cursor: pointer;
@@ -100,6 +108,10 @@
 
 .modal-stats-main-container .second-number {
     color: rgb(0, 121, 16);
+}
+
+.modal-stats-main-container .still-interested-row {
+    color: rgb(228, 0, 0);
 }
 
 .stats-demo-bin-cell {

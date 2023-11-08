@@ -32,7 +32,7 @@
 }
 
 .column-4 {
-    width: 22em;
+    width: 23em;
 }
 
 .column-5 {
@@ -253,7 +253,6 @@
 }
 
 .missing-icf {
-    text-decoration: underline;
     padding: 0 1.4em;
     border-radius: 1em;
     background: red;
@@ -271,4 +270,13 @@
 
 .denali-session-from-past {
     background-color: rgba(247, 161, 2, 0.315);
+}
+
+.under18 {
+    margin-left: .5em;
+    padding: 0 1.4em;
+    border-radius: 1em;
+    background: red;
+    color: white;
+    font-weight: bold;
 }

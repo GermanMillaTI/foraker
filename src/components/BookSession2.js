@@ -29,7 +29,7 @@ function BookSession2({ database, setShowBookSession2, participantId }) {
                 Constants['bookingDictionary'][sessionId.substring(9, 11) + ":" + sessionId.substring(11, 13)]
             ) +
                 "<br/>Station: " + sessionId.substring(14) + "<br/>" +
-                database['participants'][participantId]['first_name'] + " " + database['participants'][participantId]['last_name'] + "</b>" +
+                database['participants'][participantId]['full_name'] + "</b>" +
                 (backupSession ? "<br/><br/><b><u>!!! BACKUP SESSION !!!</u></b><br/>" : ""),
 
 
@@ -92,7 +92,7 @@ function BookSession2({ database, setShowBookSession2, participantId }) {
                 </div>
                 <div
                     className="modal-book-session2-sub-header">
-                    {database['participants'][participantId]['first_name'] + " " + database['participants'][participantId]['last_name']} ({participantId})
+                    {database['participants'][participantId]['full_name']} ({participantId})
                 </div>
                 <div className="session2-table-container">
                     <table className="session2-table">

@@ -18,7 +18,8 @@ const Constants = {
     "Prefer not to say"
   ],
   listOfAgeRanges: [
-    "18-20",
+    "13-14",
+    "15-20",
     "21-30",
     "31-40",
     "41-50",
@@ -80,11 +81,6 @@ const Constants = {
     "Afr./Afr-Am./Black": [
       "African/African-American/Black"
     ],
-    "Med / Mid East & N. European": [
-      "Middle Eastern/North African",
-      "White - Southern European",
-      "White - Northern European"
-    ],
     "Latin / S. Amer": [
       "Hispanic/Latin American/Spanish"
     ],
@@ -97,6 +93,19 @@ const Constants = {
     "Southeast Asian": [
       "Southeast Asian"
     ],
+    "Med / Mid East & N. European": [
+      "Middle Eastern/North African",
+      "White - Southern European",
+      "White - Northern European"
+    ],
+    'Other': [
+      "Aboriginal Australians/Papuans",
+      "Alaskan Native",
+      "American Indian",
+      "Native Hawaiian/Pacific Islander/Indigenous people of Oceania",
+      "Prefer not to state",
+      "Other"
+    ],
     "Total": [
       "African/African-American/Black",
       "Middle Eastern/North African",
@@ -105,7 +114,13 @@ const Constants = {
       "Hispanic/Latin American/Spanish",
       "East Asian",
       "South Asian",
-      "Southeast Asian"
+      "Southeast Asian",
+      "Aboriginal Australians/Papuans",
+      "Alaskan Native",
+      "American Indian",
+      "Native Hawaiian/Pacific Islander/Indigenous people of Oceania",
+      "Prefer not to state",
+      "Other"
     ]
   },
   possibleNumberOfSessions: [
@@ -148,22 +163,29 @@ const Constants = {
   },
   demoBinsEthnicities: {
     "African/African-American/Black": "1",
-    "Middle Eastern/North African": "2",
-    "White - Southern European": "2",
-    "White - Northern European": "2",
+    "Middle Eastern/North African": "8",
+    "White - Southern European": "8",
+    "White - Northern European": "8",
     "Hispanic/Latin American/Spanish": "3",
     "East Asian": "4",
     "South Asian": "5",
-    "Southeast Asian": "6"
+    "Southeast Asian": "7",
+    "Aboriginal Australians/Papuans": "9",
+    "Alaskan Native": "9",
+    "American Indian": "9",
+    "Native Hawaiian/Pacific Islander/Indigenous people of Oceania": "9",
+    "Prefer not to state": "9",
+    "Other": "9"
   },
   demoBinsAgeRanges: {
-    "18-20": "1",
-    "21-30": "2",
-    "31-40": "3",
-    "41-50": "4",
-    "51-60": "5",
-    "61-70": "6",
-    "71-75": "7"
+    "13-14": "1",
+    "15-20": "2",
+    "21-30": "3",
+    "31-40": "4",
+    "41-50": "5",
+    "51-60": "6",
+    "61-70": "7",
+    "71-75": "8"
   },
   demoBinsGenders: {
     "Female": "0",
@@ -182,20 +204,20 @@ const Constants = {
     b2: "Short notice scheduling"
   },
   bonusEthnicities: {
-    "Aboriginal Australians/Papuans": "",
+    "Aboriginal Australians/Papuans": "Other",
     "African/African-American/Black": "AfrAfrAmBlack",
-    "Alaskan Native": "",
-    "American Indian": "",
+    "Alaskan Native": "Other",
+    "American Indian": "Other",
     "East Asian": "EastAsian",
     "Hispanic/Latin American/Spanish": "LatinSAmer",
-    "Native Hawaiian/Pacific Islander/Indigenous people of Oceania": "",
+    "Native Hawaiian/Pacific Islander/Indigenous people of Oceania": "Other",
     "Middle Eastern/North African": "MedMidEast&NEuropean",
     "South Asian": "SouthAsian",
     "Southeast Asian": "SoutheastAsian",
     "White - Northern European": "MedMidEast&NEuropean",
     "White - Southern European": "MedMidEast&NEuropean",
-    "Prefer not to state": "",
-    "Other": ""
+    "Prefer not to state": "Other",
+    "Other": "Other"
   },
   bonusEthnicities2: {
     "Afr./Afr-Am./Black": "AfrAfrAmBlack",
@@ -203,7 +225,8 @@ const Constants = {
     "East Asian": "EastAsian",
     "Latin / S. Amer": "LatinSAmer",
     "South Asian": "SouthAsian",
-    "Southeast Asian": "SoutheastAsian"
+    "Southeast Asian": "SoutheastAsian",
+    "Other": "Other"
   },
   demoBinStatuses: [
     'Open',
@@ -242,6 +265,11 @@ const Constants = {
     3: "Archived",
     4: "Failed"
   },
+  stillInterestedValues: [
+    "Yes",
+    "No",
+    "N/A"
+  ],
   superAdmins: [
     'zoltan.bathori@telusinternational.com',
     'german.milla01@telusinternational.com',

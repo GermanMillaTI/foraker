@@ -35,7 +35,7 @@ function App() {
   const [activityLog, setActivityLog] = useState(false);
   const [idforLog, setIdForLog] = useState("");
   const [timeslotforLog, setTimeslotforLog] = useState("");
-  const [role, setRole] = useState("");
+  const [role, setRole] = useState(null);
   const [userRights, setUserRights] = useState([]);
 
   useEffect(() => {
@@ -49,16 +49,9 @@ function App() {
     };
   }, []);
 
-
   useEffect(() => {
-    realtimeDb.ref('/').on('value', snapshot => {
+    if (user !== null) realtimeDb.ref('/').on('value', snapshot => {
       let temp = snapshot.val();
-      if (!role) {
-        const tempRole = temp['users'][auth.currentUser.uid]['role'];
-        const tempRights = temp['roles'][tempRole];
-        setRole(tempRole);
-        setUserRights(tempRights);
-      }
 
       var allEmails = [];
       var duplicateEmails = [];
@@ -284,7 +277,7 @@ function App() {
     return () => {
       realtimeDb.ref('/').off();
     }
-  }, [])
+  }, [user])
 
   function calculateDemoBin(ageRange, ethnicities, gender) {
     var demoBin = [];
@@ -353,6 +346,12 @@ function App() {
   })
   */}
 
+  if (database['users'] && auth.currentUser && role === null) {
+    const tempRole = database['users'][auth.currentUser.uid]['role'];
+    const tempRights = database['roles'][tempRole];
+    setRole(tempRole);
+    setUserRights(tempRights);
+  }
 
   function getElement(path) {
     if (!user) return <LoginPage />;
@@ -364,6 +363,7 @@ function App() {
       case "/participants":
         return <Participants
           database={database}
+          role={role}
           updateSession={updateSession}
           setUpdateSession={setUpdateSession}
           checkDocuments={checkDocuments}
@@ -398,6 +398,9 @@ function App() {
       {user ? Object.keys(database).length > 3 ? <>
         {user && <Navbar
           database={database}
+          setDatabase={setDatabase}
+          setRole={setRole}
+          setUserRights={setUserRights}
           setShowStats={setShowStats}
           setShowStatsSessions={setShowStatsSessions}
           setShowBonuses={setShowBonuses}

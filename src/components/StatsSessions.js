@@ -45,7 +45,7 @@ function StatsSessions({ database, setShowStatsSessions, setFilterDataFromStats 
 
     function selectDemoBin(statuses, ethnicities, ageRange, gender) {
 
-        if (database['users'][auth.currentUser.uid] != "admin") return;
+        if (database['users'][auth.currentUser.uid]['role'] != "admin") return;
         setFilterDataFromStats({
             fromStats: true,
             ethnicities: ethnicities,

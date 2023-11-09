@@ -46,7 +46,7 @@ function UsersAdmin({ database }) {
                                 <td>{apiUsers[key]['metadata']['creationTime']}</td>
                                 <td>{apiUsers[key]['metadata']['lastRefreshTime']}</td>
                                 <td>{apiUsers[key]['disabled'] === false ? "Active" : "Disabled"}</td>
-                                <td>{database['users'][apiUsers[key]['uid']]}</td>
+                                <td>{database['users'][apiUsers[key]['uid']['role']]}</td>
                                 <td>
                                     <button type="button">Disable</button>
                                 </td>

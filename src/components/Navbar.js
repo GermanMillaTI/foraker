@@ -9,13 +9,18 @@ import { useNavigate } from "react-router-dom";
 
 import './Navbar.css';
 
-function Navbar({ database, setShowStats, setShowStatsSessions, setShowBonuses, setShowBins, setActivityLog, setIdForLog, setTimeslotforLog, role }) {
+function Navbar({ database, setDatabase, setRole, setUserRights, setShowStats, setShowStatsSessions, setShowBonuses, setShowBins, setActivityLog, setIdForLog, setTimeslotforLog, role }) {
   const navigate = useNavigate();
 
   // Logout
   const handleLogout = async () => {
     try {
-      await signOut(auth);
+      await signOut(auth).then(() => {
+        navigate("/");
+        setDatabase({});
+        setRole(null);
+        setUserRights([]);
+      });
     } catch (error) {
       console.error('Error signing out:', error);
     }
@@ -46,22 +51,22 @@ function Navbar({ database, setShowStats, setShowStatsSessions, setShowBonuses, 
 
   return (
     <div className="navbar">
-      {role == "admin" && <button className="navbar-button" onClick={(e) => { e.preventDefault(); navigate("/participants"); }}>Participants</button>}
-      {role == "admin" && <button className="navbar-button" onClick={(e) => { e.preventDefault(); navigate("/scheduler"); }}>Scheduler</button>}
-      {["external", "admin"].includes(role) && <button className="navbar-button" onClick={(e) => { e.preventDefault(); navigate("/scheduler-overview"); }}>Overview</button>}
+      {['admin', 'manager'].includes(role) && <button className="navbar-button" onClick={(e) => { e.preventDefault(); navigate("/participants"); }}>Participants</button>}
+      {['admin', 'manager'].includes(role) && <button className="navbar-button" onClick={(e) => { e.preventDefault(); navigate("/scheduler"); }}>Scheduler</button>}
+      {['admin', 'apple'].includes(role) && <button className="navbar-button" onClick={(e) => { e.preventDefault(); navigate("/scheduler-overview"); }}>Overview</button>}
       <button className="navbar-button" onClick={() => setShowStats(true)}>Participant stats</button>
       <button className="navbar-button" onClick={() => setShowStatsSessions(true)}>Session stats</button>
-      {Constants.superAdmins.includes(auth.currentUser.email) && <button className="navbar-button" onClick={() => setShowBins(true)}>Demo bins</button>}
-      {['zoltan.bathori@telusinternational.com', 'sari.kiiskinen@telusinternational.com'].includes(auth.currentUser.email) && <button className="navbar-button" onClick={() => setShowBonuses(true)}>Bonus $</button>}
-      {["external"].includes(role) && <button className="navbar-button" onClick={(e) => { e.preventDefault(); navigate("/schedulder-external"); }}>Scheduler external</button>}
-      {["external"].includes(role) && <button className="navbar-button" onClick={(e) => { e.preventDefault(); navigate("/external"); }}>External report</button>}
-      {Constants.superAdmins.includes(auth.currentUser.email) && <button className='navbar-button' onClick={() => {
+      {['admin'].includes(role) && <button className="navbar-button" onClick={() => setShowBins(true)}>Demo bins</button>}
+      {['admin'].includes(role) && <button className="navbar-button" onClick={() => setShowBonuses(true)}>Bonus $</button>}
+      {['admin', 'apple'].includes(role) && <button className="navbar-button" onClick={(e) => { e.preventDefault(); navigate("/scheduler-external"); }}>Scheduler external</button>}
+      {['admin', 'apple'].includes(role) && <button className="navbar-button" onClick={(e) => { e.preventDefault(); navigate("/external"); }}>External report</button>}
+      {['admin'].includes(role) && <button className='navbar-button' onClick={() => {
         setActivityLog(true);
         setIdForLog("");
         setTimeslotforLog("");
       }}>Activity log</button>}
-      {/*role == "admin" && <button className="navbar-button" onClick={(e) => { e.preventDefault(); navigate("/users-admin");}}>Users Administration</button>*/}
-      <button className="navbar-button" onClick={handleLogout}>Logout</button>
+      {/*['admin'].includes(role) && <button className="navbar-button" onClick={(e) => { e.preventDefault(); navigate("/users-admin");}}>Users Administration</button>*/}
+      <a href="/" className="navbar-button" onClick={(e) => { e.preventDefault(); handleLogout(); }}>Logout</a>
     </div>
   );
 }

@@ -25,6 +25,7 @@
   outline: none;
   user-select: none;
   white-space: nowrap;
+  text-decoration: none;
 }
 
 .navbar-button:hover {

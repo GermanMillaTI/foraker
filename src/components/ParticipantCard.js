@@ -14,7 +14,7 @@ import ActivityLog from './ActivityLog';
 import FormattingFunctions from './Core/FormattingFunctions';
 
 
-function ParticipantCard({ database, participantId, index, setShowBookSession2, setCheckDocuments, setUpdateSession, setActivityLog, activityLog, idforLog, setIdForLog, setTimeslotforLog, timeslotforLog }) {
+function ParticipantCard({ database, role, participantId, index, setShowBookSession2, setCheckDocuments, setUpdateSession, setActivityLog, activityLog, idforLog, setIdForLog, setTimeslotforLog, timeslotforLog }) {
     const [tempParticipants, setTempParticipants] = useState([]);
 
     let participantInfo = database['participants'][participantId];
@@ -160,7 +160,7 @@ function ParticipantCard({ database, participantId, index, setShowBookSession2, 
                                 setTimeslotforLog("");
                             }}
                         />
-                        {activityLog && Constants.superAdmins.includes(auth.currentUser.email) &&
+                        {activityLog && ['admin'].includes(role) &&
                             <ActivityLog
                                 database={database}
                                 participantId={idforLog}
@@ -639,7 +639,7 @@ function ParticipantCard({ database, participantId, index, setShowBookSession2, 
                     {participantInfo['history'] && Object.keys(participantInfo['history']).map((t) => {
                         let emailTitle = participantInfo['history'][t]['title'].replace("Document Request:", "DR:");
                         let appointmentTime = "";
-                        let uploadURL = `https://fs30.formsite.com/LB2014/pegzfrigaw/index?fill&id16=${participantInfo['first_name']}&id17=${participantInfo['last_name']}&id20=${auth.currentUser.email}&id434=${emailTitle === "DR: ID" ? 1
+                        let uploadURL = `https://fs30.formsite.com/LB2014/pegzfrigaw/index?fill&id16=${participantInfo['first_name']}&id17=${participantInfo['last_name']}&id20=${(auth.currentUser || {}).email}&id434=${emailTitle === "DR: ID" ? 1
                             : emailTitle === "DR: Vision Correction" ? 2
                                 : emailTitle === "DR: ID & Vision Correction" ? 0
                                     : ""

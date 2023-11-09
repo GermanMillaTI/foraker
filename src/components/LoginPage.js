@@ -1,9 +1,9 @@
-// LoginPage.js
-import './LoginPage.css';
 import React, { useState } from 'react';
 import { signInWithEmailAndPassword } from 'firebase/auth';
-import { auth, realtimeDb } from '../firebase/config'
+import { auth } from '../firebase/config'
 import Swal from 'sweetalert2';
+
+import './LoginPage.css';
 
 function LoginPage() {
   const [email, setEmail] = useState('');
@@ -14,19 +14,10 @@ function LoginPage() {
     try {
       await signInWithEmailAndPassword(auth, email, password);
     } catch (error) {
-      let loginError;
-
-      if (error == "FirebaseError: Firebase: Error (auth/wrong-password).") {
-        loginError = "Wrong password provided, please try again";
-      } else {
-        loginError = error;
-      }
 
       Swal.fire({
         icon: 'error',
-        title: 'Oops...',
-        text: 'Error Signing In',
-        footer: `<b>${loginError}</b>`
+        title: 'Wrong credentials...'
       });
     }
   };

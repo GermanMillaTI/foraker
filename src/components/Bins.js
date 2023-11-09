@@ -31,7 +31,7 @@ function Bins({ database, setShowBins }) {
                                         {gender}
                                     </th>
                                     {Object.keys(Constants['columnsOfStats']).filter(columnName => columnName != "Total").map(eth => {
-                                        return <th>{eth}</th>
+                                        return <th key={'demo-bins-header-' + eth}>{eth}</th>
                                     })}
                                 </tr>
                             </thead>

@@ -1,12 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { BrowserRouter as Router, Route, Routes, useNavigate } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import { onAuthStateChanged } from 'firebase/auth';
 import { realtimeDb, auth } from './firebase/config';
 import { format } from 'date-fns';
 
 import LoginPage from './components/LoginPage';
-
-
 import Navbar from './components/Navbar';
 import Participants from './components/Participants';
 import Scheduler from './components/Scheduler';
@@ -21,7 +19,7 @@ import StatsSessions from './components/StatsSessions';
 import Bonuses from './components/Bonuses';
 import Bins from './components/Bins';
 import ActivityLog from './components/ActivityLog';
-import UsersAdmin from './components/UsersAdmin';
+//import UsersAdmin from './components/UsersAdmin';
 
 function App() {
   const [user, setUser] = useState(null);
@@ -38,6 +36,7 @@ function App() {
   const [idforLog, setIdForLog] = useState("");
   const [timeslotforLog, setTimeslotforLog] = useState("");
   const [role, setRole] = useState("");
+  const [userRights, setUserRights] = useState([]);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
@@ -54,7 +53,12 @@ function App() {
   useEffect(() => {
     realtimeDb.ref('/').on('value', snapshot => {
       let temp = snapshot.val();
-      if (role == "") setRole(temp['users'][auth.currentUser.uid]);
+      if (!role) {
+        const tempRole = temp['users'][auth.currentUser.uid]['role'];
+        const tempRights = temp['roles'][tempRole];
+        setRole(tempRole);
+        setUserRights(tempRights);
+      }
 
       var allEmails = [];
       var duplicateEmails = [];
@@ -163,18 +167,6 @@ function App() {
         var demoBinOpen = true;
 
         ethnicities.map(ethnicity => {
-          /*
-          let demoEthnicity = Constants['demoBinsEthnicities'][ethnicity.trim()];
-          let demoGender = Constants['demoBinsGenders'][gender];
-          let demoAgeRange = Constants['demoBinsAgeRanges'][ageRange];
-          if (demoEthnicity && demoGender && demoAgeRange) {
-            let demoStr = demoEthnicity + demoAgeRange + demoGender;
-            if (!demoBin.includes(demoStr)) demoBin.push(demoStr);
-          } else {
-            demoBin.push("#NA");
-          }
-          */
-
           if (demoBinOpen && ['Female', 'Male'].includes(gender)) {
             let tempEth = Constants['bonusEthnicities'][ethnicity.trim()];
             if (!tempEth) {
@@ -185,7 +177,6 @@ function App() {
           }
         })
 
-        //temp['participants'][participantId]['demo_bin'] = demoBin.join(",");
         temp['participants'][participantId]['demo_bin'] = demoBin;
         temp['participants'][participantId]['open_demo_bin'] = demoBinOpen;
 
@@ -225,10 +216,7 @@ function App() {
           temp['participants'][participantId]['highlight_reason'] = highlightReason;
           temp['participants'][participantId]['highlighted'] = true;
         }
-
-
       }
-
 
       const dateNow = parseInt(format(new Date(), "yyyyMMdd"));
       var sessionDictionary = {};
@@ -277,7 +265,6 @@ function App() {
           }
         }
 
-        //if (!['Scheduled', 'Completed'].includes(status)) continue;
         let sessionsOfParticipant = participant['sessions'];
         if (!sessionsOfParticipant) {
           participant['sessions'] = {};
@@ -286,11 +273,8 @@ function App() {
 
         let nr = Object.keys(participant['sessions']).length + 1;
         participant['sessions'][sessionId] = nr;
-
-
       }
 
-      //console.log(temp['participants']['27946903']);
       setDatabase(temp);
     }, error => {
       console.error(error);
@@ -323,7 +307,6 @@ function App() {
   function calculateAgeDetails(dateOfBirth, baseDate) {
     const dob = new Date(dateOfBirth);
     const diff = (baseDate ? (new Date(baseDate)).getTime() : Date.now()) - dob.getTime();
-    //var diff = (new Date(baseDate || "")).getTime() - dob.getTime();
     const diffAge = new Date(diff);
     const year = diffAge.getUTCFullYear();
     const age = Math.abs(year - 1970);
@@ -356,9 +339,24 @@ function App() {
     };
   }
 
+
+  {/* Temp 'script' to adjust the roles in the database
+  function updateValue(path, newValue) {
+    realtimeDb.ref(path).update(newValue);
+  }
+
+  updateValue("/roles", {
+    admin: ['participants', 'scheduler', 'scheduler-overview', 'scheduler-external', 'external', 'usersadmin'],
+    manager: ['participants', 'scheduler', 'scheduler-overview', 'usersadmin'],
+    coordinator: ['participants', 'scheduler', 'scheduler-overview'],
+    apple: ['scheduler-overview', 'scheduler-external', 'external'],
+  })
+  */}
+
+
   function getElement(path) {
     if (!user) return <LoginPage />;
-    //if (!userRights.includes(path)) return null;
+    if (!userRights.includes(path.replace("/", ""))) return null;
 
     switch (path) {
       case "/":
@@ -387,7 +385,8 @@ function App() {
       case "/external":
         return <External database={database} setCheckDocuments />;
       case "/usersadmin":
-        return <UsersAdmin database={database} />;
+        //return <UsersAdmin database={database} />;
+        return null;
       default:
         return null;
     }
@@ -421,6 +420,15 @@ function App() {
         </div>
       </> : null : (loading ? null : <LoginPage />)
       }
+
+      {activityLog && <ActivityLog database={database} setActivityLog={setActivityLog} participantId={idforLog} timeslotforLog={timeslotforLog} setTimeslotforLog={setTimeslotforLog} />}
+      {checkDocuments && <CheckDocuments database={database} checkDocuments={checkDocuments} setCheckDocuments={setCheckDocuments} />}
+      {updateSession && <UpdateSession database={database} updateSession={updateSession} setUpdateSession={setUpdateSession} checkDocuments={checkDocuments} setCheckDocuments={setCheckDocuments} setActivityLog={setActivityLog} setIdForLog={setIdForLog} setTimeslotforLog={setTimeslotforLog} timeslotforLog={timeslotforLog} />}
+      {showStats && <Stats database={database} setShowStats={setShowStats} setFilterDataFromStats={setFilterDataFromStats} role={role} />}
+      {showStatsSessions && <StatsSessions database={database} setShowStatsSessions={setShowStatsSessions} setFilterDataFromStats={setFilterDataFromStats} />}
+      {showBins && <Bins database={database} setShowBins={setShowBins} />}
+      {showBonuses && <Bonuses database={database} setShowBonuses={setShowBonuses} />}
+
     </div >
   );
 }

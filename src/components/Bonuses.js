@@ -67,7 +67,7 @@ function Bonuses({ database, setShowBonuses }) {
                                     Male
                                 </th>
                                 {Object.keys(Constants['columnsOfStats']).filter(columnName => columnName != "Total").map(eth => {
-                                    return <th>{eth}</th>
+                                    return <th key={'bonus-header-' + eth}>{eth}</th>
                                 })}
                             </tr>
                         </thead>

@@ -21,13 +21,12 @@ function Navbar({ database, setShowStats, setShowStatsSessions, setShowBonuses, 
     }
   };
 
-
   let hostedVersion = database['settings']['app_version'];
 
   const NewVersionMessageHTML = () => {
     return <>
       Your version:  {appInfo.version} <br />
-      New version: {hostedVersion} <br /><br />
+      New version: {hostedVersion}
     </>
   }
 
@@ -47,7 +46,6 @@ function Navbar({ database, setShowStats, setShowStatsSessions, setShowBonuses, 
 
   return (
     <div className="navbar">
-
       {role == "admin" && <button className="navbar-button" onClick={(e) => { e.preventDefault(); navigate("/participants"); }}>Participants</button>}
       {role == "admin" && <button className="navbar-button" onClick={(e) => { e.preventDefault(); navigate("/scheduler"); }}>Scheduler</button>}
       {["external", "admin"].includes(role) && <button className="navbar-button" onClick={(e) => { e.preventDefault(); navigate("/scheduler-overview"); }}>Overview</button>}

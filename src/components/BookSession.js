@@ -96,30 +96,14 @@ function BookSession({ database, setShowBookSession, selectedSessionId, setJustB
                     <table className="search-table-for-schedule">
                         <thead>
                             <tr>
-                                <th>
-                                    Participant ID
-                                </th>
-                                <th>
-                                    Name
-                                </th>
-                                <th>
-                                    E-mail
-                                </th>
-                                <th>
-                                    Phone
-                                </th>
-                                <th>
-                                    Gender
-                                </th>
-                                <th>
-                                    Date of birth
-                                </th>
-                                <th>
-                                    Status
-                                </th>
-                                <th>
-                                    Participant comments
-                                </th>
+                                <th>Participant ID</th>
+                                <th>Name</th>
+                                <th>E-mail</th>
+                                <th>Phone</th>
+                                <th>Gender</th>
+                                <th>Date of birth</th>
+                                <th>Status</th>
+                                <th>Participant comments</th>
                             </tr>
                         </thead>
                         <tbody>

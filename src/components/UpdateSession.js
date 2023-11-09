@@ -8,7 +8,6 @@ import format from 'date-fns/format';
 import './UpdateSession.css';
 import Constants from './Constants';
 import LogEvent from './Core/LogEvent';
-import ActivityLog from './ActivityLog';
 import FormattingFunctions from './Core/FormattingFunctions';
 
 function UpdateSession({ database, updateSession, setUpdateSession, setCheckDocuments, setActivityLog, setIdForLog, setTimeslotforLog, timeslotforLog }) {

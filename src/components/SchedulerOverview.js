@@ -65,15 +65,15 @@ function SchedulerOverview({ database }) {
           <thead >
             <tr>
               <th>Date</th>
-              {['Scheduled', 'Checked In', 'Completed', 'Rescheduled', 'NoShow'].map(status => {
-                return <th>{status === 'Completed' ? 'Completed' : status}</th>
+              {['Scheduled', 'Checked In', 'Completed', 'Rescheduled', 'NoShow'].map((status, i) => {
+                return <th key={'scheduler-overview-header-' + i}>{status === 'Completed' ? 'Completed' : status}</th>
               })}
             </tr>
           </thead>
           <tbody>
             {Object.keys(days).map((key, index, array) => {
               return (
-                <tr key={"schedule-row-" + index}>
+                <tr key={"scheduler-overview-row-" + index}>
                   <td className={"center-tag" + (key == 'Total' ? ' total-row' : '')}>
                     {key == "Total" ? key : key.substring(0, 4) + "-" + key.substring(4, 6) + "-" + key.substring(6, 8)}
                   </td>

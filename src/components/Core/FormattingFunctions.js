@@ -41,7 +41,6 @@ const TimeSlotFormat = (timeslot) => {
 const FormatTime = (timestamp) => {
     if (typeof timestamp === "undefined") return "";
     const parsedDate = new Date("2023-01-01T" + timestamp);
-    console.log(parsedDate);
     return format(parsedDate, "hh:mm a");
 }
 

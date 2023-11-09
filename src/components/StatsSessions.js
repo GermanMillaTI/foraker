@@ -1,8 +1,7 @@
 import React, { useEffect, useState, useReducer } from 'react';
 import ReactDOM from 'react-dom';
-import { auth, realtimeDb } from '../firebase/config';
-import { format } from 'date-fns';
-import Swal from 'sweetalert2';
+import { auth } from '../firebase/config';
+import { useNavigate } from "react-router-dom";
 
 import './Stats.css';
 import Constants from './Constants';
@@ -23,7 +22,8 @@ const filterReducer = (state, event) => {
     return newState;
 }
 
-function StatsSessions({ database, setActivePage, setShowStatsSessions, setFilterDataFromStats }) {
+function StatsSessions({ database, setShowStatsSessions, setFilterDataFromStats }) {
+    const navigate = useNavigate();
     const [stats, setStats] = useState(getDefaultNumbers());
     const [stats2, setStats2] = useState(getDefaultNumbers());
     const [filterData, setFilterData] = useReducer(filterReducer, {
@@ -67,7 +67,7 @@ function StatsSessions({ database, setActivePage, setShowStatsSessions, setFilte
             unreadEmails: ['Yes', 'No']
         });
 
-        setActivePage("Participants");
+        navigate('participants');
         setShowStatsSessions(false);
     }
 
@@ -187,7 +187,7 @@ function StatsSessions({ database, setActivePage, setShowStatsSessions, setFilte
                                     Male
                                 </th>
                                 {Object.keys(Constants['columnsOfStats']).map(eth => {
-                                    return <th>{eth}</th>
+                                    return <th key={'stats-header-' + eth}>{eth}</th>
                                 })}
                             </tr>
                         </thead>

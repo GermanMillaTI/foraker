@@ -32,7 +32,6 @@ function BookSession2({ database, setShowBookSession2, participantId }) {
 
         }).then((result) => {
             if (result.isConfirmed) {
-                let userEmail = auth.currentUser.email;
                 let data = {
                     status: 'Scheduled',
                     participant_id: participantId,
@@ -99,7 +98,7 @@ function BookSession2({ database, setShowBookSession2, participantId }) {
                                 </th>
                                 {days.map(day => {
                                     return (
-                                        <th className="session2-table-header-cell">
+                                        <th key={"scheduler-table-item-" + day} className="session2-table-header-cell">
                                             {day}
                                         </th>
                                     )
@@ -110,7 +109,7 @@ function BookSession2({ database, setShowBookSession2, participantId }) {
 
                             {timeslots.map(timeslot => {
                                 return (
-                                    <tr>
+                                    <tr key={"scheduler-table-item-" + timeslot}>
                                         <th className="session2-table-header-cell">
                                             {FormattingFunctions.FormatTime(timeslot)}
                                         </th>

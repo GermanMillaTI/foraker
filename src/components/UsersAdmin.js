@@ -5,9 +5,6 @@ import "./UsersAdmin.css"
 import { CSVLink } from 'react-csv';
 
 
-
-
-
 function UsersAdmin({ database }) {
     const [apiUsers, setApiUsers] = useState(null);
     const [csvUsersData, setCsvUsersData] = useState([])

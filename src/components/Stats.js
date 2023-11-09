@@ -23,7 +23,7 @@ const filterReducer = (state, event) => {
     return newState;
 }
 
-function Stats({ database, setActivePage, setShowStats, setFilterDataFromStats }) {
+function Stats({ database, setActivePage, setShowStats, setFilterDataFromStats, role }) {
     const [stats, setStats] = useState(getDefaultNumbers());
     const [filterData, setFilterData] = useReducer(filterReducer, {
         statuses: ["Blank", "Document Requested", "Not Selected"],
@@ -45,7 +45,7 @@ function Stats({ database, setActivePage, setShowStats, setFilterDataFromStats }
 
 
     function selectDemoBin(statuses, ethnicities, ageRange, gender) {
-        if (database['users'][auth.currentUser.uid] != "admin") return;
+        if (role != "admin") return;
         setFilterDataFromStats({
             fromStats: true,
             ethnicities: ethnicities,
@@ -107,7 +107,7 @@ function Stats({ database, setActivePage, setShowStats, setFilterDataFromStats }
 
                 <div className="stats-filter-element">
                     <div><span className="first-number">First number:</span></div>
-                    {Constants['participantStatuses'].map((val, i) => {
+                    {Constants['participantStatuses'].filter(status => status != "Denali PPT").map((val, i) => {
                         return <div key={"filter-status" + i}>
                             <input id={"stats-filter-participant-status-" + (val || "Blank")} name={val || "Blank"} type="checkbox" alt="statuses" onChange={setFilterData} checked={val == "" ? filterData['statuses'].includes("Blank") : filterData['statuses'].includes(val)} />
                             <label className="first-number" htmlFor={"stats-filter-participant-status-" + (val || "Blank")}>{(val || "Blank")}</label>
@@ -117,7 +117,7 @@ function Stats({ database, setActivePage, setShowStats, setFilterDataFromStats }
 
                 <div className="stats-filter-element">
                     <div><span className="second-number">Second number:</span></div>
-                    {Constants['participantStatuses'].map((val, i) => {
+                    {Constants['participantStatuses'].filter(status => status != "Denali PPT").map((val, i) => {
                         return <div key={"filter-status" + i}>
                             <input id={"stats-filter2-participant-status-" + (val || "Blank")} name={val || "Blank"} type="checkbox" alt="statuses2" onChange={setFilterData} checked={val == "" ? filterData['statuses2'].includes("Blank") : filterData['statuses2'].includes(val)} />
                             <label className="second-number" htmlFor={"stats-filter2-participant-status-" + (val || "Blank")}>{(val || "Blank")}</label>
@@ -125,15 +125,16 @@ function Stats({ database, setActivePage, setShowStats, setFilterDataFromStats }
                     })}
                 </div>
 
-                <div className="still-interested-participants-only-filter">
-                    <div><span className="still-interested-row">Still interested:</span></div>
-                    {Constants['stillInterestedValues'].map((val, i) => {
-                        return <div key={"filter-status-" + i}>
-                            <input id={"stats-filter-still-interested-" + val} name={val} type="checkbox" alt="stillInterested" onChange={setFilterData} checked={filterData['stillInterested'].includes(val)} />
-                            <label className="still-interested-row" htmlFor={"stats-filter-still-interested-" + val}>{val}</label>
-                        </div>
-                    })}
-                </div>
+                {role == 'admin' &&
+                    <div className="still-interested-participants-only-filter">
+                        <div><span className="still-interested-row">Still interested:</span></div>
+                        {Constants['stillInterestedValues'].map((val, i) => {
+                            return <div key={"filter-status-" + i}>
+                                <input id={"stats-filter-still-interested-" + val} name={val} type="checkbox" alt="stillInterested" onChange={setFilterData} checked={filterData['stillInterested'].includes(val)} />
+                                <label className="still-interested-row" htmlFor={"stats-filter-still-interested-" + val}>{val}</label>
+                            </div>
+                        })}
+                    </div>}
 
                 <div className="modal-stats-content">
                     {['Male', 'Female'].map(gender => {

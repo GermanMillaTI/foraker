@@ -18,8 +18,7 @@ const Constants = {
     "Prefer not to say"
   ],
   listOfAgeRanges: [
-    "13-14",
-    "15-20",
+    "18-20",
     "21-30",
     "31-40",
     "41-50",
@@ -147,8 +146,7 @@ const Constants = {
     "Other": "9"
   },
   demoBinsAgeRanges: {
-    "13-14": "1",
-    "15-20": "2",
+    "18-20": "2",
     "21-30": "3",
     "31-40": "4",
     "41-50": "5",

@@ -9,10 +9,8 @@ import { renderToString } from 'react-dom/server';
 import './ParticipantCard.css';
 import Constants from './Constants';
 import LogEvent from './Core/LogEvent';
-
 import ActivityLog from './ActivityLog';
 import FormattingFunctions from './Core/FormattingFunctions';
-
 
 function ParticipantCard({ database, role, participantId, index, setShowBookSession2, setCheckDocuments, setUpdateSession, setActivityLog, activityLog, idforLog, setIdForLog, setTimeslotforLog, timeslotforLog }) {
     const [tempParticipants, setTempParticipants] = useState([]);
@@ -246,9 +244,18 @@ function ParticipantCard({ database, role, participantId, index, setShowBookSess
                         <span className="field-label">Unlisted ethnicity</span><span>{participantInfo['unlisted_ethnicity']}</span>
                     </div>
                 }
-                <div className="participant-attribute-container">
-                    <span className="field-label">Age range / Gender</span><span>{participantInfo['age_range'] + " / " + participantInfo['gender']}</span>
-                </div>
+
+                {participantInfo['status'] != "Denali PPT" &&
+                    <div className="participant-attribute-container">
+                        <span className="field-label">Age range / Gender</span><span>{participantInfo['age_range'] + " / " + participantInfo['gender']}</span>
+                    </div>
+                }
+
+                {participantInfo['status'] == "Denali PPT" &&
+                    <div className="participant-attribute-container">
+                        <span className="field-label">Gender</span><span>{participantInfo['gender']}</span>
+                    </div>
+                }
 
 
                 <div className="participant-attribute-container">
@@ -260,7 +267,6 @@ function ParticipantCard({ database, role, participantId, index, setShowBookSess
                                 updateDOB();
                             }} target="_blank" />
                         }
-                        {!participantInfo['over18'] && <span className="under18">Under 18</span>}
                     </span>
                 </div>
                 <div className="participant-attribute-container">

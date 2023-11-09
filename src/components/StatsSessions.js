@@ -52,7 +52,6 @@ function StatsSessions({ database, setShowStatsSessions, setFilterDataFromStats 
             multipleEthnicities: ['Yes', 'No'],
             genders: [gender],
             ageRanges: ageRange,
-            over18: ['Yes'],
             statuses: ["Blank", ...Constants['participantStatuses']],
             icfs: ['Yes', 'No'],
             demoBinStatuses: Constants['demoBinStatuses'],
@@ -88,7 +87,6 @@ function StatsSessions({ database, setShowStatsSessions, setFilterDataFromStats 
             let ethnicities = participant['ethnicities'].split(',');
             let ethValue = 1 / ethnicities.length;
             let status = session['status'] || "Blank";
-            if (!participant['over18']) return;
 
             // The following loop fills up the object of stats2 -- it's used for the backgound highlights only...
             for (let x = 0; x < ethnicities.length; x++) {

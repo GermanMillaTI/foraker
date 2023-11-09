@@ -144,10 +144,7 @@ function App() {
         let fullName = participant['full_name'];
 
         let ageDetails = calculateAgeDetails(participant['date_of_birth']);
-        let age = ageDetails['age'];
-        let over18 = age >= 18;
-        temp['participants'][participantId]['over18'] = over18;
-
+        //let age = ageDetails['age'];
 
         let ageRange = ageDetails['ageRange'];
         temp['participants'][participantId]['age_range'] = ageRange;
@@ -305,12 +302,10 @@ function App() {
     const age = Math.abs(year - 1970);
 
     let ageRange = "";
-    if (age < 13) {
-      ageRange = "<13"
-    } else if (age >= 13 && age <= 14) {
-      ageRange = "13-14"
-    } else if (age >= 15 && age <= 20) {
-      ageRange = "15-20"
+    if (age < 18) {
+      ageRange = "<18"
+    } else if (age >= 18 && age <= 20) {
+      ageRange = "18-20"
     } else if (age >= 21 && age <= 30) {
       ageRange = "21-30"
     } else if (age >= 31 && age <= 40) {

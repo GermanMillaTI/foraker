@@ -51,7 +51,6 @@ function Stats({ database, setShowStats, setFilterDataFromStats, role }) {
             multipleEthnicities: ['Yes', 'No'],
             genders: [gender],
             ageRanges: ageRange,
-            over18: ['Yes'],
             statuses: statuses,
             icfs: ['Yes', 'No'],
             demoBinStatuses: Constants['demoBinStatuses'],
@@ -82,7 +81,6 @@ function Stats({ database, setShowStats, setFilterDataFromStats, role }) {
             let ethValue = 1 / ethnicities.length;
             let status = participant['status'] || "Blank";
             let stillInterested = participant['still_interested'] || "N/A";
-            if (!participant['over18']) return;
             if (!filterData['stillInterested'].includes(stillInterested)) return;
 
             for (let x = 0; x < ethnicities.length; x++) {

@@ -405,17 +405,15 @@ function App() {
           setTimeslotforLog={setTimeslotforLog}
           role={role}
         />}
-        <div id="content">
-          <Routes>
-            <Route path="/" element={getElement("/")} />
-            <Route path="/participants" element={getElement("/participants")} />
-            <Route path="/scheduler" element={getElement("/scheduler")} />
-            <Route path="/scheduler-overview" element={getElement("/scheduler-overview")} />
-            <Route path="/scheduler-external" element={getElement("/scheduler-external")} />
-            <Route path="/external" element={getElement("/external")} />
-            <Route path="/usersadmin" element={getElement("/usersadmin")} />
-          </Routes>
-        </div>
+        <Routes>
+          <Route path="/" element={getElement("/")} />
+          <Route path="/participants" element={getElement("/participants")} />
+          <Route path="/scheduler" element={getElement("/scheduler")} />
+          <Route path="/scheduler-overview" element={getElement("/scheduler-overview")} />
+          <Route path="/scheduler-external" element={getElement("/scheduler-external")} />
+          <Route path="/external" element={getElement("/external")} />
+          <Route path="/usersadmin" element={getElement("/usersadmin")} />
+        </Routes>
       </> : null : (loading ? null : <LoginPage />)
       }
 

@@ -106,7 +106,8 @@
 }
 
 .red-highlighted-filter {
-    background: rgba(255, 0, 0, 0.61);
+    border-radius: .2em;
+    background: rgba(255, 0, 0, 0.5);
     color: white;
     font-weight: bold;
 }

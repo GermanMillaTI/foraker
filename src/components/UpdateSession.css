@@ -218,3 +218,9 @@
     font-size: 1em;
     padding: .2em;
 }
+
+.missing-arrival-time {
+    margin-left: 1em;
+    font-weight: bold;
+    color: red;
+}

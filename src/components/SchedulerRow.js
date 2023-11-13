@@ -42,6 +42,7 @@ function SchedulerRow({ database, sessionId, index, array, setUpdateSession, hig
           booked_today: false,
           remind: false,
           delayed: false,
+          arrival_time: "",
           comments: ""
         }
 

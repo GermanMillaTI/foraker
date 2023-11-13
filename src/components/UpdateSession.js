@@ -56,6 +56,7 @@ function UpdateSession({ database, updateSession, setUpdateSession, setCheckDocu
                     booked_today: false,
                     remind: false,
                     delayed: false,
+                    arrival_time: "",
                     comments: ""
                 }
 
@@ -645,6 +646,28 @@ function UpdateSession({ database, updateSession, setUpdateSession, setCheckDocu
                                     <td className="participant-table-left">Station</td>
                                     <td className="participant-table-right">{updateSession.substring(14) + (sessionInfo['backup'] ? " (backup session)" : "")}</td>
                                 </tr>
+
+                                <tr>
+                                    <td className="participant-table-left">Arrival time</td>
+                                    <td className="participant-table-right">
+                                        <input
+                                            type="time"
+                                            value={database['timeslots'][updateSession]['arrival_time'] || ""}
+                                            onChange={(e) => {
+                                                updateValue("/timeslots/" + updateSession, { arrival_time: e.currentTarget.value });
+                                                LogEvent({
+                                                    pid: participantId,
+                                                    timeslot: updateSession,
+                                                    action: "Arrival time: '" + (e.currentTarget.value || "Blank") + "'"
+                                                })
+                                            }}
+                                        />
+                                        {!['Scheduled', 'Rescheduled', 'NoShow', 'Withdrawn'].includes(database['timeslots'][updateSession]['status']) &&
+                                            !database['timeslots'][updateSession]['arrival_time'] &&
+                                            <span className="missing-arrival-time">Missing!</span>}
+                                    </td>
+                                </tr>
+
                                 {(['Checked In', 'Completed'].includes(database['timeslots'][updateSession]['status']) &&
                                     database['timeslots'][updateSession]['backup']) &&
                                     <tr>
@@ -665,6 +688,7 @@ function UpdateSession({ database, updateSession, setUpdateSession, setCheckDocu
                                         </td>
                                     </tr>
                                 }
+
                                 <tr>
                                     <td className="participant-table-left">Session status</td>
                                     <td className="participant-table-right">
@@ -710,6 +734,7 @@ function UpdateSession({ database, updateSession, setUpdateSession, setCheckDocu
                                         </select>
                                     </td>
                                 </tr>
+
                                 <tr>
                                     <td className="participant-table-left">External ID</td>
                                     <td className="participant-table-right">

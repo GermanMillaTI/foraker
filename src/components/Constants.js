@@ -159,6 +159,8 @@ const Constants = {
     "Male": "1"
   },
   sources: {
+    "D2Models": "D2 Models",
+    "BGACasting": "BGA Casting",
     "goodwork": "Goodwork",
     "recruiter1": "Recruiter 1",
     "recruiter2": "Recruiter 2",

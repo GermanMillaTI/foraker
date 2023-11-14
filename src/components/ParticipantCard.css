@@ -253,10 +253,16 @@
 }
 
 .missing-icf {
-    padding: 0 1.4em;
+    padding: 0 1em;
     border-radius: 1em;
     background: red;
     color: white;
+    font-weight: bold;
+}
+
+.elbert-icf {
+    background: rgba(117, 255, 117, 0.521);
+    padding: 0 .4em;
     font-weight: bold;
 }
 

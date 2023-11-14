@@ -30,8 +30,10 @@ function ParticipantCard({ database, role, participantId, index, setShowBookSess
     }
 
     function sendMail(pid, kind) {
-        Swal.fire('Not available function yet...', '', '');
-        return;
+        if (kind == "Handoff") {
+            Swal.fire('Not available function yet...', '', '');
+            return;
+        }
 
         let bonus = database['participants'][pid]['currently_offered_bonus'];
 
@@ -289,11 +291,23 @@ function ParticipantCard({ database, role, participantId, index, setShowBookSess
 
                 <div className="participant-attribute-container">
                     <span className="field-label">Signatures</span>
-                    <a href={"https://fs30.formsite.com/LB2014/files/" + participantInfo['sla_url']} target="_blank" className="signature-link">Open SLA</a>
+                    <a href={"https://fs30.formsite.com/LB2014/files/" + participantInfo['sla_url']} target="_blank" className="signature-link">SLA</a>
                     <span> &nbsp;/&nbsp; </span>
                     {participantInfo['icf'] ?
-                        <a href={"https://fs30.formsite.com/LB2014/files/" + participantInfo['icf']} target="_blank" className="signature-link">Open ICF</a>
+                        <a href={"https://fs30.formsite.com/LB2014/files/" + participantInfo['icf']} target="_blank" className="signature-link">Denali ICF</a>
                         : <span className="missing-icf">Missing ICF!</span>
+                    }
+                    {participantInfo['elbert_icf'] &&
+                        <>
+                            <span> &nbsp;/&nbsp; </span>
+                            <a href="" target="_blank" className="signature-link elbert-icf" onClick={(e) => {
+                                e.preventDefault();
+                                let image = new Image();
+                                image.src = participantInfo['elbert_icf'][Object.keys(participantInfo['elbert_icf'])[0]]['img'];
+                                let w = window.open("");
+                                w.document.write(image.outerHTML);
+                            }}>Elbert ICF</a>
+                        </>
                     }
                 </div>
 
@@ -540,10 +554,8 @@ function ParticipantCard({ database, role, participantId, index, setShowBookSess
                                 <button className="email-button handoff-button" onClick={() => sendMail(participantId, "Handoff")}>Send handoff email</button>
                                 <a className="copy-booking-link fas fa-copy" onClick={(e) => {
                                     e.preventDefault();
-                                    Swal.fire('Not available function yet...', '', '');
-                                    return;
 
-                                    let url = "https://denali-appointments.web.app/#" + participantId + "&" + md5('p_' + participantId)
+                                    let url = "https://denali-appointments.web.app/#" + md5('p_' + participantId) + "&" + participantId
                                     navigator.clipboard.writeText(url);
 
                                     Swal.fire({

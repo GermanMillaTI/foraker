@@ -30,10 +30,6 @@ function ParticipantCard({ database, role, participantId, index, setShowBookSess
     }
 
     function sendMail(pid, kind) {
-        if (kind == "Handoff") {
-            Swal.fire('Not available function yet...', '', '');
-            return;
-        }
 
         let bonus = database['participants'][pid]['currently_offered_bonus'];
 

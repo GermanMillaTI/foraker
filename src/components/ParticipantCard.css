@@ -212,6 +212,19 @@
     color: #ff5100;
 }
 
+.vlog-link {
+    color: white;
+    text-decoration: none;
+    padding: 0 1em;
+    border-radius: 1em;
+    background: red;
+    font-weight: bold;
+}
+
+.vlog-link:hover {
+    text-decoration: underline;
+}
+
 .signature-link {
     color: blue;
     text-decoration: none;
@@ -280,6 +293,14 @@
 
 .under18 {
     margin-left: .5em;
+    padding: 0 1.4em;
+    border-radius: 1em;
+    background: red;
+    color: white;
+    font-weight: bold;
+}
+
+.highlighted-industry {
     padding: 0 1.4em;
     border-radius: 1em;
     background: red;

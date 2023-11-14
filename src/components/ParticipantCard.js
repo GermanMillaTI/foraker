@@ -280,6 +280,16 @@ function ParticipantCard({ database, role, participantId, index, setShowBookSess
                     <span>{Constants['sources'][(participantInfo['source'] || 'Other')]}</span>
                 </div>
 
+                {participantInfo['industry'] && <div className="participant-attribute-container">
+                    <span className="field-label">Industry</span>
+                    <span className={['Marketing and Media', 'Technology'].includes(participantInfo['industry']) ? "highlighted-industry" : ""}>{participantInfo['industry']}</span>
+                </div>}
+
+                {(participantInfo['vlog'] && participantInfo['vlog'] != 'No') && <div className="participant-attribute-container">
+                    <span className="field-label">Vlog</span>
+                    <span><a href={participantInfo['vlog']} target="_blank" className="vlog-link">{participantInfo['vlog']}</a></span>
+                </div>}
+
                 <div className="participant-attribute-container">
                     <span className="field-label">Date of registration</span><span>{participantInfo['date'].substring(0, 16).replaceAll("T", " ")}</span>
                 </div>

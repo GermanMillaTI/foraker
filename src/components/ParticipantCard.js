@@ -313,6 +313,11 @@ function ParticipantCard({ database, role, participantId, index, setShowBookSess
                             }
                         </>
                     }
+
+                    {participantInfo['reg_type'] != 'elbert' && participantInfo['elbert_icf'] && <>
+                        <span> &nbsp;/&nbsp; </span>
+                        <a href={participantInfo['elbert_icf']} target="_blank" className="signature-link elbert-icf">Elbert ICF</a>
+                    </>}
                 </div>
 
                 {participantInfo['other_companies'] &&

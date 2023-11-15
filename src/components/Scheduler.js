@@ -167,6 +167,7 @@ function Scheduler({ database, setUpdateSession }) {
               <th>Participant ID</th>
               <th>Name</th>
               <th>Vision corr.</th>
+              <th>#</th>
               <th>Session comments</th>
               <th>Functions</th>
             </tr>

@@ -43,7 +43,8 @@ function SchedulerRow({ database, sessionId, index, array, setUpdateSession, hig
           remind: false,
           delayed: false,
           arrival_time: "",
-          comments: ""
+          comments: "",
+          session_outcome: ""
         }
 
         // Set the bonuses to false
@@ -154,6 +155,13 @@ function SchedulerRow({ database, sessionId, index, array, setUpdateSession, hig
     <td className={"center-tag " + ((highlightedTimeslots[sessionId.substring(0, 13)] > 4 && database['timeslots'][sessionId]['glasses']) ? "glasses-highlighted" : "")}>
       {participantId ?
         participantInfo['vision_correction']
+        : ""}
+    </td>
+    <td className="center-tag">
+      {database['timeslots'][sessionId]['participant_id'] ?
+        (database['participants'][database['timeslots'][sessionId]['participant_id']]['sessions'] ?
+          database['participants'][database['timeslots'][sessionId]['participant_id']]['sessions'][sessionId]
+          : "")
         : ""}
     </td>
     <td>

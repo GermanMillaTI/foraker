@@ -245,7 +245,13 @@ const Constants = {
     "Other",
     "N/A"
   ],
-
+  sessionOutcomeStatuses: [
+    "",
+    "Completed - Positive",
+    "Completed - Negative",
+    "Incomplete - Negative",
+    "Incomplete - Redo"
+  ],
   superAdmins: [
     'zoltan.bathori@telusinternational.com',
     'german.milla01@telusinternational.com',

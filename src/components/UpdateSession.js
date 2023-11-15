@@ -57,7 +57,8 @@ function UpdateSession({ database, updateSession, setUpdateSession, setCheckDocu
                     remind: false,
                     delayed: false,
                     arrival_time: "",
-                    comments: ""
+                    comments: "",
+                    session_outcome: ""
                 }
 
                 // Set the bonuses to false
@@ -673,6 +674,11 @@ function UpdateSession({ database, updateSession, setUpdateSession, setCheckDocu
                                 </tr>
 
                                 <tr>
+                                    <td className="participant-table-left">Session #</td>
+                                    <td className="participant-table-right">{participantInfo['sessions'][updateSession]}</td>
+                                </tr>
+
+                                <tr>
                                     <td className="participant-table-left">Arrival time</td>
                                     <td className="participant-table-right">
                                         <input
@@ -734,6 +740,27 @@ function UpdateSession({ database, updateSession, setUpdateSession, setCheckDocu
                                         </select>
                                     </td>
                                 </tr>
+
+                                <tr>
+                                    <td className="participant-table-left">Session outcome</td>
+                                    <td className="participant-table-right">
+                                        <select className="session-data-selector"
+                                            onChange={(e) => {
+                                                updateValue("/timeslots/" + updateSession, { session_outcome: e.currentTarget.value });
+                                                LogEvent({
+                                                    pid: participantId,
+                                                    timeslot: updateSession,
+                                                    action: "Session outcome: '" + (e.currentTarget.value || "Blank") + "'"
+                                                })
+                                            }}
+                                        >
+                                            {Constants['sessionOutcomeStatuses'].map((s, i) => {
+                                                return <option key={"data-session-status" + i} value={s} selected={s == sessionInfo['session_outcome']}>{s}</option>
+                                            })}
+                                        </select>
+                                    </td>
+                                </tr>
+
                                 <tr>
                                     <td className="participant-table-left">Participant status</td>
                                     <td className="participant-table-right">

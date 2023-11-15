@@ -239,6 +239,13 @@ const Constants = {
     "No",
     "N/A"
   ],
+  industryCategories: [
+    "Marketing and Media",
+    "Technology",
+    "Other",
+    "N/A"
+  ],
+
   superAdmins: [
     'zoltan.bathori@telusinternational.com',
     'german.milla01@telusinternational.com',

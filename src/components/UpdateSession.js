@@ -385,11 +385,14 @@ function UpdateSession({ database, updateSession, setUpdateSession, setCheckDocu
                                             className="ppt-comment"
                                             defaultValue={participantInfo['comment']}
                                             onBlur={(e) => {
-                                                updateValue("/participants/" + participantId, { comment: e.currentTarget.value });
-                                                LogEvent({
-                                                    pid: participantId,
-                                                    action: "Participant comment: '" + e.currentTarget.value + "'"
-                                                })
+                                                const newComment = e.currentTarget.value;
+                                                if (newComment != participantInfo['comment']) {
+                                                    updateValue("/participants/" + participantId, { comment: newComment });
+                                                    LogEvent({
+                                                        pid: participantId,
+                                                        action: "Participant comment: '" + newComment + "'"
+                                                    })
+                                                }
                                             }}
                                             placeholder="Comments about the participant..."
                                             onInput={(e) => {
@@ -758,12 +761,15 @@ function UpdateSession({ database, updateSession, setUpdateSession, setCheckDocu
                                             className="session-comment"
                                             defaultValue={sessionInfo['comments']}
                                             onBlur={(e) => {
-                                                updateValue("/timeslots/" + updateSession, { comments: e.currentTarget.value });
-                                                LogEvent({
-                                                    pid: participantId,
-                                                    timeslot: updateSession,
-                                                    action: "Session comment: '" + e.currentTarget.value + "'"
-                                                })
+                                                const newComment = e.currentTarget.value;
+                                                if (newComment != sessionInfo['comments']) {
+                                                    updateValue("/timeslots/" + updateSession, { comments: newComment });
+                                                    LogEvent({
+                                                        pid: participantId,
+                                                        timeslot: updateSession,
+                                                        action: "Session comment: '" + newComment + "'"
+                                                    })
+                                                }
                                             }}
                                             placeholder="Comments about the session..."
                                             onInput={(e) => {

@@ -586,11 +586,16 @@ function ParticipantCard({ database, role, participantId, index, setShowBookSess
                     <textarea className="participant-comment" defaultValue={participantInfo['comment']}
                         disabled={participantInfo['status'] == 'Denali PPT'}
                         onBlur={(e) => {
-                            updateValue("/participants/" + participantId, { comment: e.currentTarget.value });
-                            LogEvent({
-                                pid: participantId,
-                                action: "Participant comment: '" + e.currentTarget.value + "'"
-                            })
+                            const newComment = e.currentTarget.value;
+                            console.log('checking');
+                            if (newComment != participantInfo['comment']) {
+                                console.log('saving');
+                                updateValue("/participants/" + participantId, { comment: newComment });
+                                LogEvent({
+                                    pid: participantId,
+                                    action: "Participant comment: '" + newComment + "'"
+                                })
+                            }
                         }}
                         placeholder="Comments..."
                         onInput={(e) => {

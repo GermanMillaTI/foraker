@@ -154,6 +154,7 @@ function Scheduler({ database, setUpdateSession }) {
                   selectedEach={false}
                 />
               </th>
+              <th>Session outcome</th>
               <th>
                 <TableFilter
                   filterName="Participant status"

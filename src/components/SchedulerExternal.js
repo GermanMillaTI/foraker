@@ -69,6 +69,9 @@ function SchedulerExternal({ database }) {
                 Status
               </th>
               <th>
+                Session outcome
+              </th>
+              <th>
                 Participant ID
               </th>
               <th>
@@ -105,6 +108,9 @@ function SchedulerExternal({ database }) {
                     </td>
                     <td className="center-tag">
                       {database['timeslots'][key]['status']}
+                    </td>
+                    <td className="center-tag">
+                      {database['timeslots'][key]['session_outcome'] || ""}
                     </td>
                     <td className="center-tag">
                       {database['timeslots'][key]['participant_id'] ?

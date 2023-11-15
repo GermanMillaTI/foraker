@@ -138,6 +138,9 @@ function SchedulerRow({ database, sessionId, index, array, setUpdateSession, hig
       {database['timeslots'][sessionId]['status']}
     </td>
     <td className="center-tag">
+      {database['timeslots'][sessionId]['session_outcome'] || ""}
+    </td>
+    <td className="center-tag">
       {participantInfo['status'] || ""}
     </td>
     {database['timeslots'][sessionId]['participant_id'] ?

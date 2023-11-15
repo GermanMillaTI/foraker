@@ -63,7 +63,8 @@ function Stats({ database, setShowStats, setFilterDataFromStats, role }) {
             stillInterested: filterData['stillInterested'],
             unsubscribed: ['Yes', 'No'],
             unreadEmails: ['Yes', 'No'],
-            industry: Constants['industryCategories']
+            industry: Constants['industryCategories'],
+            registrationType: ['Denali', 'Elbert']
         });
 
         navigate('participants');

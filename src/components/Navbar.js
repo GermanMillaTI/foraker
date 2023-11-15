@@ -65,9 +65,25 @@ function Navbar({ database, setDatabase, setRole, setUserRights, setShowStats, s
         setIdForLog("");
         setTimeslotforLog("");
       }}>Activity log</button>}
-      {/*['admin'].includes(role) && <button className="navbar-button" onClick={(e) => { e.preventDefault(); navigate("/users-admin");}}>Users Administration</button>*/}
-      <a href="/" className="navbar-button" onClick={(e) => { e.preventDefault(); handleLogout(); }}>Logout</a>
+      {['admin'].includes(role) && ['german.milla01@telusinternational.com', 'zoltan.bathori@telusinternational.com'].includes(auth.currentUser.email) && <button className="navbar-button" onClick={(e) => { e.preventDefault(); navigate("/usersadmin"); }}>Users Admin</button>}
+
+      <div className='navbar-button-user' onClick={(e) => {
+        let menu = document.getElementById("navbarMenu");
+        if (menu.style.display === "none" || menu.style.display === "") {
+          menu.style.display = "block";
+        } else {
+          menu.style.display = "none";
+        }
+
+      }}>({database['users'][auth.currentUser.uid]['name']})</div>
+      <div id='navbarMenu'>
+        <li>
+          <a href="/" className="navbar-button-user" onClick={(e) => { e.preventDefault(); handleLogout(); }}> Logout</a>
+        </li>
+      </div>
+
     </div>
+
   );
 }
 

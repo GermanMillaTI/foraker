@@ -64,7 +64,8 @@ function StatsSessions({ database, setShowStatsSessions, setFilterDataFromStats 
             stillInterested: Constants['stillInterestedValues'],
             unsubscribed: ['Yes', 'No'],
             unreadEmails: ['Yes', 'No'],
-            industry: Constants['industryCategories']
+            industry: Constants['industryCategories'],
+            registrationType: ['Denali', 'Elbert']
         });
 
         navigate('participants');

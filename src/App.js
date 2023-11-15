@@ -19,7 +19,7 @@ import StatsSessions from './components/StatsSessions';
 import Bonuses from './components/Bonuses';
 import Bins from './components/Bins';
 import ActivityLog from './components/ActivityLog';
-//import UsersAdmin from './components/UsersAdmin';
+import UsersAdmin from './components/UsersAdmin';
 
 function App() {
   const [user, setUser] = useState(null);
@@ -394,8 +394,8 @@ function App() {
       case "/external":
         return <External database={database} setCheckDocuments />;
       case "/usersadmin":
-        //return <UsersAdmin database={database} />;
-        return null;
+        return <UsersAdmin database={database} />;
+      //return null;
       default:
         return null;
     }

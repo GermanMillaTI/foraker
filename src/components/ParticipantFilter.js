@@ -26,7 +26,8 @@ const filterReducer = (state, event) => {
       stillInterested: ['Yes', 'No', 'N/A'],
       unsubscribed: ['Yes', 'No'],
       unreadEmails: ['Yes', 'No'],
-      industry: Constants['industryCategories']
+      industry: Constants['industryCategories'],
+      registrationType: ['Elbert', 'Denali']
     }
   }
 
@@ -98,7 +99,8 @@ function ParticipantFilter({ database, setShownParticipants, filterDataFromStats
     stillInterested: ['Yes', 'No', 'N/A'],
     unsubscribed: ['Yes', 'No'],
     unreadEmails: ['Yes', 'No'],
-    industry: Constants['industryCategories']
+    industry: Constants['industryCategories'],
+    registrationType: ['Elbert', 'Denali']
   });
 
   useEffect(() => {
@@ -128,6 +130,7 @@ function ParticipantFilter({ database, setShownParticipants, filterDataFromStats
       unsubscribed: { 'Yes': 0, 'No': 0 },
       unreadEmails: { 'Yes': 0, 'No': 0 },
       industry: Object.assign({}, ...Constants['industryCategories'].map(k => ({ [k]: 0 }))),
+      registrationType: { 'Denali': 0, 'Elbert': 0 }
     }
   }
 
@@ -155,6 +158,7 @@ function ParticipantFilter({ database, setShownParticipants, filterDataFromStats
     let stillInterested = participantInfo['still_interested'] == 'Yes' ? 'Yes' : participantInfo['still_interested'] == 'No' ? 'No' : 'N/A';
     let industry = participantInfo['industry'] ? (['Marketing and Media', 'Technology'].includes(participantInfo['industry']) ? participantInfo['industry'] : 'Other') : 'N/A';
     let unsubscribed = participantInfo['unsubscribed_comms'] == 'Yes' ? 'Yes' : 'No';
+    let registrationType = participantInfo['reg_type'] === "elbert" ? "Elbert" : "Denali";
     let unreadEmails = participantInfo['unread_emails'] == "Yes" ? "Yes" : "No";
     let externalId = participantInfo['external_id'] || "";
 
@@ -239,6 +243,7 @@ function ParticipantFilter({ database, setShownParticipants, filterDataFromStats
       filterData['unsubscribed'].includes(unsubscribed) &&
       filterData['unreadEmails'].includes(unreadEmails) &&
       filterData['industry'].includes(industry) &&
+      filterData['registrationType'].includes(registrationType) &&
       (!filterData['participantId'] || participantId.includes(filterData['participantId'])) &&
       (!filterData['firstName'] || firstName.includes(filterData['firstName'].trim())) &&
       (!filterData['lastName'] || lastName.includes(filterData['lastName'].trim())) &&
@@ -270,6 +275,7 @@ function ParticipantFilter({ database, setShownParticipants, filterDataFromStats
       let unsubscribed = participantInfo['unsubscribed_comms'] == 'Yes' ? 'Yes' : 'No';
       let unreadEmails = participantInfo['unread_emails'] == "Yes" ? "Yes" : "No";
       let industry = participantInfo['industry'] ? (['Marketing and Media', 'Technology'].includes(participantInfo['industry']) ? participantInfo['industry'] : 'Other') : 'N/A';
+      let registrationType = participantInfo['reg_type'] === "elbert" ? "Elbert" : "Denali";
       let ethnicities = participantInfo['ethnicities'].split(',');
       let multipleEthnicities = ethnicities.length > 1 ? "Yes" : "No";
       ethnicities.map((eth) => {
@@ -296,6 +302,7 @@ function ParticipantFilter({ database, setShownParticipants, filterDataFromStats
       output['unsubscribed'][unsubscribed]++;
       output['unreadEmails'][unreadEmails]++;
       output['industry'][industry]++;
+      output['registrationType'][registrationType]++;
     })
     setFilterStats(output);
   }, [filterData])
@@ -562,6 +569,20 @@ function ParticipantFilter({ database, setShownParticipants, filterDataFromStats
         })}
 
       </div>
+      <div className="filter-element gap">
+        <span className="filter-container-header">Registration Type</span>
+        <div className="filter-object">
+          <input id="filter-registrationType-Denali" name="Denali" type="checkbox" alt="registrationType" onChange={setFilterData} checked={filterData['registrationType'].includes('Denali')} />
+          <label htmlFor="filter-registrationType-Denali">Denali ({filterStats['registrationType']['Denali']})</label>
+          <button name={"Denali"} alt="registrationType" className="filter-this-button" onClick={setFilterData}>!</button>
+        </div>
+        <div className="filter-object">
+          <input id="filter-unreadEmails-Elbert" name="Elbert" type="checkbox" alt="registrationType" onChange={setFilterData} checked={filterData['registrationType'].includes('Elbert')} />
+          <label htmlFor="filter-unreadEmails-Elbert">Elbert ({filterStats['registrationType']['Elbert']})</label>
+          <button name={"Elbert"} alt="registrationType" className="filter-this-button" onClick={setFilterData}>!</button>
+        </div>
+      </div>
+
 
     </div>
 

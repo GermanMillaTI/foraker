@@ -7,6 +7,14 @@
     display: flex;
     flex-direction: column;
     justify-content: center;
+    padding-top: 4vh;
+}
+
+#searchBar {
+    position: absolute;
+    top: 1em;
+    left: 2%;
+    width: 25em
 }
 
 .usersAdmin-table-container {
@@ -43,6 +51,7 @@
     padding: .2em .3em;
     border: 1px solid rgb(199, 198, 198);
     cursor: default;
+    text-align: center;
 }
 
 .usersAdmin-table tr:nth-child(even) {
@@ -64,7 +73,7 @@
     gap: .5em;
 }
 
-.update-timeslot-button {
+.user-disabled-false {
     width: 5.5em;
     border: none;
     font-weight: bold;
@@ -72,6 +81,32 @@
     cursor: pointer;
     outline: none;
     border-radius: .2em;
+    color: rgb(213, 27, 27);
+    background: #fff;
+}
+
+.user-disabled-true {
+    width: 5.5em;
+    border: none;
+    font-weight: bold;
+    box-shadow: 1px 2px 5px rgba(0, 0, 0, .31);
+    cursor: pointer;
+    outline: none;
+    border-radius: .2em;
+    color: #fff;
+    background: rgb(0, 128, 51);
+}
+
+.user-exported-false {
+    width: 10em;
+    border: none;
+    font-weight: bold;
+    box-shadow: 1px 2px 5px rgba(0, 0, 0, .31);
+    cursor: pointer;
+    outline: none;
+    border-radius: .2em;
+    color: #fff;
+    background: #444;
 }
 
 .book-button {
@@ -182,6 +217,24 @@
     padding: .2em 1em;
     text-align: center;
     width: 13em;
+    margin: .3em;
+    border: none;
+    border-radius: 2em;
+    font-weight: bold;
+    font-size: .9em;
+    text-decoration: none;
+    color: #fff;
+    background-color: #ff5100;
+    box-shadow: 1px 2px 5px rgba(0, 0, 0, .31);
+    cursor: pointer;
+    outline: none;
+}
+
+.create-user {
+    z-index: 50;
+    padding: .2em 1em;
+    text-align: center;
+    width: 10em;
     margin: .3em;
     border: none;
     border-radius: 2em;

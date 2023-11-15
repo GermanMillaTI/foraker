@@ -123,7 +123,6 @@ function ActivityLog({ database, setActivityLog, participantId, timeslotforLog }
     return output
   }
 
-
   return ReactDOM.createPortal((
     <div
       className="modal-activitylog-backdrop"

@@ -372,12 +372,25 @@ function UpdateSession({ database, updateSession, setUpdateSession, setCheckDocu
                                 <tr>
                                     <td className="participant-table-left">Signatures</td>
                                     <td className="participant-table-right">
-                                        <a href={"https://fs30.formsite.com/LB2014/files/" + participantInfo['sla_url']} target="_blank" className="signature-link">SLA</a>&nbsp;/&nbsp;
-                                        <a href={"https://fs30.formsite.com/LB2014/files/" + participantInfo['icf']} target="_blank" className="signature-link">Denali ICF</a>&nbsp;/&nbsp;
-                                        <a href={"https://drive.google.com/file/d/" + participantInfo['elbert_icf']['file_id'] + "/view"}
-                                            className="signature-link elbert-icf"
-                                            target="_blank"
-                                        >Elbert ICF</a>
+                                        <a href={"https://fs30.formsite.com/LB2014/files/" + participantInfo['sla_url']} target="_blank" className="signature-link">SLA</a>
+
+                                        {participantInfo['reg_type'] != 'elbert' && <>
+                                            <span> &nbsp;/&nbsp; </span>
+                                            {participantInfo['icf'] ?
+                                                <a href={participantInfo['icf']} target="_blank" className="signature-link">Denali ICF</a>
+                                                : <span className="missing-icf">Missing ICF!</span>
+                                            }
+                                        </>}
+
+                                        {participantInfo['reg_type'] == 'elbert' &&
+                                            <>
+                                                <span> &nbsp;/&nbsp; </span>
+                                                {participantInfo['icf'] ?
+                                                    <a href={participantInfo['icf']} target="_blank" className="signature-link elbert-icf">Elbert ICF</a>
+                                                    : <span className="missing-icf">Missing ICF!</span>
+                                                }
+                                            </>
+                                        }
                                     </td>
                                 </tr>
                                 <tr>
@@ -850,7 +863,7 @@ function UpdateSession({ database, updateSession, setUpdateSession, setCheckDocu
                                             <span className="same-external-id-error-message">The same external ID is used for multiple people:</span><br /><br />
                                             {externalIdParticipants.map(participantId => {
                                                 const ppt = database['participants'][participantId];
-                                                return <><span>{participantId + ": " + ppt['full_name'] + (ppt["registered_as"] == "parent" ? "  (child)" : "")}</span><br /></>
+                                                return <><span>{participantId + ": " + ppt['full_name'] + (ppt["parent"] ? "  (child)" : "")}</span><br /></>
                                             })}
                                         </td>
                                     </tr>

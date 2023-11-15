@@ -91,7 +91,7 @@ function App() {
         }
 
         let duplicateStatus = (participant['status'] == 'Duplicate' || participant['status'] == 'Rejected' || participant['status'] == 'Withdrawn') ? 'Duplicate' : 'Not duplicate';
-        if (participant['registered_as'] != 'parent') {
+        if (!participant['parent']) {
 
           if (!emailCollection[email]) {
             emailCollection[email] = { [duplicateStatus]: 1 }
@@ -104,7 +104,7 @@ function App() {
           }
         }
 
-        if (participant['registered_as'] != 'parent') {
+        if (!participant['parent']) {
 
           if (!phoneCollection[phoneNumber]) {
             phoneCollection[phoneNumber] = { [duplicateStatus]: 1 }
@@ -117,7 +117,7 @@ function App() {
           }
         }
 
-        if (participant['registered_as'] != 'parent') {
+        if (!participant['parent']) {
 
           if (!nameCollection[fullName]) {
             nameCollection[fullName] = { [duplicateStatus]: 1 }
@@ -142,6 +142,20 @@ function App() {
         temp['participants'][participantId]['phone_counter'] = duplicatePhones.includes(phone) ? 2 : 1;
 
         let fullName = participant['full_name'];
+
+        // Updating the ICF url-s
+        if (participant['reg_type'] == 'elbert') {
+          if (participant['elbert_icf']) {
+            temp['participants'][participantId]['icf'] = "https://drive.google.com/file/d/" + participant['elbert_icf']['file_id'] + "/view";
+          }
+        } else {
+          if (participant['icf']) {
+            temp['participants'][participantId]['icf'] = "https://fs30.formsite.com/LB2014/files/" + participant['icf'];
+          }
+          if (participant['elbert_icf']) {
+            temp['participants'][participantId]['elbert_icf'] = "https://drive.google.com/file/d/" + participant['elbert_icf']['file_id'] + "/view";
+          }
+        }
 
         let ageDetails = calculateAgeDetails(participant['date_of_birth']);
         //let age = ageDetails['age'];
@@ -190,7 +204,7 @@ function App() {
           highlightReason.push("Wrong document status");
         }
 
-        if (participant['registered_as'] != 'parent') {
+        if (!participant['parent']) {
           if ((emailCollection[email]['Not duplicate'] || 0) > 1 && (phoneCollection[phone]['Not duplicate'] || 0) > 1 && (nameCollection[fullName]['Not duplicate'] || 0) > 1 && participant['status'] != "Duplicate" && participant['status'] != "Rejected" && participant['status'] != "Withdrawn") {
             if (temp['participants'][participantId]['highlight_reason']) {
               temp['participants'][participantId]['highlight_reason'].push("Potential duplicate");

@@ -73,10 +73,7 @@ function ParticipantCard({ database, role, participantId, index, setShowBookSess
                         "last_name": participantInfo['last_name'],
                         "email": participantInfo['email'],
                         "document_request": documentRequestMarker,
-                        "registration_type": kind == "ICF Reminder" ?
-                            (participantInfo['registered_as'] == "participant" ? "I am registering as a participant over the age of 18" : "I am a parent or guardian registering a child under 18")
-                            : "",
-                        "date_of_birth": kind == "ICF Reminder" ? "dob: " + participantInfo['date_of_birth'].substring(0, 10) : "",
+                        "icf_type": kind == "ICF Reminder" ? (participantInfo['reg_type'] == 'elbert' ? 'elbert' : 'denali') : '',
                         "bonus": bonus > 0 ? bonus : ""
                     })
                 }).then(res => {
@@ -139,7 +136,7 @@ function ParticipantCard({ database, role, participantId, index, setShowBookSess
     return (
         <div className={"participant-card " + (index % 2 == 0 ? "row1" : "row2")}>
             <div className="participant-card-column column-1">
-                {participantInfo['registered_as'] == 'parent' &&
+                {participantInfo['parent'] &&
                     <span className="registered-by-parent">Registered by parent or guardian</span>
                 }
 
@@ -185,7 +182,7 @@ function ParticipantCard({ database, role, participantId, index, setShowBookSess
                         {database['mailbox_unread']['items'].includes(participantId) && <a className="fas fa-envelope" style={{ color: "red", position: "relative", left: "5%" }} title="Participant has unread emails in the shared mailbox" />}
                     </span>
                 </div>
-                {participantInfo['registered_as'] != 'parent' &&
+                {!participantInfo['parent'] &&
                     <>
                         <div className="participant-attribute-container">
                             <span className="field-label">E-mail</span>
@@ -275,11 +272,6 @@ function ParticipantCard({ database, role, participantId, index, setShowBookSess
                     <span className="field-label">City</span><span>{participantInfo['city_of_residence']}</span>
                 </div>
 
-                <div className="participant-attribute-container">
-                    <span className="field-label">Registration source</span>
-                    <span>{Constants['sources'][(participantInfo['source'] || 'Other')]}</span>
-                </div>
-
                 {participantInfo['industry'] && <div className="participant-attribute-container">
                     <span className="field-label">Industry</span>
                     <span className={['Marketing and Media', 'Technology'].includes(participantInfo['industry']) ? "highlighted-industry" : ""}>{participantInfo['industry']}</span>
@@ -291,24 +283,34 @@ function ParticipantCard({ database, role, participantId, index, setShowBookSess
                 </div>}
 
                 <div className="participant-attribute-container">
-                    <span className="field-label">Date of registration</span><span>{participantInfo['date'].substring(0, 16).replaceAll("T", " ")}</span>
+                    <span className="field-label">Reg. form / source</span>
+                    <span>{participantInfo['reg_type'] == 'elbert' ? 'Elbert' : 'Denali'} / {Constants['sources'][(participantInfo['source'] || 'Other')]}</span>
+                </div>
+
+                <div className="participant-attribute-container">
+                    <span className="field-label">Reg. date</span><span>{participantInfo['date'].substring(0, 16).replaceAll("T", " ")}</span>
                 </div>
 
                 <div className="participant-attribute-container">
                     <span className="field-label">Signatures</span>
+
                     <a href={"https://fs30.formsite.com/LB2014/files/" + participantInfo['sla_url']} target="_blank" className="signature-link">SLA</a>
-                    <span> &nbsp;/&nbsp; </span>
-                    {participantInfo['icf'] ?
-                        <a href={"https://fs30.formsite.com/LB2014/files/" + participantInfo['icf']} target="_blank" className="signature-link">Denali ICF</a>
-                        : <span className="missing-icf">Missing ICF!</span>
-                    }
-                    {participantInfo['elbert_icf'] &&
+
+                    {participantInfo['reg_type'] != 'elbert' && <>
+                        <span> &nbsp;/&nbsp; </span>
+                        {participantInfo['icf'] ?
+                            <a href={participantInfo['icf']} target="_blank" className="signature-link">Denali ICF</a>
+                            : <span className="missing-icf">Missing ICF!</span>
+                        }
+                    </>}
+
+                    {participantInfo['reg_type'] == 'elbert' &&
                         <>
                             <span> &nbsp;/&nbsp; </span>
-                            <a href={"https://drive.google.com/file/d/" + participantInfo['elbert_icf']['file_id'] + "/view"}
-                                className="signature-link elbert-icf"
-                                target="_blank"
-                            >Elbert ICF</a>
+                            {participantInfo['icf'] ?
+                                <a href={participantInfo['icf']} target="_blank" className="signature-link elbert-icf">Elbert ICF</a>
+                                : <span className="missing-icf">Missing ICF!</span>
+                            }
                         </>
                     }
                 </div>
@@ -331,7 +333,7 @@ function ParticipantCard({ database, role, participantId, index, setShowBookSess
                     </div>
                 }
 
-                {participantInfo['registered_as'] == 'parent' &&
+                {participantInfo['parent'] &&
                     <>
                         <hr />
                         <div className="participant-attribute-container">
@@ -393,7 +395,6 @@ function ParticipantCard({ database, role, participantId, index, setShowBookSess
                         </div>
 
                         <div className="participant-attribute-container">
-
                             <span className="field-label">Parent signatures</span>
                             <a href={"https://fs30.formsite.com/LB2014/files/" + participantInfo['parent_sla_url']} target="_blank" className="signature-link">Open SLA</a>
                             <span> &nbsp;/&nbsp; </span>

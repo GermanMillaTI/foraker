@@ -372,8 +372,12 @@ function UpdateSession({ database, updateSession, setUpdateSession, setCheckDocu
                                 <tr>
                                     <td className="participant-table-left">Signatures</td>
                                     <td className="participant-table-right">
-                                        <a href={"https://fs30.formsite.com/LB2014/files/" + participantInfo['sla_url']} target="_blank" className="signature-link">Open SLA</a>&nbsp;&nbsp;&nbsp;&nbsp;
-                                        <a href={"https://fs30.formsite.com/LB2014/files/" + participantInfo['icf']} target="_blank" className="signature-link">Open ICF</a>
+                                        <a href={"https://fs30.formsite.com/LB2014/files/" + participantInfo['sla_url']} target="_blank" className="signature-link">SLA</a>&nbsp;/&nbsp;
+                                        <a href={"https://fs30.formsite.com/LB2014/files/" + participantInfo['icf']} target="_blank" className="signature-link">Denali ICF</a>&nbsp;/&nbsp;
+                                        <a href={"https://drive.google.com/file/d/" + participantInfo['elbert_icf']['file_id'] + "/view"}
+                                            className="signature-link elbert-icf"
+                                            target="_blank"
+                                        >Elbert ICF</a>
                                     </td>
                                 </tr>
                                 <tr>

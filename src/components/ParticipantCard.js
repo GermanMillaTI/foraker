@@ -285,7 +285,7 @@ function ParticipantCard({ database, role, participantId, index, setShowBookSess
                     <span className={['Marketing and Media', 'Technology'].includes(participantInfo['industry']) ? "highlighted-industry" : ""}>{participantInfo['industry']}</span>
                 </div>}
 
-                {(participantInfo['vlog'] && participantInfo['vlog'] != 'No') && <div className="participant-attribute-container">
+                {participantInfo['vlog'] && <div className="participant-attribute-container">
                     <span className="field-label">Vlog</span>
                     <span><a href={participantInfo['vlog']} target="_blank" className="vlog-link">Open vlog link</a></span>
                 </div>}
@@ -293,7 +293,6 @@ function ParticipantCard({ database, role, participantId, index, setShowBookSess
                 <div className="participant-attribute-container">
                     <span className="field-label">Date of registration</span><span>{participantInfo['date'].substring(0, 16).replaceAll("T", " ")}</span>
                 </div>
-
 
                 <div className="participant-attribute-container">
                     <span className="field-label">Signatures</span>
@@ -306,17 +305,13 @@ function ParticipantCard({ database, role, participantId, index, setShowBookSess
                     {participantInfo['elbert_icf'] &&
                         <>
                             <span> &nbsp;/&nbsp; </span>
-                            <a href="" target="_blank" className="signature-link elbert-icf" onClick={(e) => {
-                                e.preventDefault();
-                                let image = new Image();
-                                image.src = participantInfo['elbert_icf'][Object.keys(participantInfo['elbert_icf'])[0]]['img'];
-                                let w = window.open("");
-                                w.document.write(image.outerHTML);
-                            }}>Elbert ICF</a>
+                            <a href={"https://drive.google.com/file/d/" + participantInfo['elbert_icf']['file_id'] + "/view"}
+                                className="signature-link elbert-icf"
+                                target="_blank"
+                            >Elbert ICF</a>
                         </>
                     }
                 </div>
-
 
                 {participantInfo['other_companies'] &&
                     <div className="participant-attribute-container">
@@ -587,9 +582,7 @@ function ParticipantCard({ database, role, participantId, index, setShowBookSess
                         disabled={participantInfo['status'] == 'Denali PPT'}
                         onBlur={(e) => {
                             const newComment = e.currentTarget.value;
-                            console.log('checking');
                             if (newComment != participantInfo['comment']) {
-                                console.log('saving');
                                 updateValue("/participants/" + participantId, { comment: newComment });
                                 LogEvent({
                                     pid: participantId,

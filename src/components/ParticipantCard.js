@@ -94,6 +94,8 @@ function ParticipantCard({ database, role, participantId, index, setShowBookSess
                         pid: participantId,
                         action: "Email: '" + kind + "'"
                     })
+
+
                     //Swal.fire('Success!', '', 'success');
                 });
             }
@@ -133,8 +135,6 @@ function ParticipantCard({ database, role, participantId, index, setShowBookSess
             }
         });
     }
-
-
 
     return (
         <div className={"participant-card " + (index % 2 == 0 ? "row1" : "row2")}>
@@ -287,7 +287,7 @@ function ParticipantCard({ database, role, participantId, index, setShowBookSess
 
                 {(participantInfo['vlog'] && participantInfo['vlog'] != 'No') && <div className="participant-attribute-container">
                     <span className="field-label">Vlog</span>
-                    <span><a href={participantInfo['vlog']} target="_blank" className="vlog-link">{participantInfo['vlog']}</a></span>
+                    <span><a href={participantInfo['vlog']} target="_blank" className="vlog-link">Open vlog link</a></span>
                 </div>}
 
                 <div className="participant-attribute-container">

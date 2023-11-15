@@ -62,7 +62,8 @@ function Stats({ database, setShowStats, setFilterDataFromStats, role }) {
             highlighted: ['Yes', 'No'],
             stillInterested: filterData['stillInterested'],
             unsubscribed: ['Yes', 'No'],
-            unreadEmails: ['Yes', 'No']
+            unreadEmails: ['Yes', 'No'],
+            industry: ['Marketing and Media', 'Technology', 'Other']
         });
 
         navigate('participants');

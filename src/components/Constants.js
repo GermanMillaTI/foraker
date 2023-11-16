@@ -252,6 +252,11 @@ const Constants = {
     "Incomplete - Negative",
     "Incomplete - Redo"
   ],
+  sessionProtocols: [
+    "",
+    "Apple TV Only",
+    "Random Activity",
+  ],
   superAdmins: [
     'zoltan.bathori@telusinternational.com',
     'german.milla01@telusinternational.com',

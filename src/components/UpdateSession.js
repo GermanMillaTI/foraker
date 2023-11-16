@@ -58,7 +58,8 @@ function UpdateSession({ database, updateSession, setUpdateSession, setCheckDocu
                     delayed: false,
                     arrival_time: "",
                     comments: "",
-                    session_outcome: ""
+                    session_outcome: "",
+                    session_protocol: ""
                 }
 
                 // Set the bonuses to false
@@ -742,6 +743,26 @@ function UpdateSession({ database, updateSession, setUpdateSession, setCheckDocu
                                 </tr>
 
                                 <tr>
+                                    <td className="participant-table-left">Session protocol</td>
+                                    <td className="participant-table-right">
+                                        <select className="session-data-selector"
+                                            onChange={(e) => {
+                                                updateValue("/timeslots/" + updateSession, { session_protocol: e.currentTarget.value });
+                                                LogEvent({
+                                                    pid: participantId,
+                                                    timeslot: updateSession,
+                                                    action: "Session protocol: '" + (e.currentTarget.value || "Blank") + "'"
+                                                })
+                                            }}
+                                        >
+                                            {Constants['sessionProtocols'].map((s, i) => {
+                                                return <option key={"data-session-protocol" + i} value={s} selected={s == sessionInfo['session_protocol']}>{s}</option>
+                                            })}
+                                        </select>
+                                    </td>
+                                </tr>
+
+                                <tr>
                                     <td className="participant-table-left">Session outcome</td>
                                     <td className="participant-table-right">
                                         <select className="session-data-selector"
@@ -755,7 +776,7 @@ function UpdateSession({ database, updateSession, setUpdateSession, setCheckDocu
                                             }}
                                         >
                                             {Constants['sessionOutcomeStatuses'].map((s, i) => {
-                                                return <option key={"data-session-status" + i} value={s} selected={s == sessionInfo['session_outcome']}>{s}</option>
+                                                return <option key={"data-session-outcome" + i} value={s} selected={s == sessionInfo['session_outcome']}>{s}</option>
                                             })}
                                         </select>
                                     </td>

@@ -80,12 +80,12 @@ function Scheduler({ database, setUpdateSession }) {
           } else if (c == 2) {
             temp.push('Session status');
             continue;
-          } else if (c == 3) {
+          } else if (c == 4) {
             temp.push('Participant status');
             continue;
           }
         }
-        if (c == 4 && r > 0) {
+        if (c == 5 && r > 0) {
           let participantID = row.cells[c].innerHTML;
           if (participantID) participant = database['participants'][participantID];
         }

@@ -44,7 +44,8 @@ function SchedulerRow({ database, sessionId, index, array, setUpdateSession, hig
           delayed: false,
           arrival_time: "",
           comments: "",
-          session_outcome: ""
+          session_outcome: "",
+          session_protocol: ""
         }
 
         // Set the bonuses to false

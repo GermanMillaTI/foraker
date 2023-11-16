@@ -89,6 +89,10 @@ function Scheduler({ database, setUpdateSession }) {
           let participantID = row.cells[c].innerHTML;
           if (participantID) participant = database['participants'][participantID];
         }
+        if (c == 6 && r > 0) {
+          temp.push(participant['full_name'] || "");
+          continue;
+        }
         temp.push(row.cells[c].innerHTML);
       }
 

@@ -75,10 +75,10 @@ function Navbar({ database, setDatabase, setRole, setUserRights, setShowStats, s
           menu.style.display = "none";
         }
 
-      }}>({database['users'][auth.currentUser.uid]['name']})</div>
+      }}>{database['users'][auth.currentUser.uid]['name']}</div>
       <div id='navbarMenu'>
         <li>
-          <a href="/" className="navbar-button-user" onClick={(e) => { e.preventDefault(); handleLogout(); }}> Logout</a>
+          <a href="/" className="navbar-button-user-settings" onClick={(e) => { e.preventDefault(); handleLogout(); }}> Logout</a>
         </li>
       </div>
 

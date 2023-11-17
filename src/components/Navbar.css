@@ -42,10 +42,29 @@
   white-space: nowrap;
   text-decoration: none;
   list-style-type: none;
-
+  width: 10em;
+  text-align: center;
 }
 
-.navbar-button-user:hover {
+
+
+.navbar-button-user-settings {
+  padding: .2em 1em;
+  border: none;
+  background: #444;
+  color: white;
+  font-weight: bold;
+  font-size: .9em;
+  outline: none;
+  border-radius: 5px;
+  user-select: none;
+  white-space: nowrap;
+  text-decoration: none;
+  list-style-type: none;
+}
+
+.navbar-button-user:hover,
+.navbar-button-user-settings:hover {
   background-color: #ff5100;
 }
 
@@ -53,16 +72,19 @@ li {
   padding-bottom: 10px;
 }
 
+
 #navbarMenu {
   display: none;
   position: absolute;
+  width: 10em;
   background-color: #444;
-  padding: 10px;
+  padding: 5px;
   /* Adjust the top property to position the menu below the navbar */
   top: 100%;
   right: 0;
   list-style-type: none;
   border-radius: 5px;
+  text-align: center;
 }
 
 

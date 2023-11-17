@@ -25,10 +25,7 @@ function UsersAdmin({ database }) {
         const listOfUsers = async () => {
             await axios({
                 method: 'post',
-                url: 'https://us-central1-denali-51767.cloudfunctions.net/ListElbertUsers',
-                data: {
-                    message: 'hello'
-                }
+                url: 'https://us-central1-denali2-c0777.cloudfunctions.net/listUsersV2',
             }).then((response) => {
                 setApiUsers(response.data);
             });
@@ -39,7 +36,7 @@ function UsersAdmin({ database }) {
     const manageUser = async (userId, action) => {
         await axios({
             method: 'post',
-            url: `https://us-central1-denali2-c0777.cloudfunctions.net/manipulateUser?userId=${userId}`,
+            url: `https://us-central1-denali2-c0777.cloudfunctions.net/manipulateUserV2?userId=${userId}`,
             data: {
                 message: action,
             }
@@ -69,14 +66,17 @@ function UsersAdmin({ database }) {
         <div id="usersAdminContainer">
 
             <div className='usersAdmin-table-container'>
-                <input
-                    type="text"
-                    placeholder="Search by email..."
-                    id='searchBar'
-                    value={searchValue}
-                    onChange={(e) => setSearchValue(e.target.value)}
-                />
-                <button onClick={(e) => { alert("Coming soon") }} className='create-user'>Create user</button>
+                <div className='toolbar-container'>
+                    <input
+                        type="text"
+                        placeholder="Search by email..."
+                        id='searchBar'
+                        value={searchValue}
+                        onChange={(e) => setSearchValue(e.target.value)}
+                    />
+                    <button onClick={(e) => { alert("Coming soon") }} className='create-user'>Create user</button>
+                </div>
+
                 <table id='usersAdminTable' className='usersAdmin-table' style={{ paddingTop: "10px" }}>
                     <thead>
                         <tr>

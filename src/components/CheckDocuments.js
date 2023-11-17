@@ -1,12 +1,15 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import ReactDOM from 'react-dom';
-import { auth, realtimeDb } from '../firebase/config';
-import { format } from 'date-fns';
-import Swal from 'sweetalert2';
 
 import './CheckDocuments.css';
 
 function CheckDocuments({ database, checkDocuments, setCheckDocuments }) {
+
+    useEffect(() => {
+        const handleEsc = (event) => { if (event.keyCode === 27) setCheckDocuments("") };
+        window.addEventListener('keydown', handleEsc);
+        return () => { window.removeEventListener('keydown', handleEsc) };
+    }, []);
 
     return ReactDOM.createPortal((
         <div className="modal-check-documents-backdrop" onClick={(e) => { if (e.target.className == "modal-check-documents-backdrop") setCheckDocuments("") }}>

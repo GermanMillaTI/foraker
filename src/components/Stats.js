@@ -96,6 +96,12 @@ function Stats({ database, setShowStats, setFilterDataFromStats, role }) {
         setStats(tempStats);
     }, [filterData['stillInterested']])
 
+    useEffect(() => {
+        const handleEsc = (event) => { if (event.keyCode === 27) setShowStats(""); };
+        window.addEventListener('keydown', handleEsc);
+        return () => { window.removeEventListener('keydown', handleEsc) };
+    }, []);
+
     return ReactDOM.createPortal((
         <div className="modal-stats-backdrop" onClick={(e) => { if (e.target.className == "modal-stats-backdrop") setShowStats("") }}>
             <div className="modal-stats-main-container">

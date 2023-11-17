@@ -1,11 +1,11 @@
-import './ActvityLog.css'
-
 import { CSVLink } from 'react-csv';
-import { useState, useReducer, useMemo } from 'react';
+import { useState, useReducer, useMemo, useEffect } from 'react';
 import FormattingFunctions from './Core/FormattingFunctions';
 import { format } from "date-fns";
 import TableFilter from './Core/TableFilter';
 import ReactDOM from 'react-dom';
+
+import './ActivityLog.css';
 
 const filterReducer = (state, event) => {
   let newState = JSON.parse(JSON.stringify(state));
@@ -31,8 +31,6 @@ const filterReducer = (state, event) => {
 
   return newState;
 };
-
-
 
 function ActivityLog({ database, setActivityLog, participantId, timeslotforLog }) {
   const [logCsvData, setLogCsvData] = useState([[]]);
@@ -123,12 +121,17 @@ function ActivityLog({ database, setActivityLog, participantId, timeslotforLog }
     return output
   }
 
+  useEffect(() => {
+    const handleEsc = (event) => { if (event.keyCode === 27) setActivityLog(false); };
+    window.addEventListener('keydown', handleEsc);
+    return () => { window.removeEventListener('keydown', handleEsc) };
+  }, []);
+
   return ReactDOM.createPortal((
     <div
       className="modal-activitylog-backdrop"
       onClick={(e) => {
-        if (e.target.className == "modal-activitylog-backdrop")
-          setActivityLog(false);
+        if (e.target.className == "modal-activitylog-backdrop") setActivityLog(false);
       }}
     >
       <div className="modal-activitylog-main-container">

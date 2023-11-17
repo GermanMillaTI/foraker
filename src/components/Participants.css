@@ -1,6 +1,16 @@
 #participantsContainer {
+    position: absolute;
+    top: 0;
     width: 100%;
-    padding-bottom: 1em;
+    height: 100vh;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+#participantsSubContainer {
+    width: 100%;
+    padding: 2em 0em;
     overflow: auto;
 }
 

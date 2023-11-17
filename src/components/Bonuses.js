@@ -52,6 +52,12 @@ function Bonuses({ database, setShowBonuses }) {
         realtimeDb.ref(path).update(newValue);
     }
 
+    useEffect(() => {
+        const handleEsc = (event) => { if (event.keyCode === 27) setShowBonuses(false); };
+        window.addEventListener('keydown', handleEsc);
+        return () => { window.removeEventListener('keydown', handleEsc) };
+    }, []);
+
     return ReactDOM.createPortal((
         <div className="modal-bonuses-backdrop" onClick={(e) => { if (e.target.className == "modal-bonuses-backdrop") setShowBonuses(false) }}>
             <div className="modal-bonuses-main-container">

@@ -89,9 +89,24 @@
     background: #264e82;
 }
 
+.lock-button {
+    color: #fff;
+    background: #c20a0a;
+}
+
+.unlock-button {
+    color: #fff;
+    background: #008a17;
+    width: 11.5em;
+}
+
 .cancel-button {
     color: #fff;
     background: #c20a6f;
+}
+
+.locked-session-cell {
+    background: rgba(255, 0, 0, 0.301);
 }
 
 .pinfo-popup {

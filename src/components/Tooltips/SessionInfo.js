@@ -123,6 +123,7 @@ function SessionInfo({ database, participantId, sessionId }) {
     return (
         <Tooltip
             disableInteractive
+            placement="right"
             TransitionProps={{ timeout: 100 }}
             componentsProps={{ tooltip: { sx: { fontSize: '1em', maxWidth: '100em' }, } }}
             title={
@@ -199,7 +200,7 @@ function SessionInfo({ database, participantId, sessionId }) {
                 </table>
             }
         >
-            <td className={"center-tag" + (discrepancy ? " session-discrepancy" : "")}>{sessionInfo['participant_id']}</td>
+            <td className={"participant-id-cell center-tag" + (discrepancy ? " session-discrepancy" : "")}>{sessionInfo['participant_id']}</td>
         </Tooltip>
     )
 }

@@ -10,7 +10,7 @@ import Constants from './Constants';
 import LogEvent from './Core/LogEvent';
 import FormattingFunctions from './Core/FormattingFunctions';
 
-function UpdateSession({ database, updateSession, setUpdateSession, setCheckDocuments, setActivityLog, setIdForLog, setTimeslotforLog, timeslotforLog }) {
+function UpdateSession({ database, updateSession, setUpdateSession, checkDocuments, setCheckDocuments, setActivityLog, setIdForLog, setTimeslotforLog, timeslotforLog }) {
     const [participantId, setParticipantId] = useState(database['timeslots'][updateSession]['participant_id']);
     const [sessionInfo, setSessionInfo] = useState(database['timeslots'][updateSession]);
     const [hasCompletedSession] = useState(
@@ -30,8 +30,7 @@ function UpdateSession({ database, updateSession, setUpdateSession, setCheckDocu
     const [errorMessage, setErrorMessage] = useState("");
     const [externalIdParticipants, setExternalIdParticipants] = useState([]);
 
-
-    let participantInfo = database['participants'][participantId];
+    const participantInfo = database['participants'][participantId];
 
     // Update value in DB
     function updateValue(path, newValue) {
@@ -273,6 +272,12 @@ function UpdateSession({ database, updateSession, setUpdateSession, setCheckDocu
             setExternalIdParticipants(Object.keys(database['participants']).filter(pid => database['participants'][pid]['external_id'] == participantInfo['external_id']));
         }
     }, [participantInfo['external_id']])
+
+    useEffect(() => {
+        const handleEsc = (event) => { if (event.keyCode === 27 && checkDocuments == "") setUpdateSession(""); };
+        window.addEventListener('keydown', handleEsc);
+        return () => { window.removeEventListener('keydown', handleEsc) };
+    }, [checkDocuments]);
 
     return ReactDOM.createPortal((
         <div className="modal-book-update-session-backdrop" onClick={(e) => { if (e.target.className == "modal-book-update-session-backdrop") setUpdateSession("") }}>

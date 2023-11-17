@@ -1,11 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import ReactDOM from 'react-dom';
-import { auth, realtimeDb } from '../firebase/config';
-import { format } from 'date-fns';
+import { realtimeDb } from '../firebase/config';
 import Swal from 'sweetalert2';
 
 import './BookSession.css';
-import Constants from './Constants';
 import LogEvent from './Core/LogEvent';
 import FormattingFunctions from './Core/FormattingFunctions';
 
@@ -46,8 +44,6 @@ function BookSession({ database, setShowBookSession, selectedSessionId, setJustB
                 database['participants'][pid]['full_name'] + "</b>" +
                 (backupSession ? "<br/><br/><b><u>!!! BACKUP SESSION !!!</u></b><br/>" : ""),
 
-
-
         }).then((result) => {
             if (result.isConfirmed) {
                 let data = {
@@ -56,6 +52,8 @@ function BookSession({ database, setShowBookSession, selectedSessionId, setJustB
                     confirmed: "no",
                     remind: true
                 }
+
+                if (data['locked'] === true) data['locked'] = false;
                 if (glasses) data['glasses'] = true;
 
                 // Save the session
@@ -71,8 +69,13 @@ function BookSession({ database, setShowBookSession, selectedSessionId, setJustB
                 })
             }
         })
-
     }
+
+    useEffect(() => {
+        const handleEsc = (event) => { if (event.keyCode === 27) setShowBookSession(false) };
+        window.addEventListener('keydown', handleEsc);
+        return () => { window.removeEventListener('keydown', handleEsc) };
+    }, []);
 
     return ReactDOM.createPortal((
         <div className="modal-book-session-backdrop" onClick={(e) => { if (e.target.className == "modal-book-session-backdrop") setShowBookSession(false) }}>

@@ -15,6 +15,12 @@ function Bins({ database, setShowBins }) {
         realtimeDb.ref(path).update(newValue);
     }
 
+    useEffect(() => {
+        const handleEsc = (event) => { if (event.keyCode === 27) setShowBins(false); };
+        window.addEventListener('keydown', handleEsc);
+        return () => { window.removeEventListener('keydown', handleEsc) };
+    }, []);
+
     return ReactDOM.createPortal((
         <div className="modal-bins-backdrop" onClick={(e) => { if (e.target.className == "modal-bins-backdrop") setShowBins(false) }}>
             <div className="modal-bins-main-container">

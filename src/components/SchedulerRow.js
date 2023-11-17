@@ -69,9 +69,9 @@ function SchedulerRow({ database, sessionId, index, array, setUpdateSession, hig
   }
 
 
-  function sendReminder(timeslotId) {
+  function sendReminder(sessionId) {
 
-    let pid = database['timeslots'][timeslotId]['participant_id'];
+    let pid = database['timeslots'][sessionId]['participant_id'];
     let participantInfo = database['participants'][pid];
     Swal.fire({
       title: "Reminder",
@@ -80,7 +80,7 @@ function SchedulerRow({ database, sessionId, index, array, setUpdateSession, hig
       html: "Are you sure?"
     }).then((result) => {
       if (result.isConfirmed) {
-        updateValue("/timeslots/" + timeslotId, { remind: false });
+        updateValue("/timeslots/" + sessionId, { remind: false });
 
         const scriptURL = 'https://script.google.com/macros/s/AKfycbyZ7PUpLz7hTMAiQqw6dTHpGfqqvV5SNABubnLBYb2phZnd2qS_I_fFrgbU9txyv1oxQg/exec';
         fetch(scriptURL, {
@@ -95,7 +95,7 @@ function SchedulerRow({ database, sessionId, index, array, setUpdateSession, hig
             "document_request": "",
             "registration_type": "",
             "date_of_birth": "",
-            "appointment": timeslotId
+            "appointment": sessionId
           })
 
         }).then(res => {
@@ -111,6 +111,22 @@ function SchedulerRow({ database, sessionId, index, array, setUpdateSession, hig
           })
         });
       }
+    })
+  }
+
+  function lockSession(sessionId) {
+    updateValue("/timeslots/" + sessionId, { locked: true });
+    LogEvent({
+      timeslot: sessionId,
+      action: "Lock session"
+    })
+  }
+
+  function unlockSession(sessionId) {
+    updateValue("/timeslots/" + sessionId, { locked: false });
+    LogEvent({
+      timeslot: sessionId,
+      action: "Unlock session"
     })
   }
 
@@ -135,8 +151,8 @@ function SchedulerRow({ database, sessionId, index, array, setUpdateSession, hig
       {(database['timeslots'][sessionId]['backup'] ? "Backup" : ("St. " + sessionId.substring(14)))}
     </td>
 
-    <td className="center-tag">
-      {database['timeslots'][sessionId]['status']}
+    <td className={"center-tag " + (database['timeslots'][sessionId]['locked'] === true ? "locked-session-cell" : "")}>
+      {database['timeslots'][sessionId]['locked'] === true ? "Locked" : database['timeslots'][sessionId]['status']}
     </td>
     <td className="center-tag">
       {database['timeslots'][sessionId]['session_outcome'] || ""}
@@ -173,7 +189,9 @@ function SchedulerRow({ database, sessionId, index, array, setUpdateSession, hig
     </td>
     <td className="center-tag">
       <div className="buttons-of-timeslot">
-        {database['timeslots'][sessionId]['status'] == "" && <button className="update-timeslot-button book-button" onClick={() => { setSelectedSessionId(sessionId); setShowBookSession(true) }}>Schedule</button>}
+        {database['timeslots'][sessionId]['status'] == "" && !database['timeslots'][sessionId]['locked'] && <button className="update-timeslot-button book-button" onClick={() => { setSelectedSessionId(sessionId); setShowBookSession(true) }}>Schedule</button>}
+        {database['timeslots'][sessionId]['status'] == "" && !database['timeslots'][sessionId]['locked'] && <button className="update-timeslot-button lock-button" onClick={() => { lockSession(sessionId) }}>Lock</button>}
+        {database['timeslots'][sessionId]['status'] == "" && database['timeslots'][sessionId]['locked'] === true && <button className="update-timeslot-button unlock-button" onClick={() => { unlockSession(sessionId) }}>Unlock</button>}
         {database['timeslots'][sessionId]['status'] == "Scheduled" && database['timeslots'][sessionId]['remind'] == true && <button className="update-timeslot-button remind-button" onClick={() => sendReminder(sessionId)}>Remind</button>}
         {database['timeslots'][sessionId]['status'] != "" && <button className="update-timeslot-button update-button" onClick={() => setUpdateSession(sessionId)}>Update</button>}
         {database['timeslots'][sessionId]['status'] != "" && <button className="update-timeslot-button cancel-button" onClick={() => cancelSession(sessionId)}>Cancel</button>}

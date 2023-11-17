@@ -78,51 +78,53 @@ function Participants({
 
   return (
     <div id="participantsContainer">
-      {showBookSession2 && <BookSession2 database={database} setShowBookSession2={setShowBookSession2} participantId={showBookSession2} />}
+      <div id="participantsSubContainer">
+        {showBookSession2 && <BookSession2 database={database} setShowBookSession2={setShowBookSession2} participantId={showBookSession2} />}
 
-      <ParticipantFilter
-        database={database}
-        setShownParticipants={setShownParticipants}
-        filterDataFromStats={filterDataFromStats}
-        setFilterDataFromStats={setFilterDataFromStats}
-      />
+        <ParticipantFilter
+          database={database}
+          setShownParticipants={setShownParticipants}
+          filterDataFromStats={filterDataFromStats}
+          setFilterDataFromStats={setFilterDataFromStats}
+        />
 
-      <span className="filter-note">Filtered participants: {shownParticipants.length}
-        {shownParticipants.length > 100 && <span> (The list is cropped at 100)</span>}
-        <CSVLink
-          className="download-csv-button"
-          target="_blank"
-          asyncOnClick={true}
-          onClick={getCSVdata}
-          filename={"denali-participants_" + new Date().toISOString().split("T")[0] + ".csv"}
-          data={pptCsvData}
-        >Download Filtered Results</CSVLink>
+        <span className="filter-note">Filtered participants: {shownParticipants.length}
+          {shownParticipants.length > 100 && <span> (The list is cropped at 100)</span>}
+          <CSVLink
+            className="download-csv-button"
+            target="_blank"
+            asyncOnClick={true}
+            onClick={getCSVdata}
+            filename={"denali-participants_" + new Date().toISOString().split("T")[0] + ".csv"}
+            data={pptCsvData}
+          >Download Filtered Results</CSVLink>
 
-      </span>
-      {Object.keys(database['participants'])
-        .filter(pid => shownParticipants.includes(pid))
-        .sort((a, b) => {
-          return a < b ? -1 : 1;
-        })
-        .map((key, index) => (
-          index < 100 && (
-            <ParticipantCard
-              key={"participant-card" + key}
-              database={database}
-              role={role}
-              participantId={key}
-              index={index}
-              setShowBookSession2={setShowBookSession2}
-              setCheckDocuments={setCheckDocuments}
-              setUpdateSession={setUpdateSession}
-              setActivityLog={setActivityLog}
-              setIdForLog={setIdForLog}
-              idforLog={idforLog}
-              setTimeslotforLog={setTimeslotforLog}
-              timeslotforLog={timeslotforLog}
-            />
-          )
-        ))}
+        </span>
+        {Object.keys(database['participants'])
+          .filter(pid => shownParticipants.includes(pid))
+          .sort((a, b) => {
+            return a < b ? -1 : 1;
+          })
+          .map((key, index) => (
+            index < 100 && (
+              <ParticipantCard
+                key={"participant-card" + key}
+                database={database}
+                role={role}
+                participantId={key}
+                index={index}
+                setShowBookSession2={setShowBookSession2}
+                setCheckDocuments={setCheckDocuments}
+                setUpdateSession={setUpdateSession}
+                setActivityLog={setActivityLog}
+                setIdForLog={setIdForLog}
+                idforLog={idforLog}
+                setTimeslotforLog={setTimeslotforLog}
+                timeslotforLog={timeslotforLog}
+              />
+            )
+          ))}
+      </div>
     </div>
   );
 }

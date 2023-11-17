@@ -279,6 +279,9 @@ function UpdateSession({ database, updateSession, setUpdateSession, checkDocumen
         return () => { window.removeEventListener('keydown', handleEsc) };
     }, [checkDocuments]);
 
+
+    //console.log(selectedContribution);
+
     return ReactDOM.createPortal((
         <div className="modal-book-update-session-backdrop" onClick={(e) => { if (e.target.className == "modal-book-update-session-backdrop") setUpdateSession("") }}>
             <div className="modal-book-update-session-main-container">

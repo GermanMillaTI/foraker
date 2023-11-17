@@ -5,6 +5,7 @@ import ParticipantCard from './ParticipantCard';
 import BookSession2 from './BookSession2';
 import ParticipantFilter from './ParticipantFilter';
 import { CSVLink } from 'react-csv';
+import md5 from 'md5';
 
 
 function Participants({
@@ -35,7 +36,7 @@ function Participants({
   }, [checkDocuments, showBookSession2, updateSession])
 
   function getCSVdata() {
-    let output = [['ID', 'First Name', 'Last Name', 'Email', 'Age-Range', 'Demo Bins', 'Ethnicities', 'Date', 'DOB', 'Target of Sessions', 'External ID', 'Phone', 'Status', 'Document Approval', 'Vision Correction', 'Sessions No.', 'Unsubscribed']];
+    let output = [['ID', 'First Name', 'Last Name', 'Email', 'Age-Range', 'Demo Bins', 'Ethnicities', 'Date', 'DOB', 'Target of Sessions', 'External ID', 'Phone', 'Status', 'Document Approval', 'Vision Correction', 'Sessions No.', 'Unsubscribed', 'booking url']];
 
     var data = Object.keys(database['participants']).filter(pid => shownParticipants.includes(pid)).sort((a, b) => {
       return a < b ? -1 : 1;
@@ -60,7 +61,8 @@ function Participants({
         : "0",
       database['participants'][key]['unsubscribed_comms'] === 'Yes' ?
         database['participants'][key]['unsubscribed_comms']
-        : 'No'
+        : 'No',
+      database['participants'][key]['status'] == "Contacted" ? "https://denali-appointments.web.app/#" + md5('p_' + key) + "&" + key : "N/A"
       //typeof database['participants'][key]['sessions'] === 'object' ?
       //Object.keys(database['participants'][key]['sessions'])
       //: "-"

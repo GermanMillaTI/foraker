@@ -1,6 +1,6 @@
 {
   "name": "elbert",
-  "version": "9.40.0",
+  "version": "9.50.0",
   "private": true,
   "dependencies": {
     "@emotion/react": "^11.11.0",

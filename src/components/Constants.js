@@ -70,7 +70,8 @@ const Constants = {
     "NoShow",
     "Withdrawn",
     "Failed - Comp.",
-    "Failed - No Comp."
+    "Failed - No Comp.",
+    ""
   ],
   pregnant: [
     "Yes",

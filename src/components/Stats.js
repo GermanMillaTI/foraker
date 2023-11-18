@@ -64,7 +64,8 @@ function Stats({ database, setShowStats, setFilterDataFromStats, role }) {
             unsubscribed: ['Yes', 'No'],
             unreadEmails: ['Yes', 'No'],
             industry: Constants['industryCategories'],
-            registrationType: ['Denali', 'Elbert']
+            registrationType: ['Denali', 'Elbert'],
+            session1stat: ["N/A", ...Constants['sessionStatuses']]
         });
 
         navigate('participants');

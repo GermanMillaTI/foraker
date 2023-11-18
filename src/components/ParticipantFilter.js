@@ -27,7 +27,8 @@ const filterReducer = (state, event) => {
       unsubscribed: ['Yes', 'No'],
       unreadEmails: ['Yes', 'No'],
       industry: Constants['industryCategories'],
-      registrationType: ['Elbert', 'Denali']
+      registrationType: ['Elbert', 'Denali'],
+      session1stat: ["N/A", ...Constants['sessionStatuses']]
     }
   }
 
@@ -100,7 +101,8 @@ function ParticipantFilter({ database, setShownParticipants, filterDataFromStats
     unsubscribed: ['Yes', 'No'],
     unreadEmails: ['Yes', 'No'],
     industry: Constants['industryCategories'],
-    registrationType: ['Elbert', 'Denali']
+    registrationType: ['Elbert', 'Denali'],
+    session1stat: ["N/A", ...Constants['sessionStatuses']]
   });
 
   useEffect(() => {
@@ -130,7 +132,8 @@ function ParticipantFilter({ database, setShownParticipants, filterDataFromStats
       unsubscribed: { 'Yes': 0, 'No': 0 },
       unreadEmails: { 'Yes': 0, 'No': 0 },
       industry: Object.assign({}, ...Constants['industryCategories'].map(k => ({ [k]: 0 }))),
-      registrationType: { 'Denali': 0, 'Elbert': 0 }
+      registrationType: { 'Denali': 0, 'Elbert': 0 },
+      session1stat: Object.assign({}, ...Constants['sessionStatuses'].map(k => ({ [k || "N/A"]: 0 }))),
     }
   }
 
@@ -157,6 +160,7 @@ function ParticipantFilter({ database, setShownParticipants, filterDataFromStats
     let highlighted = participantInfo['highlighted'] ? 'Yes' : 'No';
     let stillInterested = participantInfo['still_interested'] == 'Yes' ? 'Yes' : participantInfo['still_interested'] == 'No' ? 'No' : 'N/A';
     let industry = participantInfo['industry'] ? (['Marketing and Media', 'Technology'].includes(participantInfo['industry']) ? participantInfo['industry'] : 'Other') : 'N/A';
+
     let unsubscribed = participantInfo['unsubscribed_comms'] == 'Yes' ? 'Yes' : 'No';
     let registrationType = participantInfo['reg_type'] === "elbert" ? "Elbert" : "Denali";
     let unreadEmails = participantInfo['unread_emails'] == "Yes" ? "Yes" : "No";
@@ -221,6 +225,7 @@ function ParticipantFilter({ database, setShownParticipants, filterDataFromStats
     let icfSigned = participantInfo['icf'] ? "Yes" : "No";
     let icfSignedIsOk = filterData['icfs'].includes(icfSigned);
     let status = participantInfo['status'] || "Blank";
+    let session1stat = participantInfo['session_1'] || "N/A";
     let documentStatus = participantInfo['document_approval'] || "Blank";
     let hasNewDocument = participantInfo['documents']['pending'] ? "Yes" : "No";
 
@@ -244,6 +249,7 @@ function ParticipantFilter({ database, setShownParticipants, filterDataFromStats
       filterData['unreadEmails'].includes(unreadEmails) &&
       filterData['industry'].includes(industry) &&
       filterData['registrationType'].includes(registrationType) &&
+      filterData['session1stat'].includes(session1stat) &&
       (!filterData['participantId'] || participantId.includes(filterData['participantId'])) &&
       (!filterData['firstName'] || firstName.includes(filterData['firstName'].trim())) &&
       (!filterData['lastName'] || lastName.includes(filterData['lastName'].trim())) &&
@@ -285,6 +291,10 @@ function ParticipantFilter({ database, setShownParticipants, filterDataFromStats
       let icfSigned = participantInfo['icf'] ? "Yes" : "No";
       let status = participantInfo['status'] || "Blank";
       let documentStatus = participantInfo['document_approval'] || "Blank";
+      let session1stat = participantInfo['session_1'] || "N/A";
+
+
+      console.log(participantInfo)
 
       output['multipleEthnicities'][multipleEthnicities]++;
       output['genders'][gender]++;
@@ -303,6 +313,7 @@ function ParticipantFilter({ database, setShownParticipants, filterDataFromStats
       output['unreadEmails'][unreadEmails]++;
       output['industry'][industry]++;
       output['registrationType'][registrationType]++;
+      output['session1stat'][session1stat]++;
     })
     setFilterStats(output);
   }, [filterData])
@@ -584,6 +595,21 @@ function ParticipantFilter({ database, setShownParticipants, filterDataFromStats
       </div>
 
 
+
+
+    </div>
+    <div className="filter-container">
+
+      <div className="filter-element">
+        <span className="filter-container-header">Session 1 Status</span>
+        {Constants['sessionStatuses'].map((val, i) => {
+          return <div key={"filter-session1stat" + i} className="filter-object">
+            <input id={"filter-participant-session1stat-" + (val || "N/A")} name={val || "N/A"} type="checkbox" alt="session1stat" onChange={setFilterData} checked={val == "" ? filterData['session1stat'].includes("N/A") : filterData['session1stat'].includes(val)} />
+            <label htmlFor={"filter-participant-session1stat-" + (val || "N/A")}>{(val || "N/A") + " (" + filterStats['session1stat'][val || "N/A"] + ")"}</label>
+            <button name={val || "N/A"} alt="session1stat" className="filter-this-button" onClick={setFilterData}>!</button>
+          </div>
+        })}
+      </div>
     </div>
 
   </div >);

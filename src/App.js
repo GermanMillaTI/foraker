@@ -277,6 +277,7 @@ function App() {
 
         let nr = Object.keys(participant['sessions']).length + 1;
         participant['sessions'][sessionId] = nr;
+        participant["session_" + nr] = session['status'];
       }
 
       setDatabase(temp);

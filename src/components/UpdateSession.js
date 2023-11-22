@@ -218,7 +218,7 @@ function UpdateSession({ database, updateSession, setUpdateSession, checkDocumen
 
 
         Swal.fire({
-            title: "Updating Date of Birth",
+            title: "Updating date of birth",
             confirmButtonText: "Save",
             showCancelButton: true,
             html: renderToString(<HTMLContent />)
@@ -249,6 +249,7 @@ function UpdateSession({ database, updateSession, setUpdateSession, checkDocumen
                 setIsLoading(false);
                 setErrorMessage("");
                 setContributions(data['results'][0]['metadata']);
+                console.log(data['results']);
             } else {
                 setIsLoading(false);
                 setSelectedContribution("");
@@ -363,16 +364,8 @@ function UpdateSession({ database, updateSession, setUpdateSession, checkDocumen
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td className="participant-table-left">Country, State</td>
-                                    <td className="participant-table-right">{participantInfo['country_of_residence'] + ", " + participantInfo['state_of_residence']}</td>
-                                </tr>
-                                <tr>
-                                    <td className="participant-table-left">City</td>
-                                    <td className="participant-table-right">{participantInfo['city_of_residence']}</td>
-                                </tr>
-                                <tr>
-                                    <td className="participant-table-left">Registration Source</td>
-                                    <td className="participant-table-right">{Constants['sources'][(participantInfo['source'] || 'Other')]}</td>
+                                    <td className="participant-table-left">State, City</td>
+                                    <td className="participant-table-right">{participantInfo['state_of_residence'] + ", " + participantInfo['city_of_residence']}</td>
                                 </tr>
                                 <tr>
                                     <td className="participant-table-left">Documents</td>
@@ -704,6 +697,27 @@ function UpdateSession({ database, updateSession, setUpdateSession, checkDocumen
                                         />
                                         {!['Scheduled', 'Rescheduled', 'NoShow', 'Withdrawn'].includes(database['timeslots'][updateSession]['status']) &&
                                             !database['timeslots'][updateSession]['arrival_time'] &&
+                                            <span className="missing-arrival-time">Missing!</span>}
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td className="participant-table-left">Session end time</td>
+                                    <td className="participant-table-right">
+                                        <input
+                                            type="time"
+                                            value={database['timeslots'][updateSession]['end_time'] || ""}
+                                            onChange={(e) => {
+                                                updateValue("/timeslots/" + updateSession, { end_time: e.currentTarget.value });
+                                                LogEvent({
+                                                    pid: participantId,
+                                                    timeslot: updateSession,
+                                                    action: "Session end time: '" + (e.currentTarget.value || "Blank") + "'"
+                                                })
+                                            }}
+                                        />
+                                        {!['Scheduled', 'Checked In', 'Rescheduled', 'NoShow', 'Withdrawn'].includes(database['timeslots'][updateSession]['status']) &&
+                                            !database['timeslots'][updateSession]['end_time'] &&
                                             <span className="missing-arrival-time">Missing!</span>}
                                     </td>
                                 </tr>

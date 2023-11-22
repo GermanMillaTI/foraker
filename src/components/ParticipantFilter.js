@@ -293,9 +293,6 @@ function ParticipantFilter({ database, setShownParticipants, filterDataFromStats
       let documentStatus = participantInfo['document_approval'] || "Blank";
       let session1stat = participantInfo['session_1'] || "N/A";
 
-
-      console.log(participantInfo)
-
       output['multipleEthnicities'][multipleEthnicities]++;
       output['genders'][gender]++;
       output['demoBinStatuses'][demoBinStatus]++;
@@ -531,7 +528,7 @@ function ParticipantFilter({ database, setShownParticipants, filterDataFromStats
     <div className="filter-container">
 
       <div className="filter-element">
-        <span className="filter-container-header">Still Interested?</span>
+        <span className="filter-container-header">Still interested?</span>
         {Constants['stillInterestedValues'].map((val, i) => {
           return <div key={"filter-interested-" + i} className="filter-object">
             <input id={"filter-interested-" + val} name={val} type="checkbox" alt="stillInterested" onChange={setFilterData} checked={filterData['stillInterested'].includes(val)} />
@@ -556,7 +553,7 @@ function ParticipantFilter({ database, setShownParticipants, filterDataFromStats
       </div>
 
       <div className="filter-element gap">
-        <span className="filter-container-header">Unread in Mailbox</span>
+        <span className="filter-container-header">Unread in mailbox</span>
         <div className="filter-object">
           <input id="filter-unreadEmails-yes" name="Yes" type="checkbox" alt="unreadEmails" onChange={setFilterData} checked={filterData['unreadEmails'].includes('Yes')} />
           <label htmlFor="filter-unreadEmails-yes">Yes ({filterStats['unreadEmails']['Yes']})</label>
@@ -581,7 +578,7 @@ function ParticipantFilter({ database, setShownParticipants, filterDataFromStats
 
       </div>
       <div className="filter-element gap">
-        <span className="filter-container-header">Registration Type</span>
+        <span className="filter-container-header">Registration type</span>
         <div className="filter-object">
           <input id="filter-registrationType-Denali" name="Denali" type="checkbox" alt="registrationType" onChange={setFilterData} checked={filterData['registrationType'].includes('Denali')} />
           <label htmlFor="filter-registrationType-Denali">Denali ({filterStats['registrationType']['Denali']})</label>
@@ -601,7 +598,7 @@ function ParticipantFilter({ database, setShownParticipants, filterDataFromStats
     <div className="filter-container">
 
       <div className="filter-element">
-        <span className="filter-container-header">Session 1 Status</span>
+        <span className="filter-container-header">Session 1 status</span>
         {Constants['sessionStatuses'].map((val, i) => {
           return <div key={"filter-session1stat" + i} className="filter-object">
             <input id={"filter-participant-session1stat-" + (val || "N/A")} name={val || "N/A"} type="checkbox" alt="session1stat" onChange={setFilterData} checked={val == "" ? filterData['session1stat'].includes("N/A") : filterData['session1stat'].includes(val)} />

@@ -74,6 +74,7 @@ function ParticipantCard({ database, role, participantId, index, setShowBookSess
                         "email": participantInfo['email'],
                         "document_request": documentRequestMarker,
                         "icf_type": kind == "ICF Reminder" ? (participantInfo['reg_type'] == 'elbert' ? 'elbert' : 'denali') : '',
+                        "reg_type": participantInfo['reg_type'] == 'elbert' ? "elbert" : "denali",
                         "bonus": bonus > 0 ? bonus : ""
                     })
                 }).then(res => {
@@ -122,7 +123,7 @@ function ParticipantCard({ database, role, participantId, index, setShowBookSess
 
 
         Swal.fire({
-            title: "Updating Date of Birth",
+            title: "Updating date of birth",
             confirmButtonText: "Save",
             showCancelButton: true,
             html: renderToString(<HTMLContent />)
@@ -265,11 +266,7 @@ function ParticipantCard({ database, role, participantId, index, setShowBookSess
                     </span>
                 </div>
                 <div className="participant-attribute-container">
-                    <span className="field-label">Country, State</span><span>{participantInfo['country_of_residence'] + ", " + participantInfo['state_of_residence']}</span>
-                </div>
-
-                <div className="participant-attribute-container">
-                    <span className="field-label">City</span><span>{participantInfo['city_of_residence']}</span>
+                    <span className="field-label">State, City</span><span>{participantInfo['state_of_residence'] + ", " + participantInfo['city_of_residence']}</span>
                 </div>
 
                 {participantInfo['industry'] && <div className="participant-attribute-container">

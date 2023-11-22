@@ -162,9 +162,14 @@ function SessionInfo({ database, participantId, sessionId }) {
                             {externalId && <td>{clientParticipantInfo['e'] || ""}</td>}
                         </tr>
                         <tr className={discrepancies['visionCorrection'] ? "session-item-discrepancy" : ""}>
-                            <th>Vision corr.</th>
+                            <th>Vision correction</th>
                             <td>{participantInfo['vision_correction']}</td>
                             {externalId && <td>{clientParticipantInfo['v'] || ""}</td>}
+                        </tr>
+                        <tr>
+                            <th>Session protocol</th>
+                            <td>{sessionInfo['session_protocol']}</td>
+                            {externalId && <td></td>}
                         </tr>
                         <tr>
                             <th>Date of info</th>

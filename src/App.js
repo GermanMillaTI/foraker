@@ -38,6 +38,25 @@ function App() {
   const [role, setRole] = useState(null);
   const [userRights, setUserRights] = useState([]);
 
+  /*
+  const [logFromPublicFolder, setLogFromPublicFolder] = useState(null);
+  if (logFromPublicFolder === null) {
+    fetch('log.json', {
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+      }
+    }
+    )
+      .then(function (response) {
+        return response.json();
+      })
+      .then(function (myJson) {
+        setLogFromPublicFolder(myJson);
+      });
+  }
+  */
+
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
       setUser(currentUser);
@@ -52,6 +71,10 @@ function App() {
   useEffect(() => {
     if (user !== null) realtimeDb.ref('/').on('value', snapshot => {
       let temp = snapshot.val();
+      //console.log(Object.keys(temp['log']).length);
+      //console.log(Object.keys(logFromPublicFolder || {}).length);
+      //temp['log'] = Object.assign({}, (logFromPublicFolder || {}), temp['log']);
+      //console.log(Object.keys(temp['log']).length);
 
       var allEmails = [];
       var duplicateEmails = [];
@@ -223,7 +246,6 @@ function App() {
       }
 
       const dateNow = parseInt(format(new Date(), "yyyyMMdd"));
-      var sessionDictionary = {};
       for (let sessionId in temp['timeslots']) {
         const session = temp['timeslots'][sessionId];
         const participantId = session['participant_id'];
@@ -240,12 +262,6 @@ function App() {
 
         let status = session['status'];
         let sessionDate = parseInt(sessionId.substring(0, 8));
-        if (!sessionDictionary[participantId]) {
-          sessionDictionary[participantId] = { [status]: 1 };
-        } else {
-          sessionDictionary[participantId][status] = (sessionDictionary[participantId][status] || 0) + 1;
-        }
-
         if (sessionDate > dateNow && ['Rescheduled'].includes(status)) {
           if (temp['participants'][participantId]['highlight_reason']) {
             temp['participants'][participantId]['highlight_reason'].push("'Rescheduled' session in the future");
@@ -269,15 +285,12 @@ function App() {
           }
         }
 
-        let sessionsOfParticipant = participant['sessions'];
-        if (!sessionsOfParticipant) {
-          participant['sessions'] = {};
-          sessionsOfParticipant = {};
-        }
+        if (!participant['sessions']) participant['sessions'] = {};
 
-        let nr = Object.keys(participant['sessions']).length + 1;
-        participant['sessions'][sessionId] = nr;
-        participant["session_" + nr] = session['status'];
+        if (['Scheduled', 'Checked In', 'Completed'].includes(status) && session['session_outcome'] != 'Incomplete - Redo') {
+          const nr = Object.keys(participant['sessions']).length + 1;
+          temp['participants'][participantId]['sessions'][sessionId] = nr;
+        }
       }
 
       setDatabase(temp);

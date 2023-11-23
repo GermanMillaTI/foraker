@@ -56,9 +56,9 @@ function Navbar({ database, setDatabase, setRole, setUserRights, setShowStats, s
       {['admin', 'apple'].includes(role) && <button className="navbar-button" onClick={(e) => { e.preventDefault(); navigate("/scheduler-overview"); }}>Overview</button>}
       <button className="navbar-button" onClick={() => setShowStats(true)}>Participant stats</button>
       <button className="navbar-button" onClick={() => setShowStatsSessions(true)}>Session stats</button>
-      <button className="navbar-button" onClick={() => setShowProtocols(true)}>Session protocols</button>
+      <button className="navbar-button" onClick={() => setShowProtocols(true)}>Protocols</button>
       {['admin'].includes(role) && <button className="navbar-button" onClick={() => setShowBins(true)}>Demo bins</button>}
-      {['admin'].includes(role) && <button className="navbar-button" onClick={() => setShowBonuses(true)}>Bonus $</button>}
+      {/* {['admin'].includes(role) && <button className="navbar-button" onClick={() => setShowBonuses(true)}>Bonus $</button>} */}
       {['admin', 'apple'].includes(role) && <button className="navbar-button" onClick={(e) => { e.preventDefault(); navigate("/scheduler-external"); }}>Scheduler external</button>}
       {['admin', 'apple'].includes(role) && <button className="navbar-button" onClick={(e) => { e.preventDefault(); navigate("/external"); }}>External report</button>}
       {['admin'].includes(role) && <button className='navbar-button' onClick={() => {
@@ -66,8 +66,10 @@ function Navbar({ database, setDatabase, setRole, setUserRights, setShowStats, s
         setIdForLog("");
         setTimeslotforLog("");
       }}>Activity log</button>}
-      {['admin'].includes(role) && ['german.milla01@telusinternational.com', 'zoltan.bathori@telusinternational.com'].includes(auth.currentUser.email) && <button className="navbar-button" onClick={(e) => { e.preventDefault(); navigate("/usersadmin"); }}>Users Admin</button>}
+      {['german.milla01@telusinternational.com', 'zoltan.bathori@telusinternational.com'].includes(auth.currentUser.email) && <button className="navbar-button" onClick={(e) => { e.preventDefault(); navigate("/usersadmin"); }}>Users</button>}
+      {['admin', 'apple'].includes(role) && <button className="navbar-button" onClick={(e) => { e.preventDefault(); handleLogout(); }}>Logout</button>}
 
+      {/*
       <div className='navbar-button-user' onClick={(e) => {
         let menu = document.getElementById("navbarMenu");
         if (menu.style.display === "none" || menu.style.display === "") {
@@ -76,12 +78,13 @@ function Navbar({ database, setDatabase, setRole, setUserRights, setShowStats, s
           menu.style.display = "none";
         }
 
-      }}>{database['users'][auth.currentUser.uid]['name']}</div>
+      }}>{database['users'][auth.currentUser.uid]['name'] || 'Logout'}</div>
       <div id='navbarMenu'>
         <li>
-          <a href="/" className="navbar-button-user-settings" onClick={(e) => { e.preventDefault(); handleLogout(); }}> Logout</a>
+          <a href="/" className="navbar-button-user-settings" onClick={(e) => { e.preventDefault(); handleLogout(); }}>Logout</a>
         </li>
       </div>
+      */}
 
     </div>
 

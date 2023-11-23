@@ -677,7 +677,7 @@ function UpdateSession({ database, updateSession, setUpdateSession, checkDocumen
 
                                 <tr>
                                     <td className="participant-table-left">Session #</td>
-                                    <td className="participant-table-right">{participantInfo['sessions'][updateSession]}</td>
+                                    <td className="participant-table-right">{participantInfo['session_counter'] ? participantInfo['session_counter'][updateSession] : ""}</td>
                                 </tr>
 
                                 <tr>

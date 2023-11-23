@@ -248,6 +248,7 @@ function App() {
       }
 
       const dateNow = parseInt(format(new Date(), "yyyyMMdd"));
+
       for (let sessionId in temp['timeslots']) {
         const session = temp['timeslots'][sessionId];
         const participantId = session['participant_id'];
@@ -288,10 +289,13 @@ function App() {
         }
 
         if (!participant['sessions']) participant['sessions'] = {};
+        participant['sessions'][sessionId] = status;
+
+        if (!participant['session_counter']) participant['session_counter'] = {};
 
         if (['Scheduled', 'Checked In', 'Completed'].includes(status) && session['session_outcome'] != 'Incomplete - Redo') {
-          const nr = Object.keys(participant['sessions']).length + 1;
-          temp['participants'][participantId]['sessions'][sessionId] = nr;
+          const nr = Object.keys(participant['session_counter']).length + 1;
+          participant['session_counter'][sessionId] = nr;
         }
       }
 

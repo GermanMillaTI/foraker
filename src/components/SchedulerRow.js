@@ -179,8 +179,8 @@ function SchedulerRow({ database, sessionId, index, array, setUpdateSession, hig
     </td>
     <td className="center-tag">
       {database['timeslots'][sessionId]['participant_id'] ?
-        (database['participants'][database['timeslots'][sessionId]['participant_id']]['sessions'] ?
-          database['participants'][database['timeslots'][sessionId]['participant_id']]['sessions'][sessionId]
+        (database['participants'][database['timeslots'][sessionId]['participant_id']]['session_counter'] ?
+          database['participants'][database['timeslots'][sessionId]['participant_id']]['session_counter'][sessionId]
           : "")
         : ""}
     </td>

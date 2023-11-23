@@ -70,8 +70,7 @@ const Constants = {
     "NoShow",
     "Withdrawn",
     "Failed - Comp.",
-    "Failed - No Comp.",
-    ""
+    "Failed - No Comp."
   ],
   pregnant: [
     "Yes",
@@ -160,12 +159,12 @@ const Constants = {
     "Male": "1"
   },
   sources: {
-    "D2Models": "D2 Models",
-    "BGACasting": "BGA Casting",
-    "goodwork": "Goodwork",
-    "recruiter1": "Recruiter 1",
-    "recruiter2": "Recruiter 2",
-    "recruiter3": "Recruiter 3",
+    //"D2Models": "D2 Models",
+    //"BGACasting": "BGA Casting",
+    //"goodwork": "Goodwork",
+    //"recruiter1": "Recruiter 1",
+    //"recruiter2": "Recruiter 2",
+    //"recruiter3": "Recruiter 3",
     "respondent": "Respondent",
     "Other": "Other"
   },

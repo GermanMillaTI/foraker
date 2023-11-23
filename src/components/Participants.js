@@ -99,7 +99,7 @@ function Participants({
             onClick={getCSVdata}
             filename={"denali-participants_" + new Date().toISOString().split("T")[0] + ".csv"}
             data={pptCsvData}
-          >Download Filtered Results</CSVLink>
+          >Download filtered results</CSVLink>
 
         </span>
         {Object.keys(database['participants'])

@@ -144,8 +144,8 @@ function SchedulerExternal({ database }) {
                     </td>
                     <td className="center-tag">
                       {database['timeslots'][key]['participant_id'] ?
-                        (database['participants'][database['timeslots'][key]['participant_id']]['sessions'] ?
-                          database['participants'][database['timeslots'][key]['participant_id']]['sessions'][key]
+                        (database['participants'][database['timeslots'][key]['participant_id']]['session_counter'] ?
+                          database['participants'][database['timeslots'][key]['participant_id']]['session_counter'][key]
                           : "")
                         : ""}
                     </td>

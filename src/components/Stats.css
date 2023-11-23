@@ -68,6 +68,10 @@
     background: white;
 }
 
+.table-of-protocols td span:hover {
+    cursor: default;
+}
+
 .still-interested-participants-only-filter,
 .stats-filter-element {
     margin: .2em auto;
@@ -87,7 +91,7 @@
 .still-interested-participants-only-filter span,
 .stats-filter-element span {
     font-weight: bold;
-    width: 8em;
+    min-width: 8em;
 }
 
 .still-interested-participants-only-filter input[type=checkbox],
@@ -130,21 +134,14 @@
 
 .table-of-stats tr th:last-child,
 .table-of-stats tr td:last-child {
-    border-left: .2em solid #1d3062 !important;
+    border-left: .2em solid #1d3062;
+}
+
+.table-of-protocols tr th:last-child,
+.table-of-protocols tr td:last-child {
+    border-left: none;
 }
 
 .stats-total-row {
     border-top: .2em solid #1d3062 !important;
-}
-
-.stats-completion-1 {
-    background-color: null;
-}
-
-.stats-completion-2 {
-    background-color: rgb(210, 157, 78, 0.7);
-}
-
-.stats-completion-3 {
-    background-color: rgba(123, 191, 115, 0.7);
 }

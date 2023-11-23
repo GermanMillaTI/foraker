@@ -530,7 +530,7 @@ function ParticipantCard({ database, role, participantId, index, setShowBookSess
                 }
 
                 {!participantInfo['icf'] &&
-                    !["Rejected", "Withdrawn", "Not Selected"].includes(participantInfo['status']) && participantInfo['unsubscribed_comms'] !== "Yes" &&
+                    !["Duplicate", "Rejected", "Withdrawn", "Not Selected"].includes(participantInfo['status']) && participantInfo['unsubscribed_comms'] !== "Yes" &&
                     <div className="participant-attribute-container">
                         <span className="field-label">Communication</span>
                         <button className="email-button icf-reminder-button" onClick={() => sendMail(participantId, "ICF Reminder", "")}>ICF Reminder</button>

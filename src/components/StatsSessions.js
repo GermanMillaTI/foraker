@@ -109,48 +109,6 @@ function StatsSessions({ database, setShowStatsSessions, setFilterDataFromStats 
         setStats2(tempStats2);
     }, [])
 
-    function getBackgroundColor(number, columnName, totalRow) {
-        return 0;
-
-        if (columnName == "Total") {
-            if (totalRow) {
-                if (number < 912) {
-                    return 1;
-                } else if (number < 1152) {
-                    return 2;
-                } else {
-                    return 3;
-                }
-            } else {
-                if (number < 114) {
-                    return 1;
-                } else if (number < 144) {
-                    return 2;
-                } else {
-                    return 3;
-                }
-            }
-        } else {
-            if (totalRow) {
-                if (number < 152) {
-                    return 1;
-                } else if (number < 192) {
-                    return 2;
-                } else {
-                    return 3;
-                }
-            } else {
-                if (number < 19) {
-                    return 1;
-                } else if (number < 24) {
-                    return 2;
-                } else {
-                    return 3;
-                }
-            }
-        }
-    }
-
     useEffect(() => {
         const handleEsc = (event) => { if (event.keyCode === 27) setShowStatsSessions(""); };
         window.addEventListener('keydown', handleEsc);
@@ -217,22 +175,14 @@ function StatsSessions({ database, setShowStatsSessions, setFilterDataFromStats 
                                         output = parseFloat(output.toFixed(1));
                                         output2 = parseFloat(output2.toFixed(1));
 
-                                        let number = parseFloat(eth.reduce((a, b) => {
-                                            return ['Scheduled', 'Checked In', 'Completed'].reduce((x, y) => {
-                                                return stats2[b][ageRange]['Male'][y] + x
-                                            }, 0) + a
-                                        }, 0));
-
-                                        let background = getBackgroundColor(number, columnName, false);
-
                                         let binClassTag = "";
                                         if (columnName != "Total") {
                                             binClassTag = "demo-bin-" + database['demo_bins']['Male'][Constants['bonusEthnicities2'][columnName]][ageRange];
                                         }
 
                                         return <td className={"stats-demo-bin-cell " + binClassTag}>
-                                            <span className={"first-number stats-completion-" + background} onClick={() => selectDemoBin(filterData['statuses'], eth, [ageRange], "Male")}>{output}</span>
-                                            <span className={"second-number stats-completion-" + background} onClick={() => selectDemoBin(filterData['statuses2'], eth, [ageRange], "Male")}>{output2}</span>
+                                            <span className="first-number" onClick={() => selectDemoBin(filterData['statuses'], eth, [ageRange], "Male")}>{output}</span>
+                                            <span className="second-number" onClick={() => selectDemoBin(filterData['statuses2'], eth, [ageRange], "Male")}>{output2}</span>
                                             {columnName != "Total" && <label className="stats-demo-bin">{Constants['demoBinsEthnicities'][eth[0]] + Constants['demoBinsAgeRanges'][ageRange] + Constants['demoBinsGenders']['Male']}</label>}
                                         </td>
                                     })}
@@ -255,17 +205,9 @@ function StatsSessions({ database, setShowStatsSessions, setFilterDataFromStats 
                                     output = parseFloat(output.toFixed(1));
                                     output2 = parseFloat(output2.toFixed(1));
 
-                                    let number = parseFloat(eth.reduce((a, b) => {
-                                        return ['Scheduled', 'Checked In', 'Completed'].reduce((x, y) => {
-                                            return Constants['listOfAgeRanges'].reduce((q, w) => { return stats2[b][w]['Male'][y] + q }, 0) + x
-                                        }, 0) + a
-                                    }, 0));
-
-                                    let background = getBackgroundColor(number, columnName, true);
-
                                     return <td className="stats-demo-bin-cell stats-total-row">
-                                        <span className={"first-number stats-completion-" + background} onClick={() => selectDemoBin(filterData['statuses'], eth, Constants['listOfAgeRanges'], "Male")}>{output}</span>
-                                        <span className={"second-number stats-completion-" + background} onClick={() => selectDemoBin(filterData['statuses2'], eth, Constants['listOfAgeRanges'], "Male")}>{output2}</span>
+                                        <span className="first-number" onClick={() => selectDemoBin(filterData['statuses'], eth, Constants['listOfAgeRanges'], "Male")}>{output}</span>
+                                        <span className="second-number" onClick={() => selectDemoBin(filterData['statuses2'], eth, Constants['listOfAgeRanges'], "Male")}>{output2}</span>
                                     </td>
                                 })}
                             </tr>
@@ -303,22 +245,14 @@ function StatsSessions({ database, setShowStatsSessions, setFilterDataFromStats 
                                         output = parseFloat(output.toFixed(1));
                                         output2 = parseFloat(output2.toFixed(1));
 
-                                        let number = parseFloat(eth.reduce((a, b) => {
-                                            return ['Scheduled', 'Checked In', 'Completed'].reduce((x, y) => {
-                                                return stats2[b][ageRange]['Female'][y] + x
-                                            }, 0) + a
-                                        }, 0));
-
-                                        let background = getBackgroundColor(number, columnName, false);
-
                                         let binClassTag = "";
                                         if (columnName != "Total") {
                                             binClassTag = "demo-bin-" + database['demo_bins']['Female'][Constants['bonusEthnicities2'][columnName]][ageRange];
                                         }
 
                                         return <td className={"stats-demo-bin-cell " + binClassTag}>
-                                            <span className={"first-number stats-completion-" + background} onClick={() => selectDemoBin(filterData['statuses'], eth, [ageRange], "Female")}>{output}</span>
-                                            <span className={"second-number stats-completion-" + background} onClick={() => selectDemoBin(filterData['statuses2'], eth, [ageRange], "Female")}>{output2}</span>
+                                            <span className="first-number" onClick={() => selectDemoBin(filterData['statuses'], eth, [ageRange], "Female")}>{output}</span>
+                                            <span className="second-number" onClick={() => selectDemoBin(filterData['statuses2'], eth, [ageRange], "Female")}>{output2}</span>
                                             {columnName != "Total" && <label className="stats-demo-bin">{Constants['demoBinsEthnicities'][eth[0]] + Constants['demoBinsAgeRanges'][ageRange] + Constants['demoBinsGenders']['Female']}</label>}
                                         </td>
                                     })}
@@ -341,17 +275,9 @@ function StatsSessions({ database, setShowStatsSessions, setFilterDataFromStats 
                                     output = parseFloat(output.toFixed(1));
                                     output2 = parseFloat(output2.toFixed(1));
 
-                                    let number = parseFloat(eth.reduce((a, b) => {
-                                        return ['Scheduled', 'Checked In', 'Completed'].reduce((x, y) => {
-                                            return Constants['listOfAgeRanges'].reduce((q, w) => { return stats2[b][w]['Female'][y] + q }, 0) + x
-                                        }, 0) + a
-                                    }, 0));
-
-                                    let background = getBackgroundColor(number, columnName, true);
-
                                     return <td className="stats-demo-bin-cell stats-total-row">
-                                        <span className={"first-number stats-completion-" + background} onClick={() => selectDemoBin(filterData['statuses'], eth, Constants['listOfAgeRanges'], "Female")}>{output}</span>
-                                        <span className={"second-number stats-completion-" + background} onClick={() => selectDemoBin(filterData['statuses2'], eth, Constants['listOfAgeRanges'], "Female")}>{output2}</span>
+                                        <span className="first-number" onClick={() => selectDemoBin(filterData['statuses'], eth, Constants['listOfAgeRanges'], "Female")}>{output}</span>
+                                        <span className="second-number" onClick={() => selectDemoBin(filterData['statuses2'], eth, Constants['listOfAgeRanges'], "Female")}>{output2}</span>
                                     </td>
                                 })}
                             </tr>

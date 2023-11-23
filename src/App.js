@@ -20,6 +20,7 @@ import Bonuses from './components/Bonuses';
 import Bins from './components/Bins';
 import ActivityLog from './components/ActivityLog';
 import UsersAdmin from './components/UsersAdmin';
+import StatsProtocols from './components/StatsProtocols';
 
 function App() {
   const [user, setUser] = useState(null);
@@ -29,6 +30,7 @@ function App() {
   const [checkDocuments, setCheckDocuments] = useState("");
   const [showStats, setShowStats] = useState(false);
   const [showStatsSessions, setShowStatsSessions] = useState(false);
+  const [showProtocols, setShowProtocols] = useState(false);
   const [filterDataFromStats, setFilterDataFromStats] = useState(false);
   const [showBonuses, setShowBonuses] = useState(false);
   const [showBins, setShowBins] = useState(false);
@@ -426,6 +428,7 @@ function App() {
           setUserRights={setUserRights}
           setShowStats={setShowStats}
           setShowStatsSessions={setShowStatsSessions}
+          setShowProtocols={setShowProtocols}
           setShowBonuses={setShowBonuses}
           setShowBins={setShowBins}
           setActivityLog={setActivityLog}
@@ -450,6 +453,7 @@ function App() {
       {updateSession && <UpdateSession database={database} updateSession={updateSession} setUpdateSession={setUpdateSession} checkDocuments={checkDocuments} setCheckDocuments={setCheckDocuments} setActivityLog={setActivityLog} setIdForLog={setIdForLog} setTimeslotforLog={setTimeslotforLog} timeslotforLog={timeslotforLog} />}
       {showStats && <Stats database={database} setShowStats={setShowStats} setFilterDataFromStats={setFilterDataFromStats} role={role} />}
       {showStatsSessions && <StatsSessions database={database} setShowStatsSessions={setShowStatsSessions} setFilterDataFromStats={setFilterDataFromStats} />}
+      {showProtocols && <StatsProtocols database={database} setShowProtocols={setShowProtocols} />}
       {showBins && <Bins database={database} setShowBins={setShowBins} />}
       {showBonuses && <Bonuses database={database} setShowBonuses={setShowBonuses} />}
 

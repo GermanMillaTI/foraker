@@ -9,7 +9,7 @@ import { useNavigate } from "react-router-dom";
 
 import './Navbar.css';
 
-function Navbar({ database, setDatabase, setRole, setUserRights, setShowStats, setShowStatsSessions, setShowBonuses, setShowBins, setActivityLog, setIdForLog, setTimeslotforLog, role }) {
+function Navbar({ database, setDatabase, setRole, setUserRights, setShowStats, setShowStatsSessions, setShowProtocols, setShowBonuses, setShowBins, setActivityLog, setIdForLog, setTimeslotforLog, role }) {
   const navigate = useNavigate();
 
   // Logout
@@ -56,6 +56,7 @@ function Navbar({ database, setDatabase, setRole, setUserRights, setShowStats, s
       {['admin', 'apple'].includes(role) && <button className="navbar-button" onClick={(e) => { e.preventDefault(); navigate("/scheduler-overview"); }}>Overview</button>}
       <button className="navbar-button" onClick={() => setShowStats(true)}>Participant stats</button>
       <button className="navbar-button" onClick={() => setShowStatsSessions(true)}>Session stats</button>
+      <button className="navbar-button" onClick={() => setShowProtocols(true)}>Session protocols</button>
       {['admin'].includes(role) && <button className="navbar-button" onClick={() => setShowBins(true)}>Demo bins</button>}
       {['admin'].includes(role) && <button className="navbar-button" onClick={() => setShowBonuses(true)}>Bonus $</button>}
       {['admin', 'apple'].includes(role) && <button className="navbar-button" onClick={(e) => { e.preventDefault(); navigate("/scheduler-external"); }}>Scheduler external</button>}

@@ -39,7 +39,7 @@ function Scheduler({ database, setUpdateSession }) {
   const [highlightedTimeslots, setHighlightedTimeslots] = useState([]);
   const [filterData, setFilterData] = useReducer(filterReducer, {
     date: [format(new Date(), "yyyy-MM-dd")],
-    sessionStatuses: ['Blank', ...Constants['sessionStatuses']],
+    sessionStatuses: ['Blank', ...Constants['sessionStatuses'], 'Locked'],
     participantStatuses: ['Blank', ...Constants['participantStatuses']],
     sessionNumbers: ['N/A', ...Constants['possibleNumberOfSessions'].map(val => val.toString())]
   });
@@ -115,7 +115,8 @@ function Scheduler({ database, setUpdateSession }) {
   function filterFunction(timeslotId) {
     const timeslotDate = timeslotId.substring(0, 4) + "-" + timeslotId.substring(4, 6) + "-" + timeslotId.substring(6, 8);
     const session = database['timeslots'][timeslotId];
-    const sessionStatus = session['status'] || "Blank";
+    let sessionStatus = session['status'] || "Blank";
+    if (session['locked']) sessionStatus = 'Locked';
 
     const participantId = session['participant_id'];
     const participant = database['participants'][participantId] || {};
@@ -160,7 +161,7 @@ function Scheduler({ database, setUpdateSession }) {
                 <TableFilter
                   filterName="Session status"
                   alt="sessionStatuses"
-                  values={['Blank', ...Constants['sessionStatuses']]}
+                  values={['Blank', ...Constants['sessionStatuses'], 'Locked']}
                   filterData={filterData}
                   setFilterData={setFilterData}
                   selectedEach={false}

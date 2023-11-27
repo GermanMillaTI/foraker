@@ -40,7 +40,8 @@ function Scheduler({ database, setUpdateSession }) {
   const [filterData, setFilterData] = useReducer(filterReducer, {
     date: [format(new Date(), "yyyy-MM-dd")],
     sessionStatuses: ['Blank', ...Constants['sessionStatuses']],
-    participantStatuses: ['Blank', ...Constants['participantStatuses']]
+    participantStatuses: ['Blank', ...Constants['participantStatuses']],
+    sessionNumbers: ['N/A', ...Constants['possibleNumberOfSessions'].map(val => val.toString())]
   });
 
   useMemo(() => {
@@ -83,6 +84,9 @@ function Scheduler({ database, setUpdateSession }) {
           } else if (c == 4) {
             temp.push('Participant status');
             continue;
+          } else if (c == 8) {
+            temp.push('#');
+            continue;
           }
         }
         if (c == 5 && r > 0) {
@@ -113,14 +117,18 @@ function Scheduler({ database, setUpdateSession }) {
     const session = database['timeslots'][timeslotId];
     const sessionStatus = session['status'] || "Blank";
 
-
     const participantId = session['participant_id'];
     const participant = database['participants'][participantId] || {};
     const participantStatus = participant['status'] || 'Blank';
+    let sessionNumber = 'N/A';
+    if (participant) {
+      if (participant['session_counter']) sessionNumber = (participant['session_counter'][timeslotId] || 'N/A').toString();
+    }
 
     return filterData['participantStatuses'].includes(participantStatus) &&
       filterData['sessionStatuses'].includes(sessionStatus) &&
-      filterData['date'].includes(timeslotDate);
+      filterData['date'].includes(timeslotDate) &&
+      filterData['sessionNumbers'].includes(sessionNumber);
   }
 
   return (
@@ -172,7 +180,16 @@ function Scheduler({ database, setUpdateSession }) {
               <th>Participant ID</th>
               <th>Name</th>
               <th>Vision corr.</th>
-              <th>#</th>
+              <th>
+                <TableFilter
+                  filterName="#"
+                  alt="sessionNumbers"
+                  values={['N/A', ...Constants['possibleNumberOfSessions'].map(val => val.toString())]}
+                  filterData={filterData}
+                  setFilterData={setFilterData}
+                  selectedEach={false}
+                />
+              </th>
               <th>Session comments</th>
               <th>Functions</th>
             </tr>

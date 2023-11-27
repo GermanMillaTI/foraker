@@ -25,10 +25,10 @@ const filterReducer = (state, event) => {
 function StatsSessions({ database, setShowStatsSessions, setFilterDataFromStats }) {
     const navigate = useNavigate();
     const [stats, setStats] = useState(getDefaultNumbers());
-    const [stats2, setStats2] = useState(getDefaultNumbers());
     const [filterData, setFilterData] = useReducer(filterReducer, {
         statuses: ["Scheduled", "Checked In"],
-        statuses2: ["Completed"]
+        statuses2: ["Completed"],
+        sessionNumbers: ["N/A", ...Constants['possibleNumberOfSessions'].map(val => val.toString())]
     });
 
     function getDefaultNumbers() {
@@ -43,7 +43,7 @@ function StatsSessions({ database, setShowStatsSessions, setFilterDataFromStats 
         return (temp);
     }
 
-    function selectDemoBin(statuses, ethnicities, ageRange, gender) {
+    function selectDemoBin(ethnicities, ageRange, gender) {
 
         if (database['users'][auth.currentUser.uid]['role'] != "admin") return;
         setFilterDataFromStats({
@@ -76,27 +76,22 @@ function StatsSessions({ database, setShowStatsSessions, setFilterDataFromStats 
     useEffect(() => {
         // Fill stats
         let tempStats = getDefaultNumbers();
-        let tempStats2 = getDefaultNumbers();
 
-        let participants = database['participants'];
-        let sessions = database['timeslots'];
-        Object.values(sessions).map(session => {
-            let participantId = session['participant_id'];
+        const participants = database['participants'];
+        const sessions = database['timeslots'];
+        Object.keys(sessions).map(sessionId => {
+            const session = sessions[sessionId];
+            const participantId = session['participant_id'];
             if (!participantId) return;
 
-            let participant = participants[participantId];
-            let gender = participant['gender'];
-            let ageRange = session['age_range'];
-            let ethnicities = participant['ethnicities'].split(',');
-            let ethValue = 1 / ethnicities.length;
-            let status = session['status'] || "Blank";
-
-            // The following loop fills up the object of stats2 -- it's used for the backgound highlights only...
-            for (let x = 0; x < ethnicities.length; x++) {
-                let ethnicity = ethnicities[x].trim();
-                if (!Constants['listOfAgeRanges'].includes(ageRange)) continue;
-                tempStats2[ethnicity][ageRange][gender][status] += ethValue;
-            }
+            const participant = participants[participantId];
+            const gender = participant['gender'];
+            const ageRange = session['age_range'];
+            const ethnicities = participant['ethnicities'].split(',');
+            const ethValue = 1 / ethnicities.length;
+            const status = session['status'] || "Blank";
+            const sessionNumber = (participant['session_counter'][sessionId] || 'N/A').toString();
+            if (!filterData['sessionNumbers'].includes(sessionNumber)) return;
 
             for (let x = 0; x < ethnicities.length; x++) {
                 let ethnicity = ethnicities[x].trim();
@@ -106,8 +101,7 @@ function StatsSessions({ database, setShowStatsSessions, setFilterDataFromStats 
         })
 
         setStats(tempStats);
-        setStats2(tempStats2);
-    }, [])
+    }, [Object.keys(filterData['sessionNumbers']).length])
 
     useEffect(() => {
         const handleEsc = (event) => { if (event.keyCode === 27) setShowStatsSessions(""); };
@@ -140,6 +134,16 @@ function StatsSessions({ database, setShowStatsSessions, setFilterDataFromStats 
                         return <div key={"filter-status" + i}>
                             <input id={"stats-filter2-participant-status-" + (val || "Blank")} name={val || "Blank"} type="checkbox" alt="statuses2" onChange={setFilterData} checked={val == "" ? filterData['statuses2'].includes("Blank") : filterData['statuses2'].includes(val)} />
                             <label className="second-number" htmlFor={"stats-filter2-participant-status-" + (val || "Blank")}>{(val || "Blank")}</label>
+                        </div>
+                    })}
+                </div>
+
+                <div className="stats-filter-element">
+                    <div><span className="session-number-row">Session number:</span></div>
+                    {['N/A', ...Constants['possibleNumberOfSessions']].map(val => val.toString()).map((val, i) => {
+                        return <div key={"filter-status" + i}>
+                            <input id={"stats-filter-session-number-" + val} name={val} type="checkbox" alt="sessionNumbers" onChange={setFilterData} checked={filterData['sessionNumbers'].includes(val)} />
+                            <label className="session-number-row" htmlFor={"stats-filter-session-number-" + val}>{val}</label>
                         </div>
                     })}
                 </div>
@@ -181,8 +185,8 @@ function StatsSessions({ database, setShowStatsSessions, setFilterDataFromStats 
                                         }
 
                                         return <td className={"stats-demo-bin-cell " + binClassTag}>
-                                            <span className="first-number" onClick={() => selectDemoBin(filterData['statuses'], eth, [ageRange], "Male")}>{output}</span>
-                                            <span className="second-number" onClick={() => selectDemoBin(filterData['statuses2'], eth, [ageRange], "Male")}>{output2}</span>
+                                            <span className="first-number" onClick={() => selectDemoBin(eth, [ageRange], "Male")}>{output}</span>
+                                            <span className="second-number" onClick={() => selectDemoBin(eth, [ageRange], "Male")}>{output2}</span>
                                             {columnName != "Total" && <label className="stats-demo-bin">{Constants['demoBinsEthnicities'][eth[0]] + Constants['demoBinsAgeRanges'][ageRange] + Constants['demoBinsGenders']['Male']}</label>}
                                         </td>
                                     })}
@@ -206,8 +210,8 @@ function StatsSessions({ database, setShowStatsSessions, setFilterDataFromStats 
                                     output2 = parseFloat(output2.toFixed(1));
 
                                     return <td className="stats-demo-bin-cell stats-total-row">
-                                        <span className="first-number" onClick={() => selectDemoBin(filterData['statuses'], eth, Constants['listOfAgeRanges'], "Male")}>{output}</span>
-                                        <span className="second-number" onClick={() => selectDemoBin(filterData['statuses2'], eth, Constants['listOfAgeRanges'], "Male")}>{output2}</span>
+                                        <span className="first-number" onClick={() => selectDemoBin(eth, Constants['listOfAgeRanges'], "Male")}>{output}</span>
+                                        <span className="second-number" onClick={() => selectDemoBin(eth, Constants['listOfAgeRanges'], "Male")}>{output2}</span>
                                     </td>
                                 })}
                             </tr>
@@ -251,8 +255,8 @@ function StatsSessions({ database, setShowStatsSessions, setFilterDataFromStats 
                                         }
 
                                         return <td className={"stats-demo-bin-cell " + binClassTag}>
-                                            <span className="first-number" onClick={() => selectDemoBin(filterData['statuses'], eth, [ageRange], "Female")}>{output}</span>
-                                            <span className="second-number" onClick={() => selectDemoBin(filterData['statuses2'], eth, [ageRange], "Female")}>{output2}</span>
+                                            <span className="first-number" onClick={() => selectDemoBin(eth, [ageRange], "Female")}>{output}</span>
+                                            <span className="second-number" onClick={() => selectDemoBin(eth, [ageRange], "Female")}>{output2}</span>
                                             {columnName != "Total" && <label className="stats-demo-bin">{Constants['demoBinsEthnicities'][eth[0]] + Constants['demoBinsAgeRanges'][ageRange] + Constants['demoBinsGenders']['Female']}</label>}
                                         </td>
                                     })}
@@ -276,8 +280,8 @@ function StatsSessions({ database, setShowStatsSessions, setFilterDataFromStats 
                                     output2 = parseFloat(output2.toFixed(1));
 
                                     return <td className="stats-demo-bin-cell stats-total-row">
-                                        <span className="first-number" onClick={() => selectDemoBin(filterData['statuses'], eth, Constants['listOfAgeRanges'], "Female")}>{output}</span>
-                                        <span className="second-number" onClick={() => selectDemoBin(filterData['statuses2'], eth, Constants['listOfAgeRanges'], "Female")}>{output2}</span>
+                                        <span className="first-number" onClick={() => selectDemoBin(eth, Constants['listOfAgeRanges'], "Female")}>{output}</span>
+                                        <span className="second-number" onClick={() => selectDemoBin(eth, Constants['listOfAgeRanges'], "Female")}>{output2}</span>
                                     </td>
                                 })}
                             </tr>

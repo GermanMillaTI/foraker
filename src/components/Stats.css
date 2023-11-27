@@ -118,6 +118,10 @@
     color: rgb(228, 0, 0);
 }
 
+.modal-stats-main-container .session-number-row {
+    color: rgb(144, 0, 173);
+}
+
 .stats-demo-bin-cell {
     position: relative;
 }

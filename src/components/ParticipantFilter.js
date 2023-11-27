@@ -405,7 +405,6 @@ function ParticipantFilter({ database, setShownParticipants, filterDataFromStats
       </div>
     </div>
 
-    {/*
     <div className="filter-container">
       <div className="filter-element">
         <span className="filter-container-header">Vision correction</span>
@@ -417,6 +416,7 @@ function ParticipantFilter({ database, setShownParticipants, filterDataFromStats
           </div>
         })}
       </div>
+      {/*
       <div className="filter-element gap">
         <span className="filter-container-header">Registered by parent <br /> or guardian</span>
         <div className="filter-object">
@@ -430,8 +430,8 @@ function ParticipantFilter({ database, setShownParticipants, filterDataFromStats
           <button name="No" alt="parentRegistered" className="filter-this-button" onClick={setFilterData}>!</button>
         </div>
       </div>
-    </div>
     */}
+    </div>
 
     <div className="filter-container">
       <div className="filter-element">

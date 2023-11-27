@@ -55,12 +55,6 @@ const Constants = {
     "Pending",
     "Rejected"
   ],
-  listOfModerators: [
-    "",
-    "First Moderator",
-    "Second Moderator",
-    "Third Moderator"
-  ],
   sessionStatuses: [
     "Scheduled",
     "Checked In",

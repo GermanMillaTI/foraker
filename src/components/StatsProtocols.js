@@ -135,7 +135,7 @@ function StatsProtocols({ database, setShowProtocols }) {
                                         const gender = "Female";
                                         const eth = Constants['columnsOfStats'][columnName];
                                         const demoBin = Constants['demoBinsEthnicities'][eth[0]] + Constants['demoBinsAgeRanges'][ageRange] + Constants['demoBinsGenders'][gender];
-                                        const binClassTag = "demo-bin-" + database['demo_bins']['Male'][Constants['bonusEthnicities2'][columnName]][ageRange];
+                                        const binClassTag = "demo-bin-" + database['demo_bins']['Female'][Constants['bonusEthnicities2'][columnName]][ageRange];
 
                                         return <td key={'protocols-female-' + columnName} className={"stats-demo-bin-cell " + binClassTag}>
                                             <span className="first-number">{stats[demoBin]['Apple TV Only']}</span>

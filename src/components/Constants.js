@@ -221,7 +221,8 @@ const Constants = {
   },
   clientContributionStatuses: {
     0: "New",
-    1: "In Progress",
+    //1: "In Progress",
+    1: "Checked In",
     2: "Completed",
     3: "Archived",
     4: "Failed"

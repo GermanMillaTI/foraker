@@ -51,7 +51,11 @@ function SessionInfo({ database, participantId, sessionId }) {
         if (participantInfo['gender'] != clientParticipantInfo['g']) discrepancies['gender'] = true;
         if (participantInfo['ethnicities'] != clientParticipantInfo['e']) discrepancies['ethnicity'] = true;
         if (participantInfo['vision_correction'] != clientParticipantInfo['v'] && clientParticipantInfo['v']) discrepancies['visionCorrection'] = true;
-        if (sessionInfo['session_protocol'] != clientParticipantInfo['sp']) discrepancies['session_protocol'] = true;
+
+        if (sessionId.startsWith((clientParticipantInfo['d'] || "--").substring(0, 10).replaceAll("-", ""))) {
+            if (sessionInfo['session_protocol'] != clientParticipantInfo['sp'] && clientParticipantInfo['sp']) discrepancies['session_protocol'] = true;
+            if (sessionInfo['session_outcome'] != clientParticipantInfo['so'] && clientParticipantInfo['so']) discrepancies['session_outcome'] = true;
+        }
     }
     var discrepancy = Object.values(discrepancies).includes(true);
 
@@ -106,7 +110,8 @@ function SessionInfo({ database, participantId, sessionId }) {
                 }
 
                 var statusDiscrepancy = false;
-                if (sameDayTelusContributionStatus.replace("Failed - Comp.", "Failed").replace("Failed - No Comp.", "Failed") != appleContributionStatus) {
+                if (sameDayTelusContributionStatus.replace("Failed - Comp.", "Failed").replace("Failed - No Comp.", "Failed") != appleContributionStatus &&
+                    !['Rescheduled', 'NoShow', 'Withdrawn'].includes(sameDayTelusContributionStatus.replace("Failed - Comp.", "Failed").replace("Failed - No Comp.", "Failed"))) {
                     statusDiscrepancy = true;
                     discrepancy = true;
                 }
@@ -168,11 +173,18 @@ function SessionInfo({ database, participantId, sessionId }) {
                             <td>{participantInfo['vision_correction']}</td>
                             {externalId && <td>{clientParticipantInfo['v'] || ""}</td>}
                         </tr>
-                        <tr className={discrepancies['session_protocol'] ? "session-item-discrepancy" : ""}>
-                            <th>Session protocol</th>
-                            <td>{sessionInfo['session_protocol']}</td>
-                            {externalId && <td>{clientParticipantInfo['sp'] || ""}</td>}
-                        </tr>
+                        {sessionId.startsWith((clientParticipantInfo['d'] || "--").substring(0, 10).replaceAll("-", "")) && <>
+                            <tr className={discrepancies['session_protocol'] ? "session-item-discrepancy" : ""}>
+                                <th>Session protocol</th>
+                                <td>{sessionInfo['session_protocol']}</td>
+                                {externalId && <td>{clientParticipantInfo['sp'] || ""}</td>}
+                            </tr>
+                            <tr className={discrepancies['session_outcome'] ? "session-item-discrepancy" : ""}>
+                                <th>Session outcome</th>
+                                <td>{sessionInfo['session_outcome']}</td>
+                                {externalId && <td>{clientParticipantInfo['so'] || ""}</td>}
+                            </tr>
+                        </>}
                         <tr>
                             <th>Date of info</th>
                             <td>{FormattingFunctions.TimeSlotFormat(sessionId)}</td>

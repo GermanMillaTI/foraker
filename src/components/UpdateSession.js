@@ -776,6 +776,7 @@ function UpdateSession({ database, updateSession, setUpdateSession, checkDocumen
                                     <td className="participant-table-left">Session protocol</td>
                                     <td className="participant-table-right">
                                         <select className="session-data-selector"
+                                            disabled
                                             onChange={(e) => {
                                                 updateValue("/timeslots/" + updateSession, { session_protocol: e.currentTarget.value });
                                                 LogEvent({

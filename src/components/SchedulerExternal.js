@@ -8,6 +8,7 @@ import './SchedulerExternal.css';
 import Constants from './Constants';
 import BookSession from './BookSession';
 import FormattingFunctions from './Core/FormattingFunctions';
+import SessionInfo from './Tooltips/SessionInfo';
 
 function SchedulerExternal({ database }) {
   const [showBookSession, setShowBookSession] = useState(false);
@@ -118,12 +119,9 @@ function SchedulerExternal({ database }) {
                     <td className="center-tag">
                       {database['timeslots'][key]['session_outcome'] || ""}
                     </td>
-                    <td className="center-tag">
-                      {database['timeslots'][key]['participant_id'] ?
-                        //Object.keys(database['qualified']).find(q => database['qualified'][q] === database['timeslots'][key]['participant_id'])
-                        database['participants'][database['timeslots'][key]['participant_id']]['external_id']
-                        : ""}
-                    </td>
+                    {database['timeslots'][key]['participant_id'] ?
+                      <SessionInfo database={database} participantId={database['timeslots'][key]['participant_id']} sessionId={key} />
+                      : <td></td>}
                     <td className="center-tag">
                       {database['timeslots'][key]['participant_id']}
                     </td>

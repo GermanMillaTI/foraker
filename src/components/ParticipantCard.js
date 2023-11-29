@@ -462,6 +462,7 @@ function ParticipantCard({ database, role, participantId, index, setShowBookSess
                     </select>
                 </div>
 
+                {/*
                 <div className="participant-attribute-container">
                     <span className="field-label">Target of sessions</span>
 
@@ -480,6 +481,7 @@ function ParticipantCard({ database, role, participantId, index, setShowBookSess
                         ))}
                     </select>
                 </div>
+                */}
 
                 <div className="participant-attribute-container">
                     <span className="field-label">Participant status</span>

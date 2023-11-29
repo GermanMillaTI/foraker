@@ -17,7 +17,8 @@ function SessionInfo({ database, participantId, sessionId }) {
         dateOfBirth: false,
         gender: false,
         ethnicity: false,
-        visionCorrection: false
+        visionCorrection: false,
+        session_protocol: false
     }
 
     let clientParticipantInfo = {};
@@ -50,6 +51,7 @@ function SessionInfo({ database, participantId, sessionId }) {
         if (participantInfo['gender'] != clientParticipantInfo['g']) discrepancies['gender'] = true;
         if (participantInfo['ethnicities'] != clientParticipantInfo['e']) discrepancies['ethnicity'] = true;
         if (participantInfo['vision_correction'] != clientParticipantInfo['v'] && clientParticipantInfo['v']) discrepancies['visionCorrection'] = true;
+        if (sessionInfo['session_protocol'] != clientParticipantInfo['sp']) discrepancies['session_protocol'] = true;
     }
     var discrepancy = Object.values(discrepancies).includes(true);
 
@@ -166,10 +168,10 @@ function SessionInfo({ database, participantId, sessionId }) {
                             <td>{participantInfo['vision_correction']}</td>
                             {externalId && <td>{clientParticipantInfo['v'] || ""}</td>}
                         </tr>
-                        <tr>
+                        <tr className={discrepancies['session_protocol'] ? "session-item-discrepancy" : ""}>
                             <th>Session protocol</th>
                             <td>{sessionInfo['session_protocol']}</td>
-                            {externalId && <td></td>}
+                            {externalId && <td>{clientParticipantInfo['sp'] || ""}</td>}
                         </tr>
                         <tr>
                             <th>Date of info</th>

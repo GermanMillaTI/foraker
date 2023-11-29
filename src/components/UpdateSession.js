@@ -9,10 +9,11 @@ import './UpdateSession.css';
 import Constants from './Constants';
 import LogEvent from './Core/LogEvent';
 import FormattingFunctions from './Core/FormattingFunctions';
+import CalculateSessionProtocol from './Core/SetSessionProtocol';
 
 function UpdateSession({ database, updateSession, setUpdateSession, checkDocuments, setCheckDocuments, setActivityLog, setIdForLog, setTimeslotforLog, timeslotforLog }) {
     const [participantId, setParticipantId] = useState(database['timeslots'][updateSession]['participant_id']);
-    const [sessionInfo, setSessionInfo] = useState(database['timeslots'][updateSession]);
+    const sessionInfo = database['timeslots'][updateSession];
     const [hasCompletedSession] = useState(
         [
             'sari.kiiskinen@telusinternational.com',
@@ -199,9 +200,7 @@ function UpdateSession({ database, updateSession, setUpdateSession, checkDocumen
         let selectedDate = dob.substring(0, 10);
 
         const HTMLContent = () => {
-
-            return <input type="date" id="newDOB" defaultValue={selectedDate} ></input>
-
+            return <input type="date" id="newDOB" defaultValue={selectedDate} />
         }
 
         const saveDOB = () => {
@@ -249,7 +248,7 @@ function UpdateSession({ database, updateSession, setUpdateSession, checkDocumen
                 setIsLoading(false);
                 setErrorMessage("");
                 setContributions(data['results'][0]['metadata']);
-                console.log(data['results']);
+                //console.log(data['results']);
             } else {
                 setIsLoading(false);
                 setSelectedContribution("");
@@ -279,6 +278,12 @@ function UpdateSession({ database, updateSession, setUpdateSession, checkDocumen
         window.addEventListener('keydown', handleEsc);
         return () => { window.removeEventListener('keydown', handleEsc) };
     }, [checkDocuments]);
+
+    useEffect(() => {
+        const protocolToSet = CalculateSessionProtocol(database, updateSession);
+        if (protocolToSet) updateValue("/timeslots/" + updateSession, { session_protocol: protocolToSet });
+    }, []);
+
 
 
     //console.log(selectedContribution);
@@ -532,6 +537,7 @@ function UpdateSession({ database, updateSession, setUpdateSession, checkDocumen
                                     </tr>
                                 }
 
+                                {/*
                                 <tr>
                                     <td className="participant-table-left">Target of sessions</td>
                                     <td className="participant-table-right">
@@ -550,6 +556,7 @@ function UpdateSession({ database, updateSession, setUpdateSession, checkDocumen
                                         </select>
                                     </td>
                                 </tr>
+                                */}
 
                                 <tr>
                                     <td className="participant-table-left">&nbsp;</td>
@@ -557,19 +564,19 @@ function UpdateSession({ database, updateSession, setUpdateSession, checkDocumen
 
                                 {isloading &&
                                     <tr>
-                                        <td className="participant-table-center" colspan="2">Loading...</td>
+                                        <td className="participant-table-center" colSpan="2">Loading...</td>
                                     </tr>
                                 }
                                 {externalIdForAPI && !isloading &&
                                     <>
                                         {!errorMessage &&
                                             <tr className='client-info-container'>
-                                                <td className="participant-table-center" colspan="2">Client info: {externalIdForAPI}</td>
+                                                <td className="participant-table-center" colSpan="2">Client info: {externalIdForAPI}</td>
                                             </tr>
                                         }
                                         {errorMessage &&
                                             <tr>
-                                                <td className="participant-table-center client-api-error-message" colspan="2">{errorMessage}</td>
+                                                <td className="participant-table-center client-api-error-message" colSpan="2">{errorMessage}</td>
                                             </tr>
                                         }
                                         <tr className='client-info-container'>
@@ -586,6 +593,7 @@ function UpdateSession({ database, updateSession, setUpdateSession, checkDocumen
                                                     if (selectedContribution == "" && sameDay) setSelectedContribution(contribution);
                                                     return <>
                                                         <button
+                                                            key={"client-info-button-" + formatted}
                                                             className={"client-contribution-button" + (tag == selectedContribution['tag'] ? " same-day-contribution" : "")}
                                                             onClick={() => setSelectedContribution(contribution)}
                                                         >
@@ -601,7 +609,7 @@ function UpdateSession({ database, updateSession, setUpdateSession, checkDocumen
                                         </tr>
                                         {selectedContribution != "" && <>
                                             <tr className='client-info-container'>
-                                                <td className="participant-table-center" colspan="2">Contribution {selectedContribution['tag'].substring(0, 4) + "-" +
+                                                <td className="participant-table-center" colSpan="2">Contribution {selectedContribution['tag'].substring(0, 4) + "-" +
                                                     selectedContribution['tag'].substring(4, 6) + "-" +
                                                     selectedContribution['tag'].substring(6, 8) + " " +
                                                     selectedContribution['tag'].substring(8, 10) + ":" +
@@ -887,7 +895,7 @@ function UpdateSession({ database, updateSession, setUpdateSession, checkDocumen
                                 }
                                 {sessionInfo['bonus'] &&
                                     <tr>
-                                        <td className="participant-table-right bonus-container" colspan="2">
+                                        <td className="participant-table-right bonus-container" colSpan="2">
                                             {Object.keys(sessionInfo['bonus']).map(bonusId => {
                                                 let bonus = sessionInfo['bonus'][bonusId];
                                                 let bonusName = Constants['bonuses'][bonusId];
@@ -898,6 +906,7 @@ function UpdateSession({ database, updateSession, setUpdateSession, checkDocumen
 
                                                 return <>
                                                     <input
+                                                        key={"bonus-" + bonusId}
                                                         id={"bonus-" + bonusId}
                                                         type="checkbox"
                                                         checked={database['timeslots'][updateSession]["bonus"][bonusId]['a']}
@@ -918,7 +927,7 @@ function UpdateSession({ database, updateSession, setUpdateSession, checkDocumen
                                 }
                                 {participantInfo['bonus_amount'] &&
                                     <tr>
-                                        <td className="participant-table-right bonus-container" colspan="2">
+                                        <td className="participant-table-right bonus-container" colSpan="2">
                                             <input type="checkbox" checked={['Scheduled', 'Checked In', 'Completed'].includes(database['timeslots'][updateSession]['status'])} disabled />
                                             <label> Extra bonus ($ {participantInfo['bonus_amount']}) <i>Offered during the handoff</i></label>
                                         </td>
@@ -934,11 +943,11 @@ function UpdateSession({ database, updateSession, setUpdateSession, checkDocumen
 
                                 {externalIdParticipants.length > 1 &&
                                     <tr>
-                                        <td className="participant-table-left" colspan="2">
+                                        <td className="participant-table-left" colSpan="2">
                                             <span className="same-external-id-error-message">The same external ID is used for multiple people:</span><br /><br />
                                             {externalIdParticipants.map(participantId => {
                                                 const ppt = database['participants'][participantId];
-                                                return <><span>{participantId + ": " + ppt['full_name'] + (ppt["parent"] ? "  (child)" : "")}</span><br /></>
+                                                return <><span key={"span-" + participantId}>{participantId + ": " + ppt['full_name'] + (ppt["parent"] ? "  (child)" : "")}</span><br /></>
                                             })}
                                         </td>
                                     </tr>

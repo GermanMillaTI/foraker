@@ -36,7 +36,8 @@ function Participants({
   }, [checkDocuments, showBookSession2, updateSession])
 
   function getCSVdata() {
-    let output = [['ID', 'First Name', 'Last Name', 'Email', 'Age-Range', 'Demo Bins', 'Ethnicities', 'Date', 'DOB', 'Target of Sessions', 'External ID', 'Phone', 'Status', 'Document Approval', 'Vision Correction', 'Sessions No.', 'Unsubscribed', 'booking url']];
+    //multiple_timeslet output = [['ID', 'First Name', 'Last Name', 'Email', 'Age-Range', 'Demo Bins', 'Ethnicities', 'Date', 'DOB', 'Target of Sessions', 'External ID', 'Phone', 'Status', 'Document Approval', 'Vision Correction', 'Sessions No.', 'Unsubscribed', 'booking url']];
+    let output = [['ID', 'First Name', 'Last Name', 'Email', 'Age-Range', 'Demo Bins', 'Ethnicities', 'Date', 'DOB', 'External ID', 'Phone', 'Status', 'Document Approval', 'Vision Correction', 'Sessions No.', 'Unsubscribed', 'booking url']];
 
     var data = Object.keys(database['participants']).filter(pid => shownParticipants.includes(pid)).sort((a, b) => {
       return a < b ? -1 : 1;
@@ -50,7 +51,7 @@ function Participants({
       database['participants'][key]['ethnicities'],
       new Date(database['participants'][key]['date']).toISOString().split("T")[0],
       new Date(database['participants'][key]['date_of_birth']).toISOString().split("T")[0],
-      database['participants'][key]['multiple_times'],
+      //database['participants'][key]['multiple_times'],
       database['participants'][key]['external_id'],
       database['participants'][key]['phone'],
       database['participants'][key]['status'],

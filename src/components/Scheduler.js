@@ -40,7 +40,7 @@ function Scheduler({ database, setUpdateSession }) {
   const [filterData, setFilterData] = useReducer(filterReducer, {
     date: [format(new Date(), "yyyy-MM-dd")],
     sessionStatuses: ['Blank', 'Locked', ...Constants['sessionStatuses']],
-    participantStatuses: ['Blank', ...Constants['participantStatuses']],
+    participantStatuses: ['Blank', ...Constants['participantStatuses'].filter(status => status != 'Denali PPT')],
     sessionNumbers: ['N/A', ...Constants['possibleNumberOfSessions'].map(val => val.toString())]
   });
 
@@ -172,7 +172,7 @@ function Scheduler({ database, setUpdateSession }) {
                 <TableFilter
                   filterName="Participant status"
                   alt="participantStatuses"
-                  values={['Blank', ...Constants['participantStatuses']]}
+                  values={['Blank', ...Constants['participantStatuses'].filter(status => status != 'Denali PPT')]}
                   filterData={filterData}
                   setFilterData={setFilterData}
                   selectedEach={false}

@@ -119,9 +119,7 @@ const Constants = {
   possibleNumberOfSessions: [
     1,
     2,
-    3,
-    4,
-    5
+    3
   ],
   demoBinsEthnicities: {
     "African/African-American/Black": "1",

@@ -74,7 +74,7 @@ function StatsProtocols({ database, setShowProtocols }) {
                 </div>
 
                 <div className="stats-filter-element">
-                    <span>*Please note that the numbers might not be fully accurate, since people with multiple demo bins are not considered here...</span>
+                    <span>*Included if the session is completed or scheduled and not 'Incomplete - Redo'. Multiple demo bin people is not considered...</span>
                 </div>
 
                 <div className="modal-stats-of-protocols-content">

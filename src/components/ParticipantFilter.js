@@ -223,6 +223,7 @@ function ParticipantFilter({ database, setShownParticipants, filterDataFromStats
     let icfSigned = participantInfo['icf'] ? "Yes" : "No";
     let icfSignedIsOk = filterData['icfs'].includes(icfSigned);
     let status = participantInfo['status'] || "Blank";
+    if (status == 'Denali PPT') demoBinStatus = 'Closed';
     let session1stat = participantInfo['sessions'] ? Object.values(participantInfo['sessions'])[0] : "N/A";
     let documentStatus = participantInfo['document_approval'] || "Blank";
     let hasNewDocument = participantInfo['documents']['pending'] ? "Yes" : "No";
@@ -288,6 +289,7 @@ function ParticipantFilter({ database, setShownParticipants, filterDataFromStats
 
       let icfSigned = participantInfo['icf'] ? "Yes" : "No";
       let status = participantInfo['status'] || "Blank";
+      if (status == 'Denali PPT') demoBinStatus = 'Closed';
       let documentStatus = participantInfo['document_approval'] || "Blank";
       let session1stat = participantInfo['sessions'] ? Object.values(participantInfo['sessions'])[0] : "N/A";
 
@@ -416,6 +418,18 @@ function ParticipantFilter({ database, setShownParticipants, filterDataFromStats
           </div>
         })}
       </div>
+
+      <div className="filter-element gap">
+        <span className="filter-container-header">Demo bin status</span>
+        {Constants['demoBinStatuses'].map((val, i) => {
+          return <div key={"filter-demo-bin-status" + i} className="filter-object">
+            <input id={"filter-demo-bin-status-" + val} name={val} type="checkbox" alt="demoBinStatuses" onChange={setFilterData} checked={filterData['demoBinStatuses'].includes(val)} />
+            <label htmlFor={"filter-demo-bin-status-" + val}>{val + " (" + filterStats['demoBinStatuses'][val] + ")"}</label>
+            <button name={val} alt="demoBinStatuses" className="filter-this-button" onClick={setFilterData}>!</button>
+          </div>
+        })}
+      </div>
+
       {/*
       <div className="filter-element gap">
         <span className="filter-container-header">Registered by parent <br /> or guardian</span>
@@ -484,19 +498,6 @@ function ParticipantFilter({ database, setShownParticipants, filterDataFromStats
           </div>
         })}
       </div>
-
-      {/*
-      <div className="filter-element gap">
-        <span className="filter-container-header">Demo bin status</span>
-        {Constants['demoBinStatuses'].map((val, i) => {
-          return <div key={"filter-demo-bin-status" + i} className="filter-object">
-            <input id={"filter-demo-bin-status-" + val} name={val} type="checkbox" alt="demoBinStatuses" onChange={setFilterData} checked={filterData['demoBinStatuses'].includes(val)} />
-            <label htmlFor={"filter-demo-bin-status-" + val}>{val + " (" + filterStats['demoBinStatuses'][val] + ")"}</label>
-            <button name={val} alt="demoBinStatuses" className="filter-this-button" onClick={setFilterData}>!</button>
-          </div>
-        })}
-      </div>
-      */}
     </div>
 
     <div className="filter-container">

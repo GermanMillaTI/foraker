@@ -1,19 +1,11 @@
-import { auth, realtimeDb } from '../firebase/config';
-import { useState, useEffect, useReducer } from 'react';
-import Swal from 'sweetalert2';
-import Tooltip, { tooltipClasses } from '@mui/material/Tooltip';
+import { useState } from 'react';
 import { CSVLink } from 'react-csv';
 
 import './SchedulerExternal.css';
-import Constants from './Constants';
-import BookSession from './BookSession';
 import FormattingFunctions from './Core/FormattingFunctions';
 import SessionInfo from './Tooltips/SessionInfo';
 
 function SchedulerExternal({ database }) {
-  const [showBookSession, setShowBookSession] = useState(false);
-  const [selectedSessionId, setSelectedSessionId] = useState("");
-  const [justBookedSession, setJustBookedSession] = useState("");
   const [csvData, setCsvData] = useState([[]]);
 
   function getCSVData() {
@@ -33,19 +25,6 @@ function SchedulerExternal({ database }) {
     return output;
   }
 
-  // Update value in DB
-  function updateValue(path, newValue) {
-    realtimeDb.ref(path).update(newValue);
-  }
-
-  function updateSession(sessionId, actionType) {
-    Swal.fire({
-      title: 'Updating timeslot',
-      html: 'Session ID: <b>' + sessionId + '</b><br/>' + 'Action type: <b>' + actionType + '</b> <br/><br/> It will be ready soon...',
-      confirmButtonText: 'OK'
-    })
-  }
-
   return (
     <div id="schedulerExternalContainer">
       <CSVLink
@@ -60,42 +39,18 @@ function SchedulerExternal({ database }) {
         <table id="schedulerExternalTable" className="scheduler-external-table">
           <thead>
             <tr>
-              <th>
-                Date
-              </th>
-              <th>
-                Station
-              </th>
-              <th>
-                Status
-              </th>
-              <th>
-                Session protocol
-              </th>
-              <th>
-                Session outcome
-              </th>
-              <th>
-                Participant ID
-              </th>
-              <th>
-                Telus ID
-              </th>
-              <th>
-                First Name
-              </th>
-              <th>
-                Last Initial
-              </th>
-              <th>
-                Vision corr.
-              </th>
-              <th>
-                Session
-              </th>
-              <th>
-                Demo Bin
-              </th>
+              <th>Date</th>
+              <th>Station</th>
+              <th>Status</th>
+              <th>Session protocol</th>
+              <th>Session outcome</th>
+              <th>Participant ID</th>
+              <th>Telus ID</th>
+              <th>First Name</th>
+              <th>Last Initial</th>
+              <th>Vision corr.</th>
+              <th>Session</th>
+              <th>Demo Bin</th>
             </tr>
           </thead>
           <tbody>
@@ -103,7 +58,7 @@ function SchedulerExternal({ database }) {
               .sort((a, b) => (a.length == 15 ? (a.substring(0, 14) + "0" + a.substring(14)) : a) < (b.length == 15 ? (b.substring(0, 14) + "0" + b.substring(14)) : b) ? -1 : 1)
               .map((key, index, array) => {
                 return (
-                  <tr className={(justBookedSession == key ? "highlighted-session-row" : "") + (index < array.length - 1 ? (key.substring(0, 13) != array[index + 1].substring(0, 13) ? " day-separator" : "") : "")}>
+                  <tr className={index < array.length - 1 ? (key.substring(0, 13) != array[index + 1].substring(0, 13) ? " day-separator" : "") : ""}>
                     <td className="center-tag">
                       {FormattingFunctions.TimeSlotFormat(key)}
                     </td>
@@ -119,12 +74,15 @@ function SchedulerExternal({ database }) {
                     <td className="center-tag">
                       {database['timeslots'][key]['session_outcome'] || ""}
                     </td>
+                    <td>
+                      {database['timeslots'][key]['participant_id'] ?
+                        (database['participants'][database['timeslots'][key]['participant_id']]['external_id'] || "") :
+                        ""
+                      }
+                    </td>
                     {database['timeslots'][key]['participant_id'] ?
                       <SessionInfo database={database} participantId={database['timeslots'][key]['participant_id']} sessionId={key} />
                       : <td></td>}
-                    <td className="center-tag">
-                      {database['timeslots'][key]['participant_id']}
-                    </td>
                     <td>
                       {database['timeslots'][key]['participant_id'] ?
                         database['participants'][database['timeslots'][key]['participant_id']]['first_name']
@@ -156,7 +114,6 @@ function SchedulerExternal({ database }) {
           </tbody>
         </table>
       </div>
-      {showBookSession && <BookSession database={database} setShowBookSession={setShowBookSession} selectedSessionId={selectedSessionId} setJustBookedSession={setJustBookedSession} />}
     </div>
   );
 }

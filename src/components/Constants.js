@@ -201,10 +201,12 @@ const Constants = {
   clientEthnicities: {
     'Aboriginal Australians / Papuans': 'Aboriginal Australians/Papuans',
     'African/African-American/Black': 'African/African-American/Black',
+    'Alaskan Native': 'Alaskan Native',
     'American Indian': 'American Indian',
     'East Asian': 'East Asian',
     'Latin America': 'Hispanic/Latin American/Spanish',
     'Middle Eastern/North African': 'Middle Eastern/North African',
+    'Native Hawaiian/Pacific Islander': 'Native Hawaiian/Pacific Islander/Indigenous people of Oceania',
     'N/A': 'N/A',
     'South Asian': 'South Asian',
     'Southeast Asian': 'Southeast Asian',

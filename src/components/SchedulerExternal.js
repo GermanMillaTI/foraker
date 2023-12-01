@@ -74,7 +74,7 @@ function SchedulerExternal({ database }) {
                     <td className="center-tag">
                       {database['timeslots'][key]['session_outcome'] || ""}
                     </td>
-                    <td>
+                    <td className="center-tag">
                       {database['timeslots'][key]['participant_id'] ?
                         (database['participants'][database['timeslots'][key]['participant_id']]['external_id'] || "") :
                         ""

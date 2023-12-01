@@ -286,7 +286,7 @@ function UpdateSession({ database, updateSession, setUpdateSession, checkDocumen
 
 
 
-    //console.log(selectedContribution);
+    console.log(selectedContribution);
 
     return ReactDOM.createPortal((
         <div className="modal-book-update-session-backdrop" onClick={(e) => { if (e.target.className == "modal-book-update-session-backdrop") setUpdateSession("") }}>
@@ -640,8 +640,8 @@ function UpdateSession({ database, updateSession, setUpdateSession, checkDocumen
                                                 <td className="participant-table-left">
                                                     Gender
                                                 </td>
-                                                <td className={"participant-table-right" + (selectedContribution['answers'].filter(answer => answer['slug'] == 'gender')[0]['values'].join(",") != participantInfo['gender'] ? " not-matching-client-data" : "")}>
-                                                    {selectedContribution['answers'].filter(answer => answer['slug'] == 'gender')[0]['values'].join(",")}
+                                                <td className={"participant-table-right" + (selectedContribution['answers'].filter(answer => answer['slug'] == 'gender')[0]['values'].join(",").replace("Prefer not to state", "Prefer not to say") != participantInfo['gender'] ? " not-matching-client-data" : "")}>
+                                                    {selectedContribution['answers'].filter(answer => answer['slug'] == 'gender')[0]['values'].join(",").replace("Prefer not to state", "Prefer not to say")}
                                                 </td>
                                             </tr>
                                             <tr className='client-info-container'>
@@ -660,8 +660,24 @@ function UpdateSession({ database, updateSession, setUpdateSession, checkDocumen
                                                     {Constants['clientVisionCorrections'][selectedContribution['answers'].filter(answer => answer['slug'] == 'vision_correction')[0]['values'].join(",")]}
                                                 </td>
                                             </tr>
+                                            <tr className='client-info-container'>
+                                                <td className="participant-table-left">
+                                                    Head circumference
+                                                </td>
+                                                <td className="participant-table-right">
+                                                    {selectedContribution['answers'].filter(answer => answer['slug'] == 'head_circumference_mm')[0]['values'].join(",") + " mm"}
+                                                </td>
+                                            </tr>
                                         </>}
                                     </>
+                                }
+
+                                {/* use array-s and map here ..... */}
+                                {participantInfo['external_id'] &&
+                                    <tr>
+                                        <td className="participant-table-left">Worn head band #1</td>
+                                        <td className="participant-table-right">{database['client']['contributions'][participantInfo['external_id']] ? database['client']['contributions'][participantInfo['external_id']][0]['w'] : ""}</td>
+                                    </tr>
                                 }
                             </tbody>
                         </table>

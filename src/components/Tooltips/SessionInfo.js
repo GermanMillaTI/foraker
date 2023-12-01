@@ -21,40 +21,43 @@ function SessionInfo({ database, participantId, sessionId }) {
         session_protocol: false
     }
 
+
     let clientParticipantInfo = {};
-    if (clientContributons.length == 1) {
-        clientParticipantInfo = clientContributons[clientContributons.length - 1];
-    } else if (clientContributons.length > 1) {
-        const telusDate = new Date(sessionId.substring(0, 4) + "-" + sessionId.substring(4, 6) + "-" + sessionId.substring(6, 8) + " " + sessionId.substring(9, 11) + ":" + sessionId.substring(11, 13));
+    if (!['Rescheduled', 'NoShow'].includes(sessionInfo['status'])) {
+        if (clientContributons.length == 1) {
+            clientParticipantInfo = clientContributons[clientContributons.length - 1];
+        } else if (clientContributons.length > 1) {
+            const telusDate = new Date(sessionId.substring(0, 4) + "-" + sessionId.substring(4, 6) + "-" + sessionId.substring(6, 8) + " " + sessionId.substring(9, 11) + ":" + sessionId.substring(11, 13));
 
-        var diff = 1000000;
+            var diff = 1000000;
 
-        clientContributons.map(contribution => {
-            const appleDateRaw = contribution['d'];
-            if (appleDateRaw) {
-                let appleDate = new Date(appleDateRaw);
+            clientContributons.map(contribution => {
+                const appleDateRaw = contribution['d'];
+                if (appleDateRaw) {
+                    let appleDate = new Date(appleDateRaw);
 
-                const diffTime = Math.abs(telusDate - appleDate);
-                const diffMinutes = Math.abs(Math.ceil(diffTime / (1000 * 60)));
-                if (diffMinutes <= diff) {
-                    diff = diffMinutes;
-                    clientParticipantInfo = contribution;
-                };
+                    const diffTime = Math.abs(telusDate - appleDate);
+                    const diffMinutes = Math.abs(Math.ceil(diffTime / (1000 * 60)));
+                    if (diffMinutes <= diff) {
+                        diff = diffMinutes;
+                        clientParticipantInfo = contribution;
+                    };
+                }
+            })
+        }
+
+        if (clientParticipantInfo != {} && externalId) {
+            // Check if the ppt or the session has different info from the client
+            if (sessionInfo['demo_bin'] != clientParticipantInfo['db'] && clientParticipantInfo['db']) discrepancies['demoBin'] = true;
+            if (participantInfo['date_of_birth'].substring(0, 10) != clientParticipantInfo['b']) discrepancies['dateOfBirth'] = true;
+            if (participantInfo['gender'] != clientParticipantInfo['g']) discrepancies['gender'] = true;
+            if (participantInfo['ethnicities'] != clientParticipantInfo['e']) discrepancies['ethnicity'] = true;
+            if (participantInfo['vision_correction'] != clientParticipantInfo['v'] && clientParticipantInfo['v']) discrepancies['visionCorrection'] = true;
+
+            if (sessionId.startsWith((clientParticipantInfo['d'] || "--").substring(0, 10).replaceAll("-", ""))) {
+                if (sessionInfo['session_protocol'] != clientParticipantInfo['sp'] && clientParticipantInfo['sp']) discrepancies['session_protocol'] = true;
+                if (sessionInfo['session_outcome'] != clientParticipantInfo['so'] && clientParticipantInfo['so']) discrepancies['session_outcome'] = true;
             }
-        })
-    }
-
-    if (clientParticipantInfo != {} && externalId) {
-        // Check if the ppt or the session has different info from the client
-        if (sessionInfo['demo_bin'] != clientParticipantInfo['db'] && clientParticipantInfo['db']) discrepancies['demoBin'] = true;
-        if (participantInfo['date_of_birth'].substring(0, 10) != clientParticipantInfo['b']) discrepancies['dateOfBirth'] = true;
-        if (participantInfo['gender'] != clientParticipantInfo['g']) discrepancies['gender'] = true;
-        if (participantInfo['ethnicities'] != clientParticipantInfo['e']) discrepancies['ethnicity'] = true;
-        if (participantInfo['vision_correction'] != clientParticipantInfo['v'] && clientParticipantInfo['v']) discrepancies['visionCorrection'] = true;
-
-        if (sessionId.startsWith((clientParticipantInfo['d'] || "--").substring(0, 10).replaceAll("-", ""))) {
-            if (sessionInfo['session_protocol'] != clientParticipantInfo['sp'] && clientParticipantInfo['sp']) discrepancies['session_protocol'] = true;
-            if (sessionInfo['session_outcome'] != clientParticipantInfo['so'] && clientParticipantInfo['so']) discrepancies['session_outcome'] = true;
         }
     }
     var discrepancy = Object.values(discrepancies).includes(true);
@@ -173,18 +176,31 @@ function SessionInfo({ database, participantId, sessionId }) {
                             <td>{participantInfo['vision_correction']}</td>
                             {externalId && <td>{clientParticipantInfo['v'] || ""}</td>}
                         </tr>
-                        {sessionId.startsWith((clientParticipantInfo['d'] || "--").substring(0, 10).replaceAll("-", "")) && <>
+                        {externalId && !['Rescheduled', 'NoShow'].includes(sessionInfo['status']) && <tr>
+                            <th>Head circumference</th>
+                            <td></td>
+                            <td>{clientParticipantInfo['h'] ? (clientParticipantInfo['h'] + ' mm') : ''}</td>
+                        </tr>}
+                        {externalId && !['Rescheduled', 'NoShow'].includes(sessionInfo['status']) && <tr>
+                            <th>Worn band size</th>
+                            <td></td>
+                            <td>{clientParticipantInfo['w'] || ''}</td>
+                        </tr>}
+                        {sessionId.startsWith((clientParticipantInfo['d'] || "--").substring(0, 10).replaceAll("-", "")) &&
                             <tr className={discrepancies['session_protocol'] ? "session-item-discrepancy" : ""}>
                                 <th>Session protocol</th>
                                 <td>{sessionInfo['session_protocol']}</td>
                                 {externalId && <td>{clientParticipantInfo['sp'] || ""}</td>}
-                            </tr>
-                            <tr className={discrepancies['session_outcome'] ? "session-item-discrepancy" : ""}>
+                            </tr>}
+
+
+                        {sessionId.startsWith((clientParticipantInfo['d'] || "--").substring(0, 10).replaceAll("-", "")) &&
+                            externalId && <tr className={discrepancies['session_outcome'] ? "session-item-discrepancy" : ""}>
                                 <th>Session outcome</th>
                                 <td>{sessionInfo['session_outcome']}</td>
                                 {externalId && <td>{clientParticipantInfo['so'] || ""}</td>}
                             </tr>
-                        </>}
+                        }
                         <tr>
                             <th>Date of info</th>
                             <td>{FormattingFunctions.TimeSlotFormat(sessionId)}</td>

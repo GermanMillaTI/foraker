@@ -59,7 +59,8 @@ function UpdateSession({ database, updateSession, setUpdateSession, checkDocumen
                     arrival_time: "",
                     comments: "",
                     session_outcome: "",
-                    session_protocol: ""
+                    session_protocol: "",
+                    dl: ""
                 }
 
                 // Set the bonuses to false

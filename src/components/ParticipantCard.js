@@ -30,11 +30,13 @@ function ParticipantCard({ database, role, participantId, index, setShowBookSess
     }
 
     function sendMail(pid, kind) {
+        const participant = database['participants'][pid];
+        const hasCompleted = Object.values(participant['sessions'] || {}).includes('Completed');
 
         let bonus = database['participants'][pid]['currently_offered_bonus'];
 
         // Define HTML of popup
-        let html = '<b>' + kind + '</b><br/>';
+        let html = '<b>' + ((kind == 'Handoff' && hasCompleted) ? 'Handoff #2' : kind) + '</b><br/>';
         if (kind == "Document Request") {
             html = '<div style="text-align: left"><input id="documentRequestId" type="checkbox"/> <b>Request ID Document</b><br/>' +
                 '<input id="documentRequestVisionCorrection" type="checkbox" /> <b>Request Vision Correction Document</b></div>';
@@ -68,7 +70,7 @@ function ParticipantCard({ database, role, participantId, index, setShowBookSess
                     muteHttpExceptions: true,
                     body: JSON.stringify({
                         "pid": pid,
-                        "email_kind": (kind == "Handoff" && bonus > 0) ? "Handoff and Bonus" : kind,
+                        "email_kind": (kind == "Handoff" && hasCompleted) ? "Handoff Elbert 2" : ((kind == "Handoff" && bonus > 0) ? "Handoff and Bonus" : kind),
                         "first_name": participantInfo['first_name'],
                         "last_name": participantInfo['last_name'],
                         "email": participantInfo['email'],
@@ -555,7 +557,7 @@ function ParticipantCard({ database, role, participantId, index, setShowBookSess
                     !["Rejected", "Withdrawn", "Completed", "Not Selected", "Duplicate"].includes(participantInfo['status']) &&
                     <div className="participant-attribute-container">
                         <span className="field-label">Communication</span>
-                        {(participantInfo['open_demo_bin'] === true || tempParticipants.includes(participantId)) ?
+                        {((participantInfo['open_demo_bin'] === true || tempParticipants.includes(participantId)) && !Object.values(participantInfo['sessions'] || {}).includes('Completed')) ?
                             <>
                                 <button className="email-button handoff-button" onClick={() => sendMail(participantId, "Handoff")}>Send handoff email</button>
                                 <a className="copy-booking-link fas fa-copy" onClick={(e) => {
@@ -576,9 +578,30 @@ function ParticipantCard({ database, role, participantId, index, setShowBookSess
                                     })
                                 }} target="_blank" />
                             </>
-                            : <span><b>Closed demo bin!</b>
-                                {participantInfo['status'] == "Contacted" && <label className="copy-email-link fas fa-eye" onClick={() => setTempParticipants([participantId, ...tempParticipants])}></label>}
-                            </span>
+                            : (Object.values(participantInfo['sessions'] || {}).includes('Completed') ?
+                                <>
+                                    <button className="email-button handoff-button" onClick={() => sendMail(participantId, "Handoff")}>Send handoff #2</button>
+                                    <a className="copy-booking-link fas fa-copy" onClick={(e) => {
+                                        e.preventDefault();
+
+                                        let url = "https://denali-appointments.web.app/#" + md5('p_' + participantId) + "&" + participantId
+                                        navigator.clipboard.writeText(url);
+
+                                        Swal.fire({
+                                            toast: true,
+                                            icon: 'success',
+                                            title: 'Copied',
+                                            html: url,
+                                            position: 'bottom',
+                                            width: 'unset',
+                                            showConfirmButton: false,
+                                            timer: 2000
+                                        })
+                                    }} target="_blank" />
+                                </>
+                                : <span><b>Closed demo bin!</b>
+                                    {participantInfo['status'] == "Contacted" && <label className="copy-email-link fas fa-eye" onClick={() => setTempParticipants([participantId, ...tempParticipants])}></label>}
+                                </span>)
                         }
                     </div>
                 }

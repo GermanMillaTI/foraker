@@ -259,7 +259,13 @@ const Constants = {
     'axel.romeo@telusinternational.com',
     'jessica.tucker@telusinternational.com',
     'sheiby.molina@telusinternational.com'
-  ]
+  ],
+  sizeDirectory: {
+    'Extra Small': 'xs',
+    'Small': 's',
+    'Medium': 'm',
+    'Large': 'l',
+  }
 }
 
 export default Constants;

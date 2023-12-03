@@ -4,6 +4,7 @@ import { realtimeDb } from '../firebase/config';
 import Swal from 'sweetalert2';
 
 import './BookSession.css';
+import Constants from './Constants';
 import LogEvent from './Core/LogEvent';
 import FormattingFunctions from './Core/FormattingFunctions';
 
@@ -34,6 +35,13 @@ function BookSession({ database, setShowBookSession, selectedSessionId, setJustB
         let visionCorrection = database['participants'][pid]['vision_correction'];
         let glasses = ['Glasses - distance', 'Glasses - pr/ bf/ mf'].includes(visionCorrection);
         let backupSession = database['timeslots'][selectedSessionId]['backup'] === true;
+        let externalId = database['participants'][pid]['external_id'];
+        let clientInfo = {};
+        let size = "N/A";
+        if (externalId) {
+            clientInfo = database['client']['contributions'][externalId];
+            if (clientInfo) size = clientInfo[0]['w'] ? Constants['sizeDirectory'][clientInfo[0]['w']] : "N/A";
+        }
 
         Swal.fire({
             title: "Booking an appointment",
@@ -53,6 +61,7 @@ function BookSession({ database, setShowBookSession, selectedSessionId, setJustB
                     remind: true
                 }
 
+                if (Object.values(Constants['sizeDirectory']).includes(size)) data['dl'] = size;
                 if (data['locked'] === true) data['locked'] = false;
                 if (glasses) data['glasses'] = true;
 

@@ -25,7 +25,7 @@ function LoginPage() {
   return (
     <div className="login-main-container">
       <div className="login-sub-container">
-        <h2>Elbert</h2>
+        <h2>Foraker</h2>
         <form onSubmit={handleLogin}>
           <input
             id="email"

@@ -43,30 +43,20 @@ function StatsSessions({ database, setShowStatsSessions, setFilterDataFromStats 
         return (temp);
     }
 
-    function selectDemoBin(ethnicities, ageRange, gender) {
+    function selectDemoBin(ageRange, gender) {
 
         if (database['users'][auth.currentUser.uid]['role'] != "admin") return;
         setFilterDataFromStats({
             fromStats: true,
-            ethnicities: ethnicities,
-            multipleEthnicities: ['Yes', 'No'],
             genders: [gender],
             ageRanges: ageRange,
+            tattoo: Constants['tattooValues'],
             statuses: ["Blank", ...Constants['participantStatuses']],
             icfs: ['Yes', 'No'],
             demoBinStatuses: Constants['demoBinStatuses'],
-            sources: Object.keys(Constants['sources']),
-            documentStatuses: ["Blank", ...Constants['documentStatuses']],
-            visionCorrections: Constants['visionCorrections'],
-            parentRegistered: ['Yes', 'No'],
-            newDocuments: ['Yes', 'No'],
             highlighted: ['Yes', 'No'],
-            stillInterested: Constants['stillInterestedValues'],
-            unsubscribed: ['Yes', 'No'],
-            unreadEmails: ['Yes', 'No'],
-            industry: Constants['industryCategories'],
-            registrationType: ['Denali', 'Elbert'],
-            session1stat: ["N/A", ...Constants['sessionStatuses']]
+            possibleP6: ['Yes', 'No'],
+            industry: Constants['industryCategories']
         });
 
         navigate('participants');
@@ -90,8 +80,6 @@ function StatsSessions({ database, setShowStatsSessions, setFilterDataFromStats 
             const ethnicities = participant['ethnicities'].split(',');
             const ethValue = 1 / ethnicities.length;
             const status = session['status'] || "Blank";
-            const sessionNumber = (participant['session_counter'][sessionId] || 'N/A').toString();
-            if (!filterData['sessionNumbers'].includes(sessionNumber)) return;
 
             for (let x = 0; x < ethnicities.length; x++) {
                 let ethnicity = ethnicities[x].trim();
@@ -101,7 +89,7 @@ function StatsSessions({ database, setShowStatsSessions, setFilterDataFromStats 
         })
 
         setStats(tempStats);
-    }, [Object.keys(filterData['sessionNumbers']).length])
+    }, [])
 
     useEffect(() => {
         const handleEsc = (event) => { if (event.keyCode === 27) setShowStatsSessions(""); };

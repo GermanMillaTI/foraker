@@ -1,10 +1,11 @@
 .filter-main-container {
     display: flex;
     flex-direction: row;
-    background-color: #fff;
+    background-color: rgba(23, 42, 79, 0.5);
     gap: .5em;
     padding: .5em;
     border-radius: 1em;
+    color: white;
 }
 
 .filter-container {
@@ -14,21 +15,26 @@
     gap: .3em;
     padding: .5em;
     border-radius: 1em;
-    background-color: rgba(76, 74, 212, 0.062);
+    background-color: rgba(23, 42, 79, 0.8);
+    color: white;
 }
 
 .filter-container .gap {
     margin-top: .5em;
+    color: white;
 }
 
 .filter-container-header {
     font-weight: bold;
     text-align: center;
+    color: white;
 }
 
 .filter-object {
     display: flex;
     flex-direction: row;
+    color: white;
+    padding: 0.15em;
 }
 
 .filter-element {
@@ -49,15 +55,16 @@
 }
 
 .filter-element input[type=checkbox] {
-    cursor: pointer;
+    cursor: pointer
 }
 
 .filter-element .main-input {
     border: 1px solid gray;
-    width: 13em;
+    width: 16em;
     border-radius: .3em;
     padding: .1em .2em;
     box-shadow: 1px 2px 5px rgba(0, 0, 0, .31);
+
 }
 
 .filter-element input::-webkit-outer-spin-button,
@@ -77,8 +84,8 @@
     font-weight: bold;
     font-size: .9em;
     border: none;
-    color: #fff;
-    background-color: #ff5100;
+    color: #172A4F;
+    background-color: #FDA90D;
     padding: .2em 1em;
     cursor: pointer;
     border-radius: 2em;
@@ -88,12 +95,12 @@
 
 .filter-this-button {
     margin-left: auto;
-    width: 1.2em;
-    height: 1.1em;
+    width: 1.25em;
+    height: 1.25em;
     font-weight: bold;
     border: none;
     color: #fff;
-    background-color: #ff510034;
+    background-color: #B4B4BB;
     font-size: .9em;
     cursor: pointer;
     border-radius: .2em;
@@ -102,7 +109,8 @@
 }
 
 .filter-this-button:hover {
-    background-color: #ff5100;
+    background-color: #FDA90D;
+    color: #172A4F;
 }
 
 .red-highlighted-filter {

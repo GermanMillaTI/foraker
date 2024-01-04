@@ -9,28 +9,10 @@ import './UpdateSession.css';
 import Constants from './Constants';
 import LogEvent from './Core/LogEvent';
 import FormattingFunctions from './Core/FormattingFunctions';
-import CalculateSessionProtocol from './Core/SetSessionProtocol';
 
-function UpdateSession({ database, updateSession, setUpdateSession, checkDocuments, setCheckDocuments, setActivityLog, setIdForLog, setTimeslotforLog, timeslotforLog }) {
-    const [participantId, setParticipantId] = useState(database['timeslots'][updateSession]['participant_id']);
+function UpdateSession({ database, updateSession, setUpdateSession, setActivityLog, setIdForLog }) {
     const sessionInfo = database['timeslots'][updateSession];
-    const [hasCompletedSession] = useState(
-        [
-            'sari.kiiskinen@telusinternational.com',
-            'axel.romeo@telusinternational.com',
-            'zoltan.bathori@telusinternational.com',
-            'denise.bugarin@telusinternational.com',
-            'mayghan.brown@telusinternational.com',
-            'christopher.warren@telusinternational.com'
-        ].includes(auth.currentUser.email) ? false : Object.keys(database['timeslots']).filter(timeslotId => participantId == database['timeslots'][timeslotId]['participant_id'] && database['timeslots'][timeslotId]['status'] == "Completed").length > 0
-    );
-    const [externalIdForAPI, setExternalIdForAPI] = useState("");
-    const [contributions, setContributions] = useState([]);
-    const [selectedContribution, setSelectedContribution] = useState("");
-    const [isloading, setIsLoading] = useState(false);
-    const [errorMessage, setErrorMessage] = useState("");
-    const [externalIdParticipants, setExternalIdParticipants] = useState([]);
-
+    const participantId = sessionInfo['participant_id'];
     const participantInfo = database['participants'][participantId];
 
     // Update value in DB
@@ -51,16 +33,10 @@ function UpdateSession({ database, updateSession, setUpdateSession, checkDocumen
                 let data = {
                     participant_id: "",
                     status: "",
-                    glasses: false,
                     confirmed: "",
                     booked_today: false,
                     remind: false,
-                    delayed: false,
-                    arrival_time: "",
-                    comments: "",
-                    session_outcome: "",
-                    session_protocol: "",
-                    dl: ""
+                    comments: ""
                 }
 
                 // Set the bonuses to false
@@ -82,11 +58,6 @@ function UpdateSession({ database, updateSession, setUpdateSession, checkDocumen
                 })
             }
         })
-    }
-
-    function openDocuments(participantId) {
-        realtimeDb.ref("/participants/" + participantId + "/documents/pending").remove();
-        setCheckDocuments(participantId);
     }
 
     function modifyExternalId() {
@@ -195,99 +166,11 @@ function UpdateSession({ database, updateSession, setUpdateSession, checkDocumen
         })
     }
 
-    function updateDOB() {
-        const pInfo = database['participants'][participantId];
-        const dob = pInfo['date_of_birth'];
-        let selectedDate = dob.substring(0, 10);
-
-        const HTMLContent = () => {
-            return <input type="date" id="newDOB" defaultValue={selectedDate} />
-        }
-
-        const saveDOB = () => {
-            selectedDate = document.getElementById("newDOB").value;
-            let formattedDOB = new Date(selectedDate).toISOString();
-
-            updateValue("/participants/" + participantId, { date_of_birth: formattedDOB });
-
-            LogEvent({
-                pid: participantId,
-                action: "Participant date of birth: '" + formattedDOB.substring(0, 10) + "'"
-            })
-        }
-
-
-        Swal.fire({
-            title: "Updating date of birth",
-            confirmButtonText: "Save",
-            showCancelButton: true,
-            html: renderToString(<HTMLContent />)
-        }).then((result) => {
-            if (result.isConfirmed) {
-                saveDOB();
-            }
-        });
-    }
-
-
-    function getClientInfo(externalIdForAPI) {
-        setExternalIdForAPI(externalIdForAPI);
-        setIsLoading(true);
-
-        const scriptURL = "https://script.google.com/macros/s/AKfycbzSU_qQjdAgUx-oFn5CwfbtOCKTeDdjBg0ZbOVZcxqEyl99Qv58rLuFokxTIHSB0-XVMQ/exec";
-        fetch(scriptURL, {
-            method: 'POST',
-            muteHttpExceptions: true,
-            body: JSON.stringify({
-                externalId: externalIdForAPI
-            })
-        }).then(res => {
-            return res.json();
-        }).then(data => {
-            //console.log(data);
-            if (data['results'].length > 0) {
-                setIsLoading(false);
-                setErrorMessage("");
-                setContributions(data['results'][0]['metadata']);
-                //console.log(data['results']);
-            } else {
-                setIsLoading(false);
-                setSelectedContribution("");
-                setContributions([]);
-                setErrorMessage("Wrong ID: " + externalIdForAPI);
-            }
-        },
-            err => {
-                setIsLoading(false);
-                setExternalIdForAPI("");
-                setSelectedContribution("");
-                setContributions([]);
-                setErrorMessage("Wrong ID: " + externalIdForAPI);
-                console.log('Error');
-            });
-    }
-
     useEffect(() => {
-        if (participantInfo['external_id']) {
-            getClientInfo(participantInfo['external_id']);
-            setExternalIdParticipants(Object.keys(database['participants']).filter(pid => database['participants'][pid]['external_id'] == participantInfo['external_id']));
-        }
-    }, [participantInfo['external_id']])
-
-    useEffect(() => {
-        const handleEsc = (event) => { if (event.keyCode === 27 && checkDocuments == "") setUpdateSession(""); };
+        const handleEsc = (event) => { if (event.keyCode === 27) setUpdateSession(""); };
         window.addEventListener('keydown', handleEsc);
         return () => { window.removeEventListener('keydown', handleEsc) };
-    }, [checkDocuments]);
-
-    useEffect(() => {
-        const protocolToSet = CalculateSessionProtocol(database, updateSession);
-        if (protocolToSet) updateValue("/timeslots/" + updateSession, { session_protocol: protocolToSet });
     }, []);
-
-
-
-    console.log(selectedContribution);
 
     return ReactDOM.createPortal((
         <div className="modal-book-update-session-backdrop" onClick={(e) => { if (e.target.className == "modal-book-update-session-backdrop") setUpdateSession("") }}>
@@ -312,12 +195,6 @@ function UpdateSession({ database, updateSession, setUpdateSession, checkDocumen
                                                 setActivityLog(true);
                                                 setIdForLog(participantId);
                                             }}
-                                        />
-
-                                        <a className="copy-email-link fas fa-search"
-                                            title="Google"
-                                            target="_blank"
-                                            href={("https://www.google.com/search?q=" + participantInfo['full_name'] + " Los Angeles").replaceAll(" ", "%20")}
                                         />
                                     </td>
                                 </tr>
@@ -370,42 +247,70 @@ function UpdateSession({ database, updateSession, setUpdateSession, checkDocumen
                                     </td>
                                 </tr>
                                 <tr>
+                                    <td className="participant-table-left">Country of residence</td>
+                                    <td className="participant-table-right">{participantInfo['country_of_residence']}</td>
+                                </tr>
+                                <tr>
                                     <td className="participant-table-left">State, City</td>
                                     <td className="participant-table-right">{participantInfo['state_of_residence'] + ", " + participantInfo['city_of_residence']}</td>
                                 </tr>
                                 <tr>
-                                    <td className="participant-table-left">Documents</td>
-                                    <td className="participant-table-right"><a href="" className="signature-link" onClick={(e) => { e.preventDefault(); openDocuments(participantId); }}>Open Documents</a>
-                                    </td>
+                                    <td className="participant-table-left">Address</td>
+                                    <td className="participant-table-right">{participantInfo['street']}</td>
                                 </tr>
                                 <tr>
                                     <td className="participant-table-left">Signatures</td>
                                     <td className="participant-table-right">
-                                        <a href={"https://fs30.formsite.com/LB2014/files/" + participantInfo['sla_url']} target="_blank" className="signature-link">SLA</a>
+                                        <a href={"https://fs30.formsite.com/LB2014/files/" + participantInfo['sla_url']} target="_blank" className="signature-link">Open SLA</a>
 
-                                        {participantInfo['reg_type'] != 'elbert' && <>
-                                            <span> &nbsp;/&nbsp; </span>
-                                            {participantInfo['icf'] ?
-                                                <a href={participantInfo['icf']} target="_blank" className="signature-link">Denali ICF</a>
-                                                : <span className="missing-icf">Missing ICF!</span>
-                                            }
-                                        </>}
+                                        <span> &nbsp;/&nbsp; </span>
 
-                                        {participantInfo['reg_type'] == 'elbert' &&
-                                            <>
-                                                <span> &nbsp;/&nbsp; </span>
-                                                {participantInfo['icf'] ?
-                                                    <a href={participantInfo['icf']} target="_blank" className="signature-link elbert-icf">Elbert ICF</a>
-                                                    : <span className="missing-icf">Missing ICF!</span>
-                                                }
+                                        {participantInfo['icf'] ?
+                                            <a href={"https://fs30.formsite.com/LB2014/files/" + participantInfo['icf']} target="_blank" className="signature-link">Open ICF</a>
+                                            : <>
+                                                <span className="missing-icf">Missing ICF!</span>
+                                                <a
+                                                    href={"https://fs30.formsite.com/LB2014/qdpfkbii6j/fill?id377=" + participantId +
+                                                        "&id335=" + participantInfo['email'] +
+                                                        "&id372=" + participantInfo['first_name'] +
+                                                        "&id373=" + participantInfo['last_name']}
+                                                    className="copy-email-link fas fa-file-export"
+                                                    title="Open ICF URL"
+                                                    target="_blank" />
                                             </>
                                         }
-
-                                        {participantInfo['reg_type'] != 'elbert' && participantInfo['elbert_icf'] && <>
-                                            <span> &nbsp;/&nbsp; </span>
-                                            <a href={participantInfo['elbert_icf']} target="_blank" className="signature-link elbert-icf">Elbert ICF</a>
-                                        </>}
                                     </td>
+                                </tr>
+                                <tr>
+                                    <td className="participant-table-left">&nbsp;</td>
+                                </tr>
+                                <tr>
+                                    <td className="participant-table-left">Age range / Gender</td>
+                                    <td className="participant-table-right">{participantInfo['age_range'] + " / " + participantInfo['gender']}</td>
+                                </tr>
+                                <tr>
+                                    <td className="participant-table-left">Year / country (birth)</td>
+                                    <td className="participant-table-right">
+                                        {participantInfo['year_of_birth'] + " / " + participantInfo['country_of_birth']}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td className="participant-table-left">Demo bin</td>
+                                    <td className="participant-table-right">{sessionInfo['demo_bin']}</td>
+                                </tr>
+                                <tr>
+                                    <td className="participant-table-left">&nbsp;</td>
+                                </tr>
+                                <tr>
+                                    <td className="participant-table-left">Handiness</td>
+                                    <td className="participant-table-right">{participantInfo['hand']}</td>
+                                </tr>
+                                <tr>
+                                    <td className="participant-table-left">Tattoo</td>
+                                    <td className="participant-table-right">{participantInfo['tattoo']}</td>
+                                </tr>
+                                <tr>
+                                    <td className="participant-table-left">&nbsp;</td>
                                 </tr>
                                 <tr>
                                     <td className="participant-table-left">Participant comment</td>
@@ -437,249 +342,6 @@ function UpdateSession({ database, updateSession, setUpdateSession, checkDocumen
                                         />
                                     </td>
                                 </tr>
-
-                                <tr>
-                                    <td className="participant-table-left">&nbsp;</td>
-                                </tr>
-
-                                <tr>
-                                    <td className="participant-table-left">Demo bin</td>
-                                    <td className="participant-table-right">{sessionInfo['demo_bin']}</td>
-
-                                </tr>
-                                <tr>
-                                    <td className="participant-table-left">Date of birth</td>
-                                    <td className="participant-table-right">
-                                        {participantInfo['date_of_birth'].substring(0, 10)}
-                                        <a className="copy-email-link fas fa-edit"
-                                            title="Update Date of Birth"
-                                            onClick={(e) => {
-                                                e.preventDefault();
-                                                if (hasCompletedSession) return;
-                                                updateDOB();
-                                            }} target="_blank" />
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td className="participant-table-left">Gender</td>
-                                    <td className="participant-table-right">{participantInfo['gender']}</td>
-                                </tr>
-                                <tr>
-                                    <td className="participant-table-left">Ethnicity</td>
-                                    <td className="participant-table-right">
-                                        {participantInfo['ethnicities']}
-                                        <a className="copy-email-link fas fa-edit"
-                                            title="Update ethnicity"
-                                            onClick={(e) => {
-                                                e.preventDefault();
-                                                if (hasCompletedSession) return;
-                                                updateEthnicity();
-                                            }} target="_blank" />
-                                    </td>
-                                </tr>
-                                {participantInfo['unlisted_ethnicity'] &&
-                                    <tr>
-                                        <td className="participant-table-left">Unlisted ethnicity</td>
-                                        <td className="participant-table-right">{participantInfo['unlisted_ethnicity']}</td>
-                                    </tr>
-                                }
-                                {participantInfo['original_ethnicities'] &&
-                                    <tr>
-                                        <td className="participant-table-left">Original ethnicity</td>
-                                        <td className="participant-table-right">{participantInfo['original_ethnicities']}</td>
-                                    </tr>
-                                }
-                                {participantInfo['original_unlisted_ethnicity'] &&
-                                    <tr>
-                                        <td className="participant-table-left">Original unlisted ethnicity</td>
-                                        <td className="participant-table-right">{participantInfo['original_unlisted_ethnicity']}</td>
-                                    </tr>
-                                }
-                                <tr>
-                                    <td className="participant-table-left">Vision correction</td>
-                                    <td className="participant-table-right">
-                                        <select className="session-data-selector"
-                                            disabled={hasCompletedSession}
-                                            onChange={(e) => {
-                                                updateValue("/participants/" + participantId, { vision_correction: e.currentTarget.value });
-                                                updateValue("/timeslots/" + updateSession, { glasses: ['Glasses - distance', 'Glasses - pr/ bf/ mf'].includes(e.currentTarget.value) });
-                                                LogEvent({
-                                                    pid: participantId,
-                                                    action: "Vision correction: '" + e.currentTarget.value + "'"
-                                                })
-                                            }}
-                                        >
-                                            {Constants['visionCorrections'].map((s, i) => (
-                                                <option key={"data-vc" + i} value={s} selected={s == participantInfo['vision_correction']}>{s}</option>
-                                            ))}
-                                        </select>
-                                    </td>
-                                </tr>
-
-                                {participantInfo['gender'] == "Female" &&
-                                    <tr>
-                                        <td className="participant-table-left">Pregnant</td>
-                                        <td className="participant-table-right">
-                                            <select className="session-data-selector"
-                                                disabled={hasCompletedSession}
-                                                onChange={(e) => updateValue("/participants/" + participantId, { pregnant: e.currentTarget.value })}
-                                            >
-                                                {Constants['pregnant'].map((s, i) => (
-                                                    <option key={"data-pregnant" + i} value={s} selected={s == participantInfo['pregnant']}>{s}</option>
-                                                ))}
-                                            </select>
-                                        </td>
-                                    </tr>
-                                }
-                                {participantInfo['conditions'] != "None of the above" &&
-                                    <tr>
-                                        <td className="participant-table-left">Health conditions</td>
-                                        <td className="participant-table-right">{participantInfo['conditions']}</td>
-                                    </tr>
-                                }
-
-                                {/*
-                                <tr>
-                                    <td className="participant-table-left">Target of sessions</td>
-                                    <td className="participant-table-right">
-                                        <select className="session-data-selector"
-                                            onChange={(e) => {
-                                                updateValue("/participants/" + participantId, { multiple_times: e.currentTarget.value });
-                                                LogEvent({
-                                                    pid: participantId,
-                                                    action: "Target: '" + (e.currentTarget.value || "Blank") + "'"
-                                                })
-                                            }}
-                                        >
-                                            {Constants['possibleNumberOfSessions'].map((s, i) => (
-                                                <option key={"data-vc" + i} value={s} selected={s == participantInfo['multiple_times']}>{s}</option>
-                                            ))}
-                                        </select>
-                                    </td>
-                                </tr>
-                                */}
-
-                                <tr>
-                                    <td className="participant-table-left">&nbsp;</td>
-                                </tr>
-
-                                {isloading &&
-                                    <tr>
-                                        <td className="participant-table-center" colSpan="2">Loading...</td>
-                                    </tr>
-                                }
-                                {externalIdForAPI && !isloading &&
-                                    <>
-                                        {!errorMessage &&
-                                            <tr className='client-info-container'>
-                                                <td className="participant-table-center" colSpan="2">Client info: {externalIdForAPI}</td>
-                                            </tr>
-                                        }
-                                        {errorMessage &&
-                                            <tr>
-                                                <td className="participant-table-center client-api-error-message" colSpan="2">{errorMessage}</td>
-                                            </tr>
-                                        }
-                                        <tr className='client-info-container'>
-                                            <td className="participant-table-left" colSpan="2">
-                                                {contributions.map(contribution => {
-                                                    const tag = contribution['tag'];
-                                                    const formatted = tag.substring(0, 4) + "-" +
-                                                        tag.substring(4, 6) + "-" +
-                                                        tag.substring(6, 8) + " " +
-                                                        tag.substring(8, 10) + ":" +
-                                                        tag.substring(10, 12);
-
-                                                    const sameDay = updateSession.substring(0, 8) == tag.substring(0, 8);
-                                                    if (selectedContribution == "" && sameDay) setSelectedContribution(contribution);
-                                                    return <>
-                                                        <button
-                                                            key={"client-info-button-" + formatted}
-                                                            className={"client-contribution-button" + (tag == selectedContribution['tag'] ? " same-day-contribution" : "")}
-                                                            onClick={() => setSelectedContribution(contribution)}
-                                                        >
-                                                            {sameDay ? formatted + " < Same day" : formatted}
-                                                        </button>
-                                                        <br />
-                                                    </>
-                                                })}
-                                            </td>
-                                        </tr>
-                                        <tr className='client-info-container'>
-                                            <td className="participant-table-left" colSpan="2">&nbsp;</td>
-                                        </tr>
-                                        {selectedContribution != "" && <>
-                                            <tr className='client-info-container'>
-                                                <td className="participant-table-center" colSpan="2">Contribution {selectedContribution['tag'].substring(0, 4) + "-" +
-                                                    selectedContribution['tag'].substring(4, 6) + "-" +
-                                                    selectedContribution['tag'].substring(6, 8) + " " +
-                                                    selectedContribution['tag'].substring(8, 10) + ":" +
-                                                    selectedContribution['tag'].substring(10, 12)}</td>
-                                            </tr>
-                                            <tr className='client-info-container'>
-                                                <td className="participant-table-left">
-                                                    Demo bin
-                                                </td>
-                                                <td className={"participant-table-right" + ((selectedContribution['answers'].filter(answer => answer['slug'] == 'demo_bin').length > 0 ?
-                                                    selectedContribution['answers'].filter(answer => answer['slug'] == 'demo_bin')[0]['values'].join(",")
-                                                    : "") != sessionInfo['demo_bin'] ? " not-matching-client-data" : "")}>
-
-                                                    {selectedContribution['answers'].filter(answer => answer['slug'] == 'demo_bin').length > 0 ?
-                                                        selectedContribution['answers'].filter(answer => answer['slug'] == 'demo_bin')[0]['values'].join(",")
-                                                        : ""}
-                                                </td>
-                                            </tr>
-                                            <tr className='client-info-container'>
-                                                <td className="participant-table-left">
-                                                    Date of birth
-                                                </td>
-                                                <td className={"participant-table-right" + (selectedContribution['answers'].filter(answer => answer['slug'] == 'birth_date')[0]['values'].join(",") != participantInfo['date_of_birth'].substring(0, 10) ? " not-matching-client-data" : "")}>
-                                                    {selectedContribution['answers'].filter(answer => answer['slug'] == 'birth_date')[0]['values'].join(",")}
-                                                </td>
-                                            </tr>
-                                            <tr className='client-info-container'>
-                                                <td className="participant-table-left">
-                                                    Gender
-                                                </td>
-                                                <td className={"participant-table-right" + (selectedContribution['answers'].filter(answer => answer['slug'] == 'gender')[0]['values'].join(",").replace("Prefer not to state", "Prefer not to say") != participantInfo['gender'] ? " not-matching-client-data" : "")}>
-                                                    {selectedContribution['answers'].filter(answer => answer['slug'] == 'gender')[0]['values'].join(",").replace("Prefer not to state", "Prefer not to say")}
-                                                </td>
-                                            </tr>
-                                            <tr className='client-info-container'>
-                                                <td className="participant-table-left">
-                                                    Ethnicity
-                                                </td>
-                                                <td className={"participant-table-right" + ((Constants['clientEthnicities'][selectedContribution['answers'].filter(answer => answer['slug'] == 'ethnicity')[0]['values'].join(",")] || selectedContribution['answers'].filter(answer => answer['slug'] == 'ethnicity')[0]['values'].join(",")) != participantInfo['ethnicities'] ? " not-matching-client-data" : "")}>
-                                                    {Constants['clientEthnicities'][selectedContribution['answers'].filter(answer => answer['slug'] == 'ethnicity')[0]['values'].join(",")] || selectedContribution['answers'].filter(answer => answer['slug'] == 'ethnicity')[0]['values'].join(",")}
-                                                </td>
-                                            </tr>
-                                            <tr className='client-info-container'>
-                                                <td className="participant-table-left">
-                                                    Vision correction
-                                                </td>
-                                                <td className={"participant-table-right" + (Constants['clientVisionCorrections'][selectedContribution['answers'].filter(answer => answer['slug'] == 'vision_correction')[0]['values'].join(",")] != participantInfo['vision_correction'] ? " not-matching-client-data" : "")}>
-                                                    {Constants['clientVisionCorrections'][selectedContribution['answers'].filter(answer => answer['slug'] == 'vision_correction')[0]['values'].join(",")]}
-                                                </td>
-                                            </tr>
-                                            <tr className='client-info-container'>
-                                                <td className="participant-table-left">
-                                                    Head circumference
-                                                </td>
-                                                <td className="participant-table-right">
-                                                    {selectedContribution['answers'].filter(answer => answer['slug'] == 'head_circumference_mm')[0]['values'].join(",") + " mm"}
-                                                </td>
-                                            </tr>
-                                        </>}
-                                    </>
-                                }
-
-                                {/* use array-s and map here ..... */}
-                                {participantInfo['external_id'] &&
-                                    <tr>
-                                        <td className="participant-table-left">Worn head band #1</td>
-                                        <td className="participant-table-right">{database['client']['contributions'][participantInfo['external_id']] ? database['client']['contributions'][participantInfo['external_id']][0]['w'] : ""}</td>
-                                    </tr>
-                                }
                             </tbody>
                         </table>
                     </div>
@@ -701,74 +363,6 @@ function UpdateSession({ database, updateSession, setUpdateSession, checkDocumen
                                 </tr>
 
                                 <tr>
-                                    <td className="participant-table-left">Session #</td>
-                                    <td className="participant-table-right">{participantInfo['session_counter'] ? participantInfo['session_counter'][updateSession] : ""}</td>
-                                </tr>
-
-                                <tr>
-                                    <td className="participant-table-left">Arrival time</td>
-                                    <td className="participant-table-right">
-                                        <input
-                                            type="time"
-                                            value={database['timeslots'][updateSession]['arrival_time'] || ""}
-                                            onChange={(e) => {
-                                                updateValue("/timeslots/" + updateSession, { arrival_time: e.currentTarget.value });
-                                                LogEvent({
-                                                    pid: participantId,
-                                                    timeslot: updateSession,
-                                                    action: "Arrival time: '" + (e.currentTarget.value || "Blank") + "'"
-                                                })
-                                            }}
-                                        />
-                                        {!['Scheduled', 'Rescheduled', 'NoShow', 'Withdrawn'].includes(database['timeslots'][updateSession]['status']) &&
-                                            !database['timeslots'][updateSession]['arrival_time'] &&
-                                            <span className="missing-arrival-time">Missing!</span>}
-                                    </td>
-                                </tr>
-
-                                <tr>
-                                    <td className="participant-table-left">Session end time</td>
-                                    <td className="participant-table-right">
-                                        <input
-                                            type="time"
-                                            value={database['timeslots'][updateSession]['end_time'] || ""}
-                                            onChange={(e) => {
-                                                updateValue("/timeslots/" + updateSession, { end_time: e.currentTarget.value });
-                                                LogEvent({
-                                                    pid: participantId,
-                                                    timeslot: updateSession,
-                                                    action: "Session end time: '" + (e.currentTarget.value || "Blank") + "'"
-                                                })
-                                            }}
-                                        />
-                                        {!['Scheduled', 'Checked In', 'Rescheduled', 'NoShow', 'Withdrawn'].includes(database['timeslots'][updateSession]['status']) &&
-                                            !database['timeslots'][updateSession]['end_time'] &&
-                                            <span className="missing-arrival-time">Missing!</span>}
-                                    </td>
-                                </tr>
-
-                                {(['Checked In', 'Completed'].includes(database['timeslots'][updateSession]['status']) &&
-                                    database['timeslots'][updateSession]['backup']) &&
-                                    <tr>
-                                        <td className="participant-table-left">Waiting time</td>
-                                        <td className="participant-table-right">
-                                            <input id="waitingTime"
-                                                type="checkbox"
-                                                checked={database['timeslots'][updateSession]['delayed']}
-                                                onChange={(e) => {
-                                                    updateValue("/timeslots/" + updateSession, { delayed: e.currentTarget.checked });
-                                                    LogEvent({
-                                                        pid: participantId,
-                                                        timeslot: updateSession,
-                                                        action: e.currentTarget.checked ? "Delayed (on)" : "Delayed (off)"
-                                                    })
-                                                }}
-                                            /><label htmlFor="waitingTime"> 30 mins+</label>
-                                        </td>
-                                    </tr>
-                                }
-
-                                <tr>
                                     <td className="participant-table-left">Session status</td>
                                     <td className="participant-table-right">
                                         <select className="session-data-selector"
@@ -784,47 +378,6 @@ function UpdateSession({ database, updateSession, setUpdateSession, checkDocumen
                                             {Constants['sessionStatuses'].map((s, i) => {
                                                 if (s === "Comp. for Waiting" && !database['timeslots'][updateSession]['backup']) return;
                                                 return <option key={"data-session-status" + i} value={s} selected={s == sessionInfo['status']}>{s}</option>
-                                            })}
-                                        </select>
-                                    </td>
-                                </tr>
-
-                                <tr>
-                                    <td className="participant-table-left">Session protocol</td>
-                                    <td className="participant-table-right">
-                                        <select className="session-data-selector"
-                                            disabled
-                                            onChange={(e) => {
-                                                updateValue("/timeslots/" + updateSession, { session_protocol: e.currentTarget.value });
-                                                LogEvent({
-                                                    pid: participantId,
-                                                    timeslot: updateSession,
-                                                    action: "Session protocol: '" + (e.currentTarget.value || "Blank") + "'"
-                                                })
-                                            }}
-                                        >
-                                            {Constants['sessionProtocols'].map((s, i) => {
-                                                return <option key={"data-session-protocol" + i} value={s} selected={s == sessionInfo['session_protocol']}>{s}</option>
-                                            })}
-                                        </select>
-                                    </td>
-                                </tr>
-
-                                <tr>
-                                    <td className="participant-table-left">Session outcome</td>
-                                    <td className="participant-table-right">
-                                        <select className="session-data-selector"
-                                            onChange={(e) => {
-                                                updateValue("/timeslots/" + updateSession, { session_outcome: e.currentTarget.value });
-                                                LogEvent({
-                                                    pid: participantId,
-                                                    timeslot: updateSession,
-                                                    action: "Session outcome: '" + (e.currentTarget.value || "Blank") + "'"
-                                                })
-                                            }}
-                                        >
-                                            {Constants['sessionOutcomeStatuses'].map((s, i) => {
-                                                return <option key={"data-session-outcome" + i} value={s} selected={s == sessionInfo['session_outcome']}>{s}</option>
                                             })}
                                         </select>
                                     </td>
@@ -849,7 +402,7 @@ function UpdateSession({ database, updateSession, setUpdateSession, checkDocumen
                                                 })
                                             }}
                                         >
-                                            {Constants['participantStatuses'].filter(status => status != "Denali PPT").map((s, i) => (
+                                            {Constants['participantStatuses'].map((s, i) => (
                                                 <option key={"data-ppt-status_" + i} value={s} selected={s == participantInfo['status']}>{s}</option>
                                             ))}
                                         </select>
@@ -857,22 +410,9 @@ function UpdateSession({ database, updateSession, setUpdateSession, checkDocumen
                                 </tr>
 
                                 <tr>
-                                    <td className="participant-table-left">External ID</td>
-                                    <td className="participant-table-right">
-                                        <button className="external-id-button" onClick={() => modifyExternalId()}>{participantInfo['external_id'] || "Missing ID!"}</button>
-                                        {participantInfo['external_id'] &&
-                                            <button
-                                                className="refresh-api-button"
-                                                onClick={() => getClientInfo(participantInfo['external_id'])}
-                                                disabled={isloading}
-                                            >Get info</button>
-                                        }
-                                    </td>
-                                </tr>
-
-                                <tr>
                                     <td className="participant-table-left">Session comment</td>
                                 </tr>
+
                                 <tr className="participant-table-left">
                                     <td colSpan="2">
                                         <textarea
@@ -906,70 +446,6 @@ function UpdateSession({ database, updateSession, setUpdateSession, checkDocumen
                                         <button className="cancel-session-button" onClick={() => cancelSession(updateSession)}>Cancel session</button>
                                     </td>
                                 </tr>
-                                {(sessionInfo['bonus'] || participantInfo['bonus_amount']) &&
-                                    <tr>
-                                        <td className="participant-table-left">Bonus</td>
-                                    </tr>
-                                }
-                                {sessionInfo['bonus'] &&
-                                    <tr>
-                                        <td className="participant-table-right bonus-container" colSpan="2">
-                                            {Object.keys(sessionInfo['bonus']).map(bonusId => {
-                                                let bonus = sessionInfo['bonus'][bonusId];
-                                                let bonusName = Constants['bonuses'][bonusId];
-                                                let amount = bonus['p'];
-
-                                                let today = parseInt(format(new Date(), "yyyyMMdd"));
-                                                let disabled = parseInt(updateSession.substring(0, 8)) + 3 < today;
-
-                                                return <>
-                                                    <input
-                                                        key={"bonus-" + bonusId}
-                                                        id={"bonus-" + bonusId}
-                                                        type="checkbox"
-                                                        checked={database['timeslots'][updateSession]["bonus"][bonusId]['a']}
-                                                        onChange={(e) => {
-                                                            updateValue("/timeslots/" + updateSession + "/bonus/" + bonusId, { a: e.currentTarget.checked });
-                                                            LogEvent({
-                                                                pid: participantId,
-                                                                timeslot: updateSession,
-                                                                action: (e.currentTarget.checked ? "Adding bonus: '" : "Removing bonus: '") + bonusName + "($ " + amount + ")" + "'"
-                                                            })
-                                                        }}
-                                                        disabled={disabled}
-                                                    /> <label htmlFor={"bonus-" + bonusId}>{bonusName} ($ {amount})</label><br />
-                                                </>
-                                            })}
-                                        </td>
-                                    </tr>
-                                }
-                                {participantInfo['bonus_amount'] &&
-                                    <tr>
-                                        <td className="participant-table-right bonus-container" colSpan="2">
-                                            <input type="checkbox" checked={['Scheduled', 'Checked In', 'Completed'].includes(database['timeslots'][updateSession]['status'])} disabled />
-                                            <label> Extra bonus ($ {participantInfo['bonus_amount']}) <i>Offered during the handoff</i></label>
-                                        </td>
-                                    </tr>
-                                }
-
-                                <tr>
-                                    <td className="participant-table-left">&nbsp;</td>
-                                </tr>
-                                <tr>
-                                    <td className="participant-table-left">&nbsp;</td>
-                                </tr>
-
-                                {externalIdParticipants.length > 1 &&
-                                    <tr>
-                                        <td className="participant-table-left" colSpan="2">
-                                            <span className="same-external-id-error-message">The same external ID is used for multiple people:</span><br /><br />
-                                            {externalIdParticipants.map(participantId => {
-                                                const ppt = database['participants'][participantId];
-                                                return <><span key={"span-" + participantId}>{participantId + ": " + ppt['full_name'] + (ppt["parent"] ? "  (child)" : "")}</span><br /></>
-                                            })}
-                                        </td>
-                                    </tr>
-                                }
                             </tbody>
                         </table>
                     </div>

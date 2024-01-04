@@ -36,8 +36,7 @@ function Participants({
   }, [checkDocuments, showBookSession2, updateSession])
 
   function getCSVdata() {
-    //multiple_timeslet output = [['ID', 'First Name', 'Last Name', 'Email', 'Age-Range', 'Demo Bins', 'Ethnicities', 'Date', 'DOB', 'Target of Sessions', 'External ID', 'Phone', 'Status', 'Document Approval', 'Vision Correction', 'Sessions No.', 'Unsubscribed', 'booking url']];
-    let output = [['ID', 'First Name', 'Last Name', 'Email', 'Age-Range', 'Demo Bins', 'Ethnicities', 'Date', 'DOB', 'External ID', 'Phone', 'Status', 'Document Approval', 'Vision Correction', 'Sessions No.', 'Unsubscribed', 'booking url']];
+    let output = [['ID', 'First Name', 'Last Name', 'Email', 'Age-Range', 'Demo Bin', 'Status']];
 
     var data = Object.keys(database['participants']).filter(pid => shownParticipants.includes(pid)).sort((a, b) => {
       return a < b ? -1 : 1;
@@ -48,25 +47,7 @@ function Participants({
       database['participants'][key]['email'],
       database['participants'][key]['age_range'],
       database['participants'][key]['demo_bin'],
-      database['participants'][key]['ethnicities'],
-      new Date(database['participants'][key]['date']).toISOString().split("T")[0],
-      new Date(database['participants'][key]['date_of_birth']).toISOString().split("T")[0],
-      //database['participants'][key]['multiple_times'],
-      database['participants'][key]['external_id'],
-      database['participants'][key]['phone'],
-      database['participants'][key]['status'],
-      database['participants'][key]['document_approval'],
-      database['participants'][key]['vision_correction'],
-      typeof database['participants'][key]['sessions'] === 'object' ?
-        Object.keys(database['participants'][key]['sessions']).length
-        : "0",
-      database['participants'][key]['unsubscribed_comms'] === 'Yes' ?
-        database['participants'][key]['unsubscribed_comms']
-        : 'No',
-      database['participants'][key]['status'] == "Contacted" ? "https://denali-appointments.web.app/#" + md5('p_' + key) + "&" + key : "N/A"
-      //typeof database['participants'][key]['sessions'] === 'object' ?
-      //Object.keys(database['participants'][key]['sessions'])
-      //: "-"
+      database['participants'][key]['status']
     ])
 
     for (var i in data) {
@@ -98,7 +79,7 @@ function Participants({
             target="_blank"
             asyncOnClick={true}
             onClick={getCSVdata}
-            filename={"denali-participants_" + new Date().toISOString().split("T")[0] + ".csv"}
+            filename={"penelope-participants_" + new Date().toISOString().split("T")[0] + ".csv"}
             data={pptCsvData}
           >Download filtered results</CSVLink>
 

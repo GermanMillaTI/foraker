@@ -15,10 +15,11 @@
     display: flex;
     flex-direction: column;
     margin-left: 2em;
-    background: #E4E9F7;
+    background: #C0D0EC;
     position: absolute;
     border-radius: .2em;
     overflow: hidden;
+    min-height: 50vh;
 }
 
 .modal-stats-header {
@@ -27,7 +28,7 @@
     padding: .2em;
     font-weight: bold;
     text-align: center;
-    background-color: #a3bcff;
+    background-color: #E0E0E2;
     font-size: 1.3em;
 }
 
@@ -36,7 +37,7 @@
 }
 
 .table-of-stats {
-    margin: .5em 1em 1em 1em;
+    margin: 2em auto;
     border-collapse: collapse;
 }
 
@@ -72,34 +73,27 @@
     cursor: default;
 }
 
-.still-interested-participants-only-filter,
 .stats-filter-element {
     margin: .2em auto;
     display: inline-flex;
     gap: 1em;
     flex-direction: row;
-}
-
-.still-interested-participants-only-filter {
-    margin-top: 1em;
+    padding: 0em 2em;
 }
 
 .stats-filter-element div {
     display: flex;
 }
 
-.still-interested-participants-only-filter span,
 .stats-filter-element span {
     font-weight: bold;
     min-width: 8em;
 }
 
-.still-interested-participants-only-filter input[type=checkbox],
 .stats-filter-element input[type=checkbox] {
     cursor: pointer;
 }
 
-.still-interested-participants-only-filter label,
 .stats-filter-element label {
     padding-left: .3em;
     cursor: pointer;
@@ -112,10 +106,6 @@
 
 .modal-stats-main-container .second-number {
     color: rgb(0, 121, 16);
-}
-
-.modal-stats-main-container .still-interested-row {
-    color: rgb(228, 0, 0);
 }
 
 .modal-stats-main-container .session-number-row {
@@ -136,6 +126,7 @@
     padding: .2em;
 }
 
+/*
 .table-of-stats tr th:last-child,
 .table-of-stats tr td:last-child {
     border-left: .2em solid #1d3062;
@@ -145,6 +136,7 @@
 .table-of-protocols tr td:last-child {
     border-left: none;
 }
+*/
 
 .stats-total-row {
     border-top: .2em solid #1d3062 !important;

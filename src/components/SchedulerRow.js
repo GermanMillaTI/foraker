@@ -11,8 +11,7 @@ import LogEvent from './Core/LogEvent';
 import SessionInfo from './Tooltips/SessionInfo';
 import FormattingFunctions from './Core/FormattingFunctions';
 
-
-function SchedulerRow({ database, sessionId, index, array, setUpdateSession, highlightedTimeslots }) {
+function SchedulerRow({ database, sessionId, index, array, setUpdateSession }) {
   const [showBookSession, setShowBookSession] = useState(false);
   const [selectedSessionId, setSelectedSessionId] = useState("");
   const [justBookedSession, setJustBookedSession] = useState("");
@@ -37,16 +36,10 @@ function SchedulerRow({ database, sessionId, index, array, setUpdateSession, hig
         let data = {
           participant_id: "",
           status: "",
-          glasses: false,
           confirmed: "",
           booked_today: false,
           remind: false,
-          delayed: false,
-          arrival_time: "",
-          comments: "",
-          session_outcome: "",
-          session_protocol: "",
-          dl: ""
+          comments: ""
         }
 
         // Set the bonuses to false
@@ -83,7 +76,7 @@ function SchedulerRow({ database, sessionId, index, array, setUpdateSession, hig
       if (result.isConfirmed) {
         updateValue("/timeslots/" + sessionId, { remind: false });
 
-        const scriptURL = 'https://script.google.com/macros/s/AKfycbyZ7PUpLz7hTMAiQqw6dTHpGfqqvV5SNABubnLBYb2phZnd2qS_I_fFrgbU9txyv1oxQg/exec';
+        const scriptURL = 'https://script.google.com/macros/s/AKfycbxluZsxLy2fK3iN4nzQ2K7OWO2bH_ATXmmJmHJDAShTfIKvcAQ_dFCBp5qB4q7To_D2bQ/exec';
         fetch(scriptURL, {
           method: 'POST',
           muteHttpExceptions: true,
@@ -93,9 +86,6 @@ function SchedulerRow({ database, sessionId, index, array, setUpdateSession, hig
             "first_name": participantInfo['first_name'],
             "last_name": participantInfo['last_name'],
             "email": participantInfo['email'],
-            "document_request": "",
-            "registration_type": "",
-            "date_of_birth": "",
             "appointment": sessionId
           })
 
@@ -148,15 +138,11 @@ function SchedulerRow({ database, sessionId, index, array, setUpdateSession, hig
       }
 
     </td>
-    <td className={"center-tag no-wrap" + (database['timeslots'][sessionId]['backup'] ? " backup-timeslot" : "")}>
-      {(database['timeslots'][sessionId]['backup'] ? "Backup" : ("St. " + sessionId.substring(14)))}
+    <td className="center-tag no-wrap">
+      {"St. " + sessionId.substring(14)}
     </td>
-
     <td className={"center-tag " + (database['timeslots'][sessionId]['locked'] === true ? "locked-session-cell" : "")}>
       {database['timeslots'][sessionId]['locked'] === true ? "Locked" : database['timeslots'][sessionId]['status']}
-    </td>
-    <td className="center-tag">
-      {database['timeslots'][sessionId]['session_outcome'] || ""}
     </td>
     <td className="center-tag">
       {participantInfo['status'] || ""}
@@ -164,26 +150,14 @@ function SchedulerRow({ database, sessionId, index, array, setUpdateSession, hig
     {database['timeslots'][sessionId]['participant_id'] ?
       <SessionInfo database={database} participantId={database['timeslots'][sessionId]['participant_id']} sessionId={sessionId} />
       : <td></td>}
-    <td>
+    <td >
       {participantId ? (participantInfo['full_name']) : ""}
-      {participantId &&
-        <a className="copy-email-link fas fa-search"
-          title="Google"
-          target="_blank"
-          href={("https://www.google.com/search?q=" + participantInfo['full_name'] + " Los Angeles").replaceAll(" ", "%20")}
-        />}
-    </td>
-    <td className={"center-tag " + ((highlightedTimeslots[sessionId.substring(0, 13)] > 4 && database['timeslots'][sessionId]['glasses']) ? "glasses-highlighted" : "")}>
-      {participantId ?
-        participantInfo['vision_correction']
-        : ""}
     </td>
     <td className="center-tag">
-      {database['timeslots'][sessionId]['participant_id'] ?
-        (database['participants'][database['timeslots'][sessionId]['participant_id']]['session_counter'] ?
-          database['participants'][database['timeslots'][sessionId]['participant_id']]['session_counter'][sessionId]
-          : "")
-        : ""}
+      {participantId ? (participantInfo['hand']) : ""}
+    </td>
+    <td className="center-tag">
+      {participantId ? (participantInfo['tattoo']) : ""}
     </td>
     <td>
       {database['timeslots'][sessionId]['comments']}

@@ -13,16 +13,7 @@ function BookSession2({ database, setShowBookSession2, participantId }) {
     const [timeslots, setTimeslots] = useState([]);
 
     function bookSession(sessionId) {
-        let visionCorrection = database['participants'][participantId]['vision_correction'];
-        let glasses = ['Glasses - distance', 'Glasses - pr/ bf/ mf'].includes(visionCorrection);
         let backupSession = database['timeslots'][sessionId]['backup'] === true;
-        let externalId = database['participants'][participantId]['external_id'];
-        let clientInfo = {};
-        let size = "N/A";
-        if (externalId) {
-            clientInfo = database['client']['contributions'][externalId];
-            if (clientInfo) size = clientInfo[0]['w'] ? Constants['sizeDirectory'][clientInfo[0]['w']] : "N/A";
-        }
 
         Swal.fire({
             title: "Booking an appointment",
@@ -42,9 +33,7 @@ function BookSession2({ database, setShowBookSession2, participantId }) {
                     remind: true
                 }
 
-                if (Object.values(Constants['sizeDirectory']).includes(size)) data['dl'] = size;
                 if (data['locked'] === true) data['locked'] = false;
-                if (glasses) data['glasses'] = true;
 
                 // Save the session
                 realtimeDb.ref("/timeslots/" + sessionId).update(data);
@@ -54,6 +43,13 @@ function BookSession2({ database, setShowBookSession2, participantId }) {
                     pid: participantId,
                     timeslot: sessionId,
                     action: "Book session"
+                })
+
+                realtimeDb.ref("/participants/" + participantId).update({ status: 'Scheduled' });
+
+                LogEvent({
+                    pid: participantId,
+                    action: "Participant status: '" + "Scheduled" + "'"
                 })
             }
         })

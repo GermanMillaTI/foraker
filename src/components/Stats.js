@@ -25,17 +25,14 @@ function Stats({ database, setShowStats, setFilterDataFromStats, role }) {
     const navigate = useNavigate();
     const [stats, setStats] = useState(getDefaultNumbers());
     const [filterData, setFilterData] = useReducer(filterReducer, {
-        statuses: ["Blank", "Document Requested", "Not Selected"],
-        statuses2: ["Contacted", "Scheduled", "Completed"],
-        stillInterested: Constants['stillInterestedValues']
+        statuses: ["Blank", "Not Selected"],
+        statuses2: ["Contacted", "Scheduled", "Completed"]
     });
 
     function getDefaultNumbers() {
-        let temp = Object.assign({}, ...Constants['ethnicities'].map(k => ({
-            [k]: Object.assign({}, ...Constants['listOfAgeRanges'].map(k => ({
-                [k]: Object.assign({}, ...Constants['genders'].map(k => ({
-                    [k]: Object.assign({}, ...Constants['participantStatuses'].map(k => ({ [k || "Blank"]: 0 })))
-                })))
+        let temp = Object.assign({}, ...Constants['listOfAgeRanges'].map(k => ({
+            [k]: Object.assign({}, ...Constants['genders'].map(k => ({
+                [k]: Object.assign({}, ...Constants['participantStatuses'].map(k => ({ [k || "Blank"]: 0 })))
             })))
         })))
 
@@ -43,29 +40,18 @@ function Stats({ database, setShowStats, setFilterDataFromStats, role }) {
     }
 
 
-    function selectDemoBin(statuses, ethnicities, ageRange, gender) {
+    function selectDemoBin(statuses, ageRange, gender) {
         if (role != "admin") return;
         setFilterDataFromStats({
             fromStats: true,
-            ethnicities: ethnicities,
-            multipleEthnicities: ['Yes', 'No'],
             genders: [gender],
             ageRanges: ageRange,
+            tattoo: Constants['tattooValues'],
             statuses: statuses,
             icfs: ['Yes', 'No'],
             demoBinStatuses: Constants['demoBinStatuses'],
-            sources: Object.keys(Constants['sources']),
-            documentStatuses: ["Blank", ...Constants['documentStatuses']],
-            visionCorrections: Constants['visionCorrections'],
-            parentRegistered: ['Yes', 'No'],
-            newDocuments: ['Yes', 'No'],
             highlighted: ['Yes', 'No'],
-            stillInterested: filterData['stillInterested'],
-            unsubscribed: ['Yes', 'No'],
-            unreadEmails: ['Yes', 'No'],
-            industry: Constants['industryCategories'],
-            registrationType: ['Denali', 'Elbert'],
-            session1stat: ["N/A", ...Constants['sessionStatuses']]
+            industry: Constants['industryCategories']
         });
 
         navigate('participants');
@@ -80,22 +66,13 @@ function Stats({ database, setShowStats, setFilterDataFromStats, role }) {
         Object.values(participants).map(participant => {
             let gender = participant['gender'];
             let ageRange = participant['age_range'];
-            let ethnicities = participant['ethnicities'].split(',');
-            let ethValue = 1 / ethnicities.length;
             let status = participant['status'] || "Blank";
-            let stillInterested = participant['still_interested'] || "N/A";
-            if (!filterData['stillInterested'].includes(stillInterested)) return;
-
-            for (let x = 0; x < ethnicities.length; x++) {
-
-                let ethnicity = ethnicities[x].trim();
-                if (!Constants['listOfAgeRanges'].includes(ageRange)) continue;
-                tempStats[ethnicity][ageRange][gender][status] += ethValue;
-            }
+            if (!Constants['listOfAgeRanges'].includes(ageRange)) return;
+            tempStats[ageRange][gender][status] += 1;
         })
 
         setStats(tempStats);
-    }, [filterData['stillInterested']])
+    }, [])
 
     useEffect(() => {
         const handleEsc = (event) => { if (event.keyCode === 27) setShowStats(""); };
@@ -112,7 +89,7 @@ function Stats({ database, setShowStats, setFilterDataFromStats, role }) {
 
                 <div className="stats-filter-element">
                     <div><span className="first-number">First number:</span></div>
-                    {Constants['participantStatuses'].filter(status => status != "Denali PPT").map((val, i) => {
+                    {Constants['participantStatuses'].map((val, i) => {
                         return <div key={"filter-status" + i}>
                             <input id={"stats-filter-participant-status-" + (val || "Blank")} name={val || "Blank"} type="checkbox" alt="statuses" onChange={setFilterData} checked={val == "" ? filterData['statuses'].includes("Blank") : filterData['statuses'].includes(val)} />
                             <label className="first-number" htmlFor={"stats-filter-participant-status-" + (val || "Blank")}>{(val || "Blank")}</label>
@@ -122,7 +99,7 @@ function Stats({ database, setShowStats, setFilterDataFromStats, role }) {
 
                 <div className="stats-filter-element">
                     <div><span className="second-number">Second number:</span></div>
-                    {Constants['participantStatuses'].filter(status => status != "Denali PPT").map((val, i) => {
+                    {Constants['participantStatuses'].map((val, i) => {
                         return <div key={"filter-status" + i}>
                             <input id={"stats-filter2-participant-status-" + (val || "Blank")} name={val || "Blank"} type="checkbox" alt="statuses2" onChange={setFilterData} checked={val == "" ? filterData['statuses2'].includes("Blank") : filterData['statuses2'].includes(val)} />
                             <label className="second-number" htmlFor={"stats-filter2-participant-status-" + (val || "Blank")}>{(val || "Blank")}</label>
@@ -130,18 +107,50 @@ function Stats({ database, setShowStats, setFilterDataFromStats, role }) {
                     })}
                 </div>
 
-                {role == 'admin' &&
-                    <div className="still-interested-participants-only-filter">
-                        <div><span className="still-interested-row">Still interested:</span></div>
-                        {Constants['stillInterestedValues'].map((val, i) => {
-                            return <div key={"filter-status-" + i}>
-                                <input id={"stats-filter-still-interested-" + val} name={val} type="checkbox" alt="stillInterested" onChange={setFilterData} checked={filterData['stillInterested'].includes(val)} />
-                                <label className="still-interested-row" htmlFor={"stats-filter-still-interested-" + val}>{val}</label>
-                            </div>
-                        })}
-                    </div>}
 
                 <div className="modal-stats-content">
+
+                    <table className="table-of-stats">
+                        <thead>
+                            <tr>
+                                <th>
+
+                                </th>
+                                {Object.keys(Constants['demoBinsGenders']).map(gender => {
+                                    return <th key={'stats-header-' + gender}>{gender}</th>
+                                })}
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {Constants['listOfAgeRanges'].map(ageRange => {
+                                return <tr>
+
+                                    <th>{ageRange}</th>
+
+                                    {Object.keys(Constants['demoBinsGenders']).map(gender => {
+                                        let output = filterData['statuses'].reduce((x, y) => {
+                                            return stats[ageRange][gender][y] + x
+                                        }, 0);
+                                        let output2 = filterData['statuses2'].reduce((x, y) => {
+                                            return stats[ageRange][gender][y] + x
+                                        }, 0);
+                                        output = parseFloat(output.toFixed(1));
+                                        output2 = parseFloat(output2.toFixed(1));
+
+                                        let binClassTag = "demo-bin-" + database['demo_bins'][gender][ageRange];
+
+                                        return <td className={"stats-demo-bin-cell " + (binClassTag)}>
+                                            <span className="first-number" onClick={() => selectDemoBin(filterData['statuses'], [ageRange], gender)}>{output}</span>
+                                            <span className="second-number" onClick={() => selectDemoBin(filterData['statuses2'], [ageRange], gender)}>{output2}</span>
+                                            <label className="stats-demo-bin">{Constants['demoBinsAgeRanges'][ageRange] + Constants['demoBinsGenders'][gender]}</label>
+                                        </td>
+                                    })}
+                                </tr>
+                            })}
+                        </tbody>
+                    </table>
+
+                    {/*
                     {['Male', 'Female'].map(gender => {
                         return <table className="table-of-stats">
                             <thead>
@@ -212,6 +221,7 @@ function Stats({ database, setShowStats, setFilterDataFromStats, role }) {
                             </tbody>
                         </table>
                     })}
+                */}
                 </div>
             </div>
         </div>

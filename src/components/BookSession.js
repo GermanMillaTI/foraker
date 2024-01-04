@@ -19,29 +19,20 @@ function BookSession({ database, setShowBookSession, selectedSessionId, setJustB
         let pName = pInfo['full_name'].toLocaleLowerCase();
         let email = pInfo['email'];
         let phone = pInfo['phone'].replaceAll('T: ', '').replaceAll(' ', '');
-        let dateOfBirth = pInfo['date_of_birth'].substring(0, 10);
+        let yearOfBirth = pInfo['year_of_birth'];
 
         let output = [];
         if (pid.includes(searchText)) output.push('Participant ID');
         if (pName.includes(searchText)) output.push('Name');
         if (email.includes(searchText)) output.push('E-mail');
         if (phone.includes(searchText)) output.push('Phone');
-        if (dateOfBirth.includes(searchText)) output.push('Date of birth');
+        if (yearOfBirth.toString().includes(searchText)) output.push('Year of birth');
 
         return output;
     }
 
     function bookSession(pid) {
-        let visionCorrection = database['participants'][pid]['vision_correction'];
-        let glasses = ['Glasses - distance', 'Glasses - pr/ bf/ mf'].includes(visionCorrection);
         let backupSession = database['timeslots'][selectedSessionId]['backup'] === true;
-        let externalId = database['participants'][pid]['external_id'];
-        let clientInfo = {};
-        let size = "N/A";
-        if (externalId) {
-            clientInfo = database['client']['contributions'][externalId];
-            if (clientInfo) size = clientInfo[0]['w'] ? Constants['sizeDirectory'][clientInfo[0]['w']] : "N/A";
-        }
 
         Swal.fire({
             title: "Booking an appointment",
@@ -61,9 +52,7 @@ function BookSession({ database, setShowBookSession, selectedSessionId, setJustB
                     remind: true
                 }
 
-                if (Object.values(Constants['sizeDirectory']).includes(size)) data['dl'] = size;
                 if (data['locked'] === true) data['locked'] = false;
-                if (glasses) data['glasses'] = true;
 
                 // Save the session
                 let path = "/timeslots/" + selectedSessionId;
@@ -75,6 +64,13 @@ function BookSession({ database, setShowBookSession, selectedSessionId, setJustB
                     pid: pid,
                     timeslot: selectedSessionId,
                     action: "Book session"
+                })
+
+                realtimeDb.ref("/participants/" + pid).update({ status: 'Scheduled' });
+
+                LogEvent({
+                    pid: pid,
+                    action: "Participant status: '" + "Scheduled" + "'"
                 })
             }
         })
@@ -113,7 +109,7 @@ function BookSession({ database, setShowBookSession, selectedSessionId, setJustB
                                 <th>E-mail</th>
                                 <th>Phone</th>
                                 <th>Gender</th>
-                                <th>Date of birth</th>
+                                <th>Year of birth</th>
                                 <th>Status</th>
                                 <th>Participant comments</th>
                             </tr>
@@ -126,7 +122,6 @@ function BookSession({ database, setShowBookSession, selectedSessionId, setJustB
                                 })
                                 .map(key => {
                                     const participantStatus = database['participants'][key]['status'];
-                                    if (participantStatus == 'Denali PPT') return null;
 
                                     const filterResult = participantFilter(key);
                                     if (filterResult.length > 0) return (
@@ -146,8 +141,8 @@ function BookSession({ database, setShowBookSession, selectedSessionId, setJustB
                                             <td className="center-tag">
                                                 {database['participants'][key]['gender']}
                                             </td>
-                                            <td className={(filterResult.includes('Date of birth') ? "filter-highlighted-cell" : "") + " center-tag"}>
-                                                {database['participants'][key]['date_of_birth'].substring(0, 10)}
+                                            <td className={(filterResult.includes('Year of birth') ? "filter-highlighted-cell" : "") + " center-tag"}>
+                                                {database['participants'][key]['year_of_birth']}
                                             </td>
                                             <td className="center-tag">
                                                 {database['participants'][key]['status']}

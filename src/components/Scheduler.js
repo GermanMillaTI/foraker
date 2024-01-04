@@ -40,8 +40,7 @@ function Scheduler({ database, setUpdateSession }) {
   const [filterData, setFilterData] = useReducer(filterReducer, {
     date: [format(new Date(), "yyyy-MM-dd")],
     sessionStatuses: ['Blank', 'Locked', ...Constants['sessionStatuses']],
-    participantStatuses: ['Blank', ...Constants['participantStatuses'].filter(status => status != 'Denali PPT')],
-    sessionNumbers: ['N/A', ...Constants['possibleNumberOfSessions'].map(val => val.toString())]
+    participantStatuses: ['Blank', ...Constants['participantStatuses']]
   });
 
   useMemo(() => {
@@ -65,45 +64,16 @@ function Scheduler({ database, setUpdateSession }) {
   }, [Object.keys(database['timeslots']).length])
 
   function getCSVData() {
-    let output = [];
+    let output = [['Date', 'Station', 'Session status', 'Participant status', 'Participant ID', 'Name', 'Handedness', 'Tattoo', 'Session comments']];
 
     let table = document.getElementById("schedulerTable");
-    for (var r = 0; r < table.rows.length; r++) {
+    for (var r = 1; r < table.rows.length; r++) {
       let row = table.rows[r];
       let temp = [];
       let participant = {};
       // -1, because we don't need the last column...
       for (var c = 0; c < row.cells.length - 1; c++) {
-        if (r == 0) {
-          if (c == 0) {
-            temp.push('Date');
-            continue;
-          } else if (c == 2) {
-            temp.push('Session status');
-            continue;
-          } else if (c == 4) {
-            temp.push('Participant status');
-            continue;
-          } else if (c == 8) {
-            temp.push('#');
-            continue;
-          }
-        }
-        if (c == 5 && r > 0) {
-          let participantID = row.cells[c].innerHTML;
-          if (participantID) participant = database['participants'][participantID];
-        }
-        if (c == 6 && r > 0) {
-          temp.push(participant['full_name'] || "");
-          continue;
-        }
         temp.push(row.cells[c].innerHTML);
-      }
-
-      if (r == 0) {
-        temp.push("Demo bin");
-      } else {
-        temp.push(participant['demo_bin'] || "");
       }
       output.push(temp);
     }
@@ -121,15 +91,10 @@ function Scheduler({ database, setUpdateSession }) {
     const participantId = session['participant_id'];
     const participant = database['participants'][participantId] || {};
     const participantStatus = participant['status'] || 'Blank';
-    let sessionNumber = 'N/A';
-    if (participant) {
-      if (participant['session_counter']) sessionNumber = (participant['session_counter'][timeslotId] || 'N/A').toString();
-    }
 
     return filterData['participantStatuses'].includes(participantStatus) &&
       filterData['sessionStatuses'].includes(sessionStatus) &&
-      filterData['date'].includes(timeslotDate) &&
-      filterData['sessionNumbers'].includes(sessionNumber);
+      filterData['date'].includes(timeslotDate);
   }
 
   return (
@@ -139,7 +104,7 @@ function Scheduler({ database, setUpdateSession }) {
         target="_blank"
         asyncOnClick={true}
         onClick={() => getCSVData()}
-        filename={"denali-scheduler-export.csv"}
+        filename={"penelope schedule - exported at " + format(new Date(), "yyyy-MM-dd") + ".csv"}
         data={csvData}
       >Download CSV</CSVLink>
       <div className="scheduler-table-container">
@@ -167,12 +132,11 @@ function Scheduler({ database, setUpdateSession }) {
                   selectedEach={false}
                 />
               </th>
-              <th>Session outcome</th>
               <th>
                 <TableFilter
                   filterName="Participant status"
                   alt="participantStatuses"
-                  values={['Blank', ...Constants['participantStatuses'].filter(status => status != 'Denali PPT')]}
+                  values={['Blank', ...Constants['participantStatuses']]}
                   filterData={filterData}
                   setFilterData={setFilterData}
                   selectedEach={false}
@@ -180,17 +144,8 @@ function Scheduler({ database, setUpdateSession }) {
               </th>
               <th>Participant ID</th>
               <th>Name</th>
-              <th>Vision corr.</th>
-              <th>
-                <TableFilter
-                  filterName="#"
-                  alt="sessionNumbers"
-                  values={['N/A', ...Constants['possibleNumberOfSessions'].map(val => val.toString())]}
-                  filterData={filterData}
-                  setFilterData={setFilterData}
-                  selectedEach={false}
-                />
-              </th>
+              <th>Handedness</th>
+              <th>Tattoo</th>
               <th>Session comments</th>
               <th>Functions</th>
             </tr>

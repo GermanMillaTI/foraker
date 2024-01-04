@@ -142,7 +142,7 @@ function ActivityLog({ database, setActivityLog, participantId, timeslotforLog }
             target="_blank"
             asyncOnClick={true}
             onClick={getCSVdata}
-            filename={"denali-logs_" + new Date().toISOString().split("T")[0] + ".csv"}
+            filename={"penelope-logs_" + new Date().toISOString().split("T")[0] + ".csv"}
             data={logCsvData}
           >Download CSV</CSVLink> : ""
         }

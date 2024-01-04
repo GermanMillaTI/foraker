@@ -1,12 +1,9 @@
 import React, { useEffect, useState, useReducer } from 'react';
 import ReactDOM from 'react-dom';
-import { auth, realtimeDb } from '../firebase/config';
-import { format } from 'date-fns';
-import Swal from 'sweetalert2';
+import { realtimeDb } from '../firebase/config';
 
 import './Bins.css';
 import Constants from './Constants';
-import LogEvent from './Core/LogEvent';
 
 function Bins({ database, setShowBins }) {
 
@@ -29,39 +26,36 @@ function Bins({ database, setShowBins }) {
                 </div>
 
                 <div className="modal-bins-content">
-                    {['Male', 'Female'].map(gender => {
-                        return <table className="table-of-bins">
-                            <thead>
-                                <tr>
-                                    <th>
-                                        {gender}
-                                    </th>
-                                    {Object.keys(Constants['columnsOfStats']).filter(columnName => columnName != "Total").map(eth => {
-                                        return <th key={'demo-bins-header-' + eth}>{eth}</th>
+                    <table className="table-of-bins">
+                        <thead>
+                            <tr>
+                                <th>
+
+                                </th>
+                                {Object.keys(Constants['demoBinsGenders']).map(gender => {
+                                    return <th key={'demo-bins-header-' + gender}>{gender}</th>
+                                })}
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {Constants['listOfAgeRanges'].map(ageRange => {
+                                return <tr>
+
+                                    <th>{ageRange}</th>
+
+                                    {Object.keys(Constants['demoBinsGenders']).map(gender => {
+                                        const currentValue = database['demo_bins'][gender][ageRange];
+                                        return <td className={"stats-demo-bin-cell + demo-bin-" + currentValue.toString()} onClick={() => updateValue("/demo_bins/" + gender, { [ageRange]: (currentValue === 2 ? 0 : currentValue + 1) })}>
+                                            <>
+                                                {Constants['demoBinStatusDictionary'][currentValue]}
+                                                <label className="stats-demo-bin">{Constants['demoBinsAgeRanges'][ageRange] + Constants['demoBinsGenders'][gender]}</label>
+                                            </>
+                                        </td>
                                     })}
                                 </tr>
-                            </thead>
-                            <tbody>
-                                {Constants['listOfAgeRanges'].map(ageRange => {
-                                    return <tr>
-                                        <th>{ageRange}</th>
-                                        {Object.keys(Constants['columnsOfStats']).filter(columnName => columnName != "Total").map(columnName => {
-                                            let eth = columnName.replaceAll(" ", "").replaceAll(".", "").replaceAll("-", "").replaceAll("/", "");
-                                            let eth2 = Constants['columnsOfStats'][columnName];
-                                            let currentValue = database['demo_bins'][gender][eth][ageRange];
-                                            return <td className={"stats-demo-bin-cell + demo-bin-" + currentValue.toString()} onClick={() => updateValue("/demo_bins/" + gender + "/" + eth, { [ageRange]: (currentValue === 2 ? 0 : currentValue + 1) })}>
-
-                                                <>
-                                                    {Constants['demoBinStatusDictionary'][currentValue]}
-                                                    {columnName != "Total" && <label className="stats-demo-bin">{Constants['demoBinsEthnicities'][eth2[0]] + Constants['demoBinsAgeRanges'][ageRange] + Constants['demoBinsGenders'][gender]}</label>}
-                                                </>
-                                            </td>
-                                        })}
-                                    </tr>
-                                })}
-                            </tbody>
-                        </table>
-                    })}
+                            })}
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>

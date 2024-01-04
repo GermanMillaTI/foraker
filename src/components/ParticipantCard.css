@@ -6,25 +6,30 @@
     border-radius: 1em;
 }
 
-.row1 {
-    background-color: aliceblue;
-}
 
-.row2 {
-    background-color: #fff;
-}
 
-.participant-card-column {
+
+.participant-card-column-row-1 {
     display: flex;
     flex-direction: column;
     gap: .4em;
     padding: .5em;
     border-radius: 1em;
-    background-color: rgba(76, 74, 212, 0.062);
+    background-color: rgba(23, 42, 79, 0.10);
 }
 
+.participant-card-column-row-2 {
+    display: flex;
+    flex-direction: column;
+    gap: .4em;
+    padding: .5em;
+    border-radius: 1em;
+    background-color: rgba(23, 42, 79, 0.30);
+}
+
+
 .column-1 {
-    width: 30em;
+    width: 35em;
 }
 
 .column-2 {
@@ -62,7 +67,7 @@
 }
 
 .column-1 .field-label {
-    width: 10em;
+    width: 12em;
     min-width: 10em;
 }
 
@@ -104,8 +109,8 @@
 }
 
 .pending-doc {
-    color: #fff;
-    background-color: #ff5100;
+    color: #172A4F;
+    background-color: #FDA90D;
 }
 
 .min-width-selector {
@@ -152,19 +157,13 @@
     font-weight: bold;
     font-size: 1em;
     border: none;
-    color: #fff;
-    background-color: #ff5100;
+    color: #172A4F;
+    background-color: #FCAB10;
     padding: .2em 1em;
     cursor: pointer;
     border-radius: 2em;
     box-shadow: 1px 2px 5px rgba(0, 0, 0, .31);
     outline: none;
-}
-
-.registered-by-parent {
-    text-align: center;
-    background: #ff5100;
-    color: white;
 }
 
 .highlighted-participant-button {
@@ -182,7 +181,7 @@
 }
 
 .copy-email-link:hover {
-    color: #ff5100;
+    color: #006BA6;
 }
 
 .copy-booking-link {
@@ -194,7 +193,7 @@
 }
 
 .copy-booking-link:hover {
-    color: #ff5100;
+    color: #006BA6;
 }
 
 .exponent-dropdown:disabled {
@@ -209,7 +208,7 @@
 }
 
 .mark-unchecked:hover {
-    color: #ff5100;
+    color: #006BA6;
 }
 
 .vlog-link {
@@ -273,37 +272,13 @@
     font-weight: bold;
 }
 
-.elbert-icf {
-    background: rgba(117, 255, 117, 0.521);
-    padding: 0 .4em;
-    font-weight: bold;
-}
-
-.unsubscribed {
-    padding: 0 1.4em;
-    background: rgb(0, 47, 255);
-    color: white;
+.old-penelope-participant {
+    display: inline-block;
+    width: 100%;
     text-align: center;
     font-weight: bold;
-}
-
-.denali-session-from-past {
-    background-color: rgba(247, 161, 2, 0.315);
-}
-
-.under18 {
-    margin-left: .5em;
-    padding: 0 1.4em;
-    border-radius: 1em;
-    background: red;
+    background: rgb(255, 115, 0);
     color: white;
-    font-weight: bold;
-}
-
-.highlighted-industry {
-    padding: 0 1.4em;
-    border-radius: 1em;
-    background: red;
-    color: white;
-    font-weight: bold;
+    padding: .2em 0em;
+    border-radius: .3em;
 }

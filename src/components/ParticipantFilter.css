@@ -1,11 +1,15 @@
 .filter-main-container {
     display: flex;
     flex-direction: row;
-    background-color: rgba(23, 42, 79, 0.5);
     gap: .5em;
     padding: .5em;
     border-radius: 1em;
-    color: white;
+    width: fit-content;
+    padding-bottom: 1em;
+}
+
+.filter-main-container:hover {
+    background-color: rgba(1, 69, 94, 0.08);
 }
 
 .filter-container {
@@ -15,25 +19,24 @@
     gap: .3em;
     padding: .5em;
     border-radius: 1em;
-    background-color: rgba(23, 42, 79, 0.8);
-    color: white;
+    color: rgba(1, 69, 94, 1);
 }
 
 .filter-container .gap {
     margin-top: .5em;
-    color: white;
+    color: rgba(1, 69, 94, 1);
 }
 
 .filter-container-header {
     font-weight: bold;
     text-align: center;
-    color: white;
+    color: rgba(1, 69, 94, 1);
 }
 
 .filter-object {
     display: flex;
     flex-direction: row;
-    color: white;
+    color: rgba(1, 69, 94, 1);
     padding: 0.15em;
 }
 
@@ -55,7 +58,8 @@
 }
 
 .filter-element input[type=checkbox] {
-    cursor: pointer
+    cursor: pointer;
+    accent-color: rgba(1, 69, 94, 1);
 }
 
 .filter-element .main-input {
@@ -84,8 +88,8 @@
     font-weight: bold;
     font-size: .9em;
     border: none;
-    color: #172A4F;
-    background-color: #FDA90D;
+    background-color: rgba(1, 69, 94, 1);
+    color: #F7F7F1;
     padding: .2em 1em;
     cursor: pointer;
     border-radius: 2em;
@@ -109,8 +113,7 @@
 }
 
 .filter-this-button:hover {
-    background-color: #FDA90D;
-    color: #172A4F;
+    background-color: rgba(1, 69, 94, 1);
 }
 
 .red-highlighted-filter {

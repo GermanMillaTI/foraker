@@ -50,7 +50,7 @@
 }
 
 .scheduler-table tr:hover {
-    background: #224bd436;
+    background: rgba(254, 217, 93, 0.55);
 }
 
 .day-separator {
@@ -76,7 +76,7 @@
 
 .book-button {
     color: #fff;
-    background: #0096a4;
+    background: #01455E;
 }
 
 .remind-button {
@@ -86,17 +86,17 @@
 
 .update-button {
     color: #fff;
-    background: #264e82;
+    background: #01455E;
 }
 
 .lock-button {
     color: #fff;
-    background: #c20a0a;
+    background: #994B35;
 }
 
 .unlock-button {
     color: #fff;
-    background: #008a17;
+    background: #346C36;
     width: 11.5em;
 }
 
@@ -158,8 +158,8 @@
     font-weight: bold;
     font-size: .9em;
     text-decoration: none;
-    color: #172A4F;
-    background-color: #FDA90D;
+    color: #2F2F30;
+    background-color: #FED340;
     box-shadow: 1px 2px 5px rgba(0, 0, 0, .31);
     cursor: pointer;
     outline: none;
@@ -220,8 +220,8 @@
     font-weight: bold;
     font-size: .9em;
     text-decoration: none;
-    color: #fff;
-    background-color: #FDA90D;
+    color: #01455E;
+    background-color: #FED95D;
     box-shadow: 1px 2px 5px rgba(0, 0, 0, .31);
     cursor: pointer;
     outline: none;

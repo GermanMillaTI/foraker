@@ -9,15 +9,16 @@
   padding: .2em;
   gap: 1em;
   background: transparent;
-  background-color: white;
+  background-color: #F7F7F1;
+  ;
 }
 
 .navbar-button {
   padding: .2em 1em;
   border-radius: 2em;
   border: none;
-  background: #172A4F;
-  color: white;
+  background: rgba(1, 69, 94, 1);
+  color: #F7F7F1;
   font-weight: bold;
   font-size: .9em;
   box-shadow: 1px 2px 5px rgba(0, 0, 0, .31);

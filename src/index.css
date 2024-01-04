@@ -3,12 +3,14 @@
   padding: 0;
   box-sizing: border-box;
   font-family: 'Poppins', sans-serif;
+  font-size: 14px;
 }
 
 :root {
   /* ===== Colors ===== */
-  --body-color: white;
-  --font-color: #1d3062;
+  --body-color: #F7F7F1;
+  ;
+  --font-color: #2F2F30;
 
   /* ====== Fontsize ====== */
   --font-size: 13px;

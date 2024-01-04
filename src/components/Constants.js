@@ -7,14 +7,13 @@ const Constants = {
     "Not Selected",
     "Rejected",
     "Duplicate",
-    "Penelope <6 PPT",
     "Withdrawn"
   ],
   genders: [
     "Male",
     "Female",
     "Non-binary",
-    "Non of the above",
+    "None of the above",
     "Prefer not to say"
   ],
   listOfAgeRanges: [

@@ -8,12 +8,12 @@
 
 .login-sub-container {
   width: 25em;
-  background: #2F2F30;
+  background: rgba(1, 69, 94, 0.20);
   padding: 2em;
   border-radius: 1em;
   text-align: center;
   box-shadow: 1px 2px 5px rgba(0, 0, 0, .31);
-  color: #F7F7F1;
+  color: rgba(1, 69, 94, 1);
 }
 
 h2 {
@@ -42,11 +42,11 @@ input[type=password] {
   padding: .1em 1em;
   border-radius: .5em;
   border: none;
-  background: #D88F32;
+  background: rgba(1, 69, 94, 1);
   font-size: 1.2em;
   font-weight: bold;
   box-shadow: 1px 2px 5px rgba(0, 0, 0, .31);
-  color: #2F2F30;
+  color: #F7F7F1;
 }
 
 .log-in-button:hover {

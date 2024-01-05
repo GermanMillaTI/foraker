@@ -6,11 +6,11 @@
     border-radius: 1em;
     width: fit-content;
     padding-bottom: 1em;
+    background-color: rgba(1, 69, 94, 0.08);
+    margin-top: 0.6em;
 }
 
-.filter-main-container:hover {
-    background-color: rgba(1, 69, 94, 0.08);
-}
+
 
 .filter-container {
     display: inline-flex;
@@ -62,8 +62,11 @@
     accent-color: rgba(1, 69, 94, 1);
 }
 
+
+
 .filter-element .main-input {
-    border: 1px solid gray;
+    border: 1px solid rgba(1, 69, 94, 0.75);
+    ;
     width: 16em;
     border-radius: .3em;
     padding: .1em .2em;

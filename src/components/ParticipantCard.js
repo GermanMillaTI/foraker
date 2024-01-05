@@ -66,7 +66,7 @@ function ParticipantCard({ database, role, participantId, index, setShowBookSess
 
     return (
         <div className={"participant-card "}>
-            <div className={"participant-card-column" + (index % 2 == 0 ? "-row-1" : "-row-2") + " column-1"}>
+            <div className={"participant-card-column" + " column-1"}>
 
                 <div className="participant-attribute-container">
                     <span className="field-label"># {participantId} </span>
@@ -212,7 +212,7 @@ function ParticipantCard({ database, role, participantId, index, setShowBookSess
                 }
             </div>
 
-            <div className={"participant-card-column" + (index % 2 == 0 ? "-row-1" : "-row-2") + " column-3"}>
+            <div className={"participant-card-column" + " column-3"}>
                 <div className="participant-attribute-container">
                     <span className="field-label">Participant status</span>
 
@@ -338,7 +338,7 @@ function ParticipantCard({ database, role, participantId, index, setShowBookSess
 
             </div>
 
-            <div className={"participant-card-column" + (index % 2 == 0 ? "-row-1" : "-row-2") + " column-4"}>
+            <div className={"participant-card-column" + " column-4"}>
                 <span className="participant-attribute-header">Sessions {participantInfo['external_id'] ? " (" + participantInfo['external_id'] + ")" : ""}</span>
                 {Object.keys(participantInfo['sessions'] || {}).map(timeslotId => {
                     const session = database['timeslots'][timeslotId];
@@ -366,8 +366,9 @@ function ParticipantCard({ database, role, participantId, index, setShowBookSess
             </div>
 
 
-            {participantInfo['history'] &&
-                <div className={"participant-card-column" + (index % 2 == 0 ? "-row-1" : "-row-2") + " column-5"}>
+            {
+                participantInfo['history'] &&
+                <div className={"participant-card-column" + " column-5"}>
                     <span className="participant-attribute-header">Email history</span>
                     {participantInfo['history'] && Object.keys(participantInfo['history']).map((t) => {
                         let emailTitle = participantInfo['history'][t]['title'];

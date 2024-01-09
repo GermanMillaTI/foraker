@@ -156,12 +156,9 @@ function ParticipantCard({ database, role, participantId, index, setShowBookSess
                     <span className="field-label">State, City</span><span>{participantInfo['state_of_residence'] + ", " + participantInfo['city_of_residence']}</span>
                 </div>
 
-                <div className="participant-attribute-container">
-                    <span className="field-label">Address</span><span>{participantInfo['street']}</span>
-                </div>
 
                 <div className="participant-attribute-container">
-                    <span className="field-label">Year / country (birth)</span><span>{participantInfo['year_of_birth'] + " / " + participantInfo['country_of_birth']}
+                    <span className="field-label">Date of Birth</span><span>{participantInfo['date_of_birth'].substring(0, 10)}
                     </span>
                 </div>
 
@@ -272,15 +269,6 @@ function ParticipantCard({ database, role, participantId, index, setShowBookSess
                     <span>{participantInfo['demo_bin']} {participantInfo['open_demo_bin'] ? " (open)" : "(closed)"}</span>
                 </div>
 
-                <div className="participant-attribute-container">
-                    <span className="field-label">Handiness</span>
-                    <span>{participantInfo['hand']}</span>
-                </div>
-
-                <div className="participant-attribute-container">
-                    <span className="field-label">Tattoo</span>
-                    <span>{participantInfo['tattoo']}</span>
-                </div>
 
                 {!["Rejected", "Withdrawn", "Completed", "Not Selected", "Duplicate"].includes(participantInfo['status']) &&
                     <div className="participant-attribute-container">

@@ -46,7 +46,6 @@ function Stats({ database, setShowStats, setFilterDataFromStats, role }) {
             fromStats: true,
             genders: [gender],
             ageRanges: ageRange,
-            tattoo: Constants['tattooValues'],
             statuses: statuses,
             icfs: ['Yes', 'No'],
             demoBinStatuses: Constants['demoBinStatuses'],

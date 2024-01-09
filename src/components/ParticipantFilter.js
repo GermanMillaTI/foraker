@@ -12,7 +12,6 @@ const filterReducer = (state, event) => {
     return {
       genders: Constants['genders'],
       ageRanges: Constants['listOfAgeRanges'],
-      tattoo: Constants['tattooValues'],
       statuses: ["Blank", ...Constants['participantStatuses']],
       icfs: ['Yes', 'No'],
       demoBinStatuses: Constants['demoBinStatuses'],
@@ -71,7 +70,6 @@ function ParticipantFilter({ database, setShownParticipants, filterDataFromStats
   const [filterData, setFilterData] = useReducer(filterReducer, {
     genders: Constants['genders'],
     ageRanges: Constants['listOfAgeRanges'],
-    tattoo: Constants['tattooValues'],
     statuses: ["Blank", ...Constants['participantStatuses']],
     icfs: ['Yes', 'No'],
     demoBinStatuses: Constants['demoBinStatuses'],
@@ -90,7 +88,6 @@ function ParticipantFilter({ database, setShownParticipants, filterDataFromStats
     return {
       ageRanges: Object.assign({}, ...[...['<20', ...Constants['listOfAgeRanges']]].map(k => ({ [k]: 0 }))),
       genders: Object.assign({}, ...Constants['genders'].map(k => ({ [k]: 0 }))),
-      tattoo: Object.assign({}, ...Constants['tattooValues'].map(k => ({ [k]: 0 }))),
       statuses: Object.assign({}, ...Constants['participantStatuses'].map(k => ({ [k || "Blank"]: 0 }))),
       icfs: { Yes: 0, No: 0 },
       demoBinStatuses: Object.assign({}, ...Constants['demoBinStatuses'].map(k => ({ [k]: 0 }))),
@@ -108,7 +105,6 @@ function ParticipantFilter({ database, setShownParticipants, filterDataFromStats
     let lastName = participantInfo['last_name'].toLowerCase();
     let gender = participantInfo['gender'];
     let ageRange = participantInfo['age_range'];
-    let tattoo = participantInfo['tattoo'];
     let email = participantInfo['email'].toLowerCase();
     let phone = participantInfo['phone'].toLowerCase();
     let demoBinStatus = participantInfo['open_demo_bin'] ? 'Open' : 'Closed';
@@ -168,7 +164,6 @@ function ParticipantFilter({ database, setShownParticipants, filterDataFromStats
       sessionDateOk &&
       filterData['genders'].includes(gender) &&
       filterData['ageRanges'].includes(ageRange) &&
-      filterData['tattoo'].includes(tattoo) &&
       icfSignedIsOk &&
       filterData['statuses'].includes(status) &&
       filterData['demoBinStatuses'].includes(demoBinStatus) &&
@@ -193,7 +188,6 @@ function ParticipantFilter({ database, setShownParticipants, filterDataFromStats
       let participantInfo = database['participants'][participantId];
       let gender = participantInfo['gender'];
       let ageRange = participantInfo['age_range'];
-      let tattoo = participantInfo['tattoo'];
       let demoBinStatus = participantInfo['open_demo_bin'] ? 'Open' : 'Closed';
       let highlighted = participantInfo['highlighted'] ? 'Yes' : 'No';
 
@@ -203,7 +197,6 @@ function ParticipantFilter({ database, setShownParticipants, filterDataFromStats
       output['genders'][gender]++;
       output['demoBinStatuses'][demoBinStatus]++;
       output['ageRanges'][ageRange]++;
-      output['tattoo'][tattoo]++;
       output['icfs'][icfSigned]++;
       output['statuses'][status]++;
       output['highlighted'][highlighted]++;
@@ -270,19 +263,6 @@ function ParticipantFilter({ database, setShownParticipants, filterDataFromStats
             <input id={"filter-" + val} name={val} type="checkbox" alt="genders" onChange={setFilterData} checked={filterData['genders'].includes(val)} />
             <label htmlFor={"filter-" + val}>{val + " (" + filterStats['genders'][val] + ")"}</label>
             <button name={val} alt="genders" className="filter-this-button" onClick={setFilterData}>!</button>
-          </div>
-        })}
-      </div>
-    </div>
-
-    <div className="filter-container">
-      <div className="filter-element">
-        <span className="filter-container-header">Tattoo</span>
-        {Constants['tattooValues'].map((val, i) => {
-          return <div key={"filter-tattoo" + i} className="filter-object">
-            <input id={"filter-tattoo-" + val} name={val} type="checkbox" alt="tattoo" onChange={setFilterData} checked={filterData['tattoo'].includes(val)} />
-            <label htmlFor={"filter-tattoo-" + val}>{val + " (" + filterStats['tattoo'][val] + ")"}</label>
-            <button name={val} alt="tattoo" className="filter-this-button" onClick={setFilterData}>!</button>
           </div>
         })}
       </div>

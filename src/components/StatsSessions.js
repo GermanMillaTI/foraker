@@ -50,13 +50,15 @@ function StatsSessions({ database, setShowStatsSessions, setFilterDataFromStats 
             fromStats: true,
             genders: [gender],
             ageRanges: ageRange,
-            tattoo: Constants['tattooValues'],
             statuses: ["Blank", ...Constants['participantStatuses']],
             icfs: ['Yes', 'No'],
             demoBinStatuses: Constants['demoBinStatuses'],
             highlighted: ['Yes', 'No'],
-            possibleP6: ['Yes', 'No'],
-            industry: Constants['industryCategories']
+            industry: Constants['industryCategories'],
+            skinTones: Constants['skinTone'],
+            hairlength: Constants['hairlength'],
+            weightRanges: Constants['listOfWeights'],
+            heightRanges: Constants['listOfHeights']
         });
 
         navigate('participants');

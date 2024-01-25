@@ -19,14 +19,12 @@ function BookSession({ database, setShowBookSession, selectedSessionId, setJustB
         let pName = pInfo['full_name'].toLocaleLowerCase();
         let email = pInfo['email'];
         let phone = pInfo['phone'].replaceAll('T: ', '').replaceAll(' ', '');
-        let yearOfBirth = pInfo['year_of_birth'];
 
         let output = [];
         if (pid.includes(searchText)) output.push('Participant ID');
         if (pName.includes(searchText)) output.push('Name');
         if (email.includes(searchText)) output.push('E-mail');
         if (phone.includes(searchText)) output.push('Phone');
-        if (yearOfBirth.toString().includes(searchText)) output.push('Year of birth');
 
         return output;
     }

@@ -154,10 +154,10 @@ function SchedulerRow({ database, sessionId, index, array, setUpdateSession }) {
       {participantId ? (participantInfo['full_name']) : ""}
     </td>
     <td className="center-tag">
-      {participantId ? (participantInfo['hand']) : ""}
+      {participantId ? (parseFloat(participantInfo['weight_kg']).toFixed(2)) : ""}
     </td>
     <td className="center-tag">
-      {participantId ? (participantInfo['tattoo']) : ""}
+      {participantId ? (parseFloat(participantInfo['height_cm']).toFixed(2)) : ""}
     </td>
     <td>
       {database['timeslots'][sessionId]['comments']}

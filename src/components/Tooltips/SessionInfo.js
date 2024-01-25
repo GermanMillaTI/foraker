@@ -32,12 +32,16 @@ function SessionInfo({ database, participantId, sessionId }) {
                             <td>{participantInfo['gender']}</td>
                         </tr>
                         <tr>
-                            <th>Handedness</th>
-                            <td>{participantInfo['hand']}</td>
+                            <th>Skin tone</th>
+                            <td>{participantInfo['skinTone']}</td>
                         </tr>
                         <tr>
-                            <th>Tattoo</th>
-                            <td>{participantInfo['tattoo']}</td>
+                            <th>Height (cm)</th>
+                            <td>{parseFloat(participantInfo['height_cm']).toFixed(2)}</td>
+                        </tr>
+                        <tr>
+                            <th>Weight (kg)</th>
+                            <td>{parseFloat(participantInfo['weight_kg']).toFixed(2)}</td>
                         </tr>
                         <tr>
                             <th>Demo bin</th>

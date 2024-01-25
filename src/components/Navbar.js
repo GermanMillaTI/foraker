@@ -8,7 +8,7 @@ import { useNavigate } from "react-router-dom";
 
 import './Navbar.css';
 
-function Navbar({ database, setDatabase, setRole, setUserRights, setShowStats, setShowStatsSessions, setShowBins, setActivityLog, setIdForLog, setTimeslotforLog, role }) {
+function Navbar({ database, setDatabase, setRole, setUserRights, setShowStats, setShowStatsSessions, setShowStatsSkintones, setShowBins, setActivityLog, setIdForLog, setTimeslotforLog, role }) {
   const navigate = useNavigate();
 
   // Logout
@@ -53,9 +53,11 @@ function Navbar({ database, setDatabase, setRole, setUserRights, setShowStats, s
       {['admin', 'manager'].includes(role) && <button className="navbar-button" onClick={(e) => { e.preventDefault(); navigate("/participants"); }}>Participants</button>}
       {['admin', 'manager'].includes(role) && <button className="navbar-button" onClick={(e) => { e.preventDefault(); navigate("/scheduler"); }}>Scheduler</button>}
       {['admin', 'apple'].includes(role) && <button className="navbar-button" onClick={(e) => { e.preventDefault(); navigate("/scheduler-overview"); }}>Overview</button>}
-      <button className="navbar-button" onClick={() => setShowStats(true)}>Participant stats</button>
+      {['admin', 'manager'].includes(role) && <button className="navbar-button" onClick={() => setShowStats(true)}>Participant stats</button>}
+      {['admin', 'manager'].includes(role) && <button className="navbar-button" onClick={() => setShowStatsSkintones(true)}>Skin tone stats</button>}
       {/*<button className="navbar-button" onClick={() => setShowStatsSessions(true)}>Session stats</button>*/}
       {['admin'].includes(role) && <button className="navbar-button" onClick={() => setShowBins(true)}>Demo bins</button>}
+      {['admin', 'apple'].includes(role) && <button className="navbar-button" onClick={(e) => { e.preventDefault(); navigate("/scheduler-external"); }}>Scheduler external</button>}
       {['admin'].includes(role) && <button className='navbar-button' onClick={() => {
         setActivityLog(true);
         setIdForLog("");

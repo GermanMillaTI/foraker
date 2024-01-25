@@ -21,7 +21,7 @@ const filterReducer = (state, event) => {
     return newState;
 }
 
-function Stats({ database, setShowStats, setFilterDataFromStats, role }) {
+function SkintoneStats({ database, setShowStatsSkintones, setFilterDataFromStats, role }) {
     const navigate = useNavigate();
     const [stats, setStats] = useState(getDefaultNumbers());
     const [filterData, setFilterData] = useReducer(filterReducer, {
@@ -29,13 +29,10 @@ function Stats({ database, setShowStats, setFilterDataFromStats, role }) {
         statuses2: ["Contacted", "Scheduled", "Completed"]
     });
 
-
     function getDefaultNumbers() {
-        let temp = Object.assign({}, ...Constants['listOfHeights'].map(k => ({
-            [k]: Object.assign({}, ...Constants['listOfWeights'].map(k => ({
-                [k]: Object.assign({}, ...Constants['genders'].map(k => ({
-                    [k]: Object.assign({}, ...Constants['participantStatuses'].map(k => ({ [k || "Blank"]: 0 })))
-                })))
+        let temp = Object.assign({}, ...Constants['skinTone'].map(k => ({
+            [k]: Object.assign({}, ...Constants['genders'].map(k => ({
+                [k]: Object.assign({}, ...Constants['participantStatuses'].map(k => ({ [k || "Blank"]: 0 })))
             })))
         })))
 
@@ -43,26 +40,25 @@ function Stats({ database, setShowStats, setFilterDataFromStats, role }) {
     }
 
 
-    function selectDemoBin(statuses, heightRange, weightRange, gender) {
+    function selectDemoBin(statuses, skintoneRange, gender) {
         if (role != "admin") return;
         setFilterDataFromStats({
             fromStats: true,
-            ageRanges: Constants['listOfAgeRanges'],
             genders: [gender],
-            weightRanges: weightRange,
-            heightRanges: heightRange,
+            skinTones: skintoneRange,
             statuses: statuses,
             icfs: ['Yes', 'No'],
             demoBinStatuses: Constants['demoBinStatuses'],
             highlighted: ['Yes', 'No'],
-            skinTones: Constants['skinTone'],
+            ageRanges: Constants['listOfAgeRanges'],
             hairlength: Constants['hairlength'],
+            weightRanges: Constants['listOfWeights'],
+            heightRanges: Constants['listOfHeights']
         });
 
         navigate('participants');
-        setShowStats(false);
+        setShowStatsSkintones(false);
     }
-
 
     useEffect(() => {
         // Fill stats
@@ -71,32 +67,26 @@ function Stats({ database, setShowStats, setFilterDataFromStats, role }) {
         let participants = database['participants'];
         Object.values(participants).map(participant => {
             let gender = participant['gender'];
-            let weightRange = participant['weight_range'];
-            let heightRange = participant['height_range'];
-            let ethValue = 1
+            let skintone = participant['skinTone'];
             let status = participant['status'] || "Blank";
-
-
-            if (!Constants['listOfWeights'].includes(weightRange)) return;
-            tempStats[heightRange][weightRange][gender][status] += ethValue;
-
+            if (!Constants['skinTone'].includes(skintone)) return;
+            tempStats[skintone][gender][status] += 1;
         })
 
         setStats(tempStats);
     }, [])
 
-
     useEffect(() => {
-        const handleEsc = (event) => { if (event.keyCode === 27) setShowStats(""); };
+        const handleEsc = (event) => { if (event.keyCode === 27) setShowStatsSkintones(""); };
         window.addEventListener('keydown', handleEsc);
         return () => { window.removeEventListener('keydown', handleEsc) };
     }, []);
 
     return ReactDOM.createPortal((
-        <div className="modal-stats-backdrop" onClick={(e) => { if (e.target.className == "modal-stats-backdrop") setShowStats("") }}>
+        <div className="modal-stats-backdrop" onClick={(e) => { if (e.target.className == "modal-stats-backdrop") setShowStatsSkintones("") }}>
             <div className="modal-stats-main-container">
                 <div className="modal-stats-header">
-                    Participant stats
+                    Skin tone stats
                 </div>
 
                 <div className="stats-filter-element">
@@ -119,7 +109,50 @@ function Stats({ database, setShowStats, setFilterDataFromStats, role }) {
                     })}
                 </div>
 
+
                 <div className="modal-stats-content">
+
+
+                    <table className="table-of-stats">
+                        <thead>
+                            <tr>
+                                <th>
+
+                                </th>
+                                {Object.keys(Constants['demoBinsGenders']).map(gender => {
+                                    return <th key={'stats-header-' + gender}>{gender}</th>
+                                })}
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {Constants['skinTone'].map(ageRange => {
+                                return <tr>
+
+                                    <th>{ageRange}</th>
+
+                                    {Object.keys(Constants['demoBinsGenders']).map(gender => {
+                                        let output = filterData['statuses'].reduce((x, y) => {
+                                            return stats[ageRange][gender][y] + x
+                                        }, 0);
+                                        let output2 = filterData['statuses2'].reduce((x, y) => {
+                                            return stats[ageRange][gender][y] + x
+                                        }, 0);
+                                        output = parseFloat(output.toFixed(1));
+                                        output2 = parseFloat(output2.toFixed(1));
+
+                                        let binClassTag = "demo-bin-" + database['skin_bins'][gender][ageRange];
+
+                                        return <td className={"stats-demo-bin-cell " + (binClassTag)}>
+                                            <span className="first-number" onClick={() => selectDemoBin(filterData['statuses'], [ageRange], gender)}>{output}</span>
+                                            <span className="second-number" onClick={() => selectDemoBin(filterData['statuses2'], [ageRange], gender)}>{output2}</span>
+                                        </td>
+                                    })}
+                                </tr>
+                            })}
+                        </tbody>
+                    </table>
+
+                    {/*
                     {['Male', 'Female'].map(gender => {
                         return <table className="table-of-stats">
                             <thead>
@@ -127,17 +160,17 @@ function Stats({ database, setShowStats, setFilterDataFromStats, role }) {
                                     <th>
                                         {gender}
                                     </th>
-                                    {Constants['listOfHeights'].map(eth => {
+                                    {Object.keys(Constants['columnsOfStats']).map(eth => {
                                         return <th key={'stats-header-' + eth}>{eth}</th>
                                     })}
                                 </tr>
                             </thead>
                             <tbody>
-                                {Constants['listOfWeights'].map(ageRange => {
+                                {Constants['listOfAgeRanges'].map(ageRange => {
                                     return <tr>
                                         <th>{ageRange}</th>
-                                        {Constants['listOfHeights'].map(columnName => {
-                                            let eth = [columnName];
+                                        {Object.keys(Constants['columnsOfStats']).map(columnName => {
+                                            let eth = Constants['columnsOfStats'][columnName];
                                             let output = eth.reduce((a, b) => {
                                                 return filterData['statuses'].reduce((x, y) => {
                                                     return stats[b][ageRange][gender][y] + x
@@ -153,52 +186,48 @@ function Stats({ database, setShowStats, setFilterDataFromStats, role }) {
 
                                             let binClassTag = "";
                                             if (columnName != "Total") {
-                                                binClassTag = "demo-bin-" + database['demo_bins'][gender][columnName][ageRange];
+                                                binClassTag = "demo-bin-" + database['demo_bins'][gender][Constants['bonusEthnicities2'][columnName]][ageRange];
                                             }
 
                                             return <td className={"stats-demo-bin-cell " + (binClassTag)}>
                                                 <span className="first-number" onClick={() => selectDemoBin(filterData['statuses'], eth, [ageRange], gender)}>{output}</span>
                                                 <span className="second-number" onClick={() => selectDemoBin(filterData['statuses2'], eth, [ageRange], gender)}>{output2}</span>
-                                                {columnName != "Total" && <label className="stats-demo-bin">{Constants['demoBinsHeights'][eth] + Constants['demoBinsWeightRanges'][ageRange] + Constants['demoBinsGenders'][gender]}</label>}
+                                                {columnName != "Total" && <label className="stats-demo-bin">{Constants['demoBinsEthnicities'][eth[0]] + Constants['demoBinsAgeRanges'][ageRange] + Constants['demoBinsGenders'][gender]}</label>}
                                             </td>
                                         })}
                                     </tr>
                                 })}
                                 <tr>
                                     <th className="stats-total-row">Total</th>
-                                    {Constants['listOfHeights'].map(columnName => {
-                                        let eth = [columnName];
+                                    {Object.keys(Constants['columnsOfStats']).map(columnName => {
+                                        let eth = Constants['columnsOfStats'][columnName];
                                         let output = eth.reduce((a, b) => {
                                             return filterData['statuses'].reduce((x, y) => {
-
-                                                return Constants['listOfWeights'].reduce((q, w) => {
-                                                    return stats[b][w][gender][y] + q
-                                                }, 0) + x
+                                                return Constants['listOfAgeRanges'].reduce((q, w) => { return stats[b][w][gender][y] + q }, 0) + x
                                             }, 0) + a
                                         }, 0);
-
                                         let output2 = eth.reduce((a, b) => {
                                             return filterData['statuses2'].reduce((x, y) => {
-                                                return Constants['listOfWeights'].reduce((q, w) => { return stats[b][w][gender][y] + q }, 0) + x
+                                                return Constants['listOfAgeRanges'].reduce((q, w) => { return stats[b][w][gender][y] + q }, 0) + x
                                             }, 0) + a
                                         }, 0);
-                                        output = parseFloat(output);
-                                        output2 = parseFloat(output2);
+                                        output = parseFloat(output.toFixed(1));
+                                        output2 = parseFloat(output2.toFixed(1));
 
                                         return <td className="stats-demo-bin-cell stats-total-row">
-                                            <span className="first-number" onClick={() => selectDemoBin(filterData['statuses'], eth, Constants['listOfWeights'], gender)}>{output}</span>
-                                            <span className="second-number" onClick={() => selectDemoBin(filterData['statuses2'], eth, Constants['listOfWeights'], gender)}>{output2}</span>
+                                            <span className="first-number" onClick={() => selectDemoBin(filterData['statuses'], eth, Constants['listOfAgeRanges'], gender)}>{output}</span>
+                                            <span className="second-number" onClick={() => selectDemoBin(filterData['statuses2'], eth, Constants['listOfAgeRanges'], gender)}>{output2}</span>
                                         </td>
                                     })}
                                 </tr>
                             </tbody>
                         </table>
                     })}
+                */}
                 </div>
-
             </div>
         </div>
     ), document.body);
 }
 
-export default Stats;
+export default SkintoneStats;

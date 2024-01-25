@@ -57,7 +57,7 @@ function SchedulerOverview({ database }) {
         target="_blank"
         asyncOnClick={true}
         onClick={() => getCSVData()}
-        filename={"penelope-scheduler-overview-export.csv"}
+        filename={"foraker-scheduler-overview-export.csv"}
         data={csvData}
       >Download CSV</CSVLink>
       <div className="scheduler-overview-table-container">

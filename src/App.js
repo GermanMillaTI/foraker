@@ -3,7 +3,6 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import { onAuthStateChanged } from 'firebase/auth';
 import { realtimeDb, auth } from './firebase/config';
 import { format } from 'date-fns';
-
 import LoginPage from './components/LoginPage';
 import Navbar from './components/Navbar';
 import Participants from './components/Participants';
@@ -12,10 +11,13 @@ import UpdateSession from './components/UpdateSession';
 import Stats from './components/Stats';
 import Constants from './components/Constants';
 import StatsSessions from './components/StatsSessions';
+import SkintoneStats from './components/SkintoneStats';
 import Bins from './components/Bins';
 import ActivityLog from './components/ActivityLog';
 import SchedulerOverview from './components/SchedulerOverview';
 import ListOfOldParticipants from './components/ListOfOldParticipants';
+import CheckDocuments from './components/CheckDocuments';
+import SchedulerExternal from './components/SchedulerExternal';
 
 function App() {
   const [user, setUser] = useState(null);
@@ -24,6 +26,7 @@ function App() {
   const [updateSession, setUpdateSession] = useState("");
   const [checkDocuments, setCheckDocuments] = useState("");
   const [showStats, setShowStats] = useState(false);
+  const [showStatsSkintones, setShowStatsSkintones] = useState(false);
   const [showStatsSessions, setShowStatsSessions] = useState(false);
   const [filterDataFromStats, setFilterDataFromStats] = useState(false);
   const [showBins, setShowBins] = useState(false);
@@ -32,6 +35,8 @@ function App() {
   const [timeslotforLog, setTimeslotforLog] = useState("");
   const [role, setRole] = useState(null);
   const [userRights, setUserRights] = useState([]);
+
+
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
@@ -57,7 +62,9 @@ function App() {
       var phoneCollection = {};
       var nameCollection = {};
 
+
       for (let participantId in temp['participants']) {
+
         let participant = temp['participants'][participantId];
         let fullName = participant['first_name'] + " " + participant['last_name'];
 
@@ -122,6 +129,7 @@ function App() {
       const oldParticipantNames2 = oldParticipantEmails.map(email => ListOfOldParticipants[email]['last_name'] + ListOfOldParticipants[email]['first_name']);
 
       for (let participantId in temp['participants']) {
+
         let participant = temp['participants'][participantId];
 
         let email = participant['email'];
@@ -130,17 +138,40 @@ function App() {
         let phone = participant['phone'];
         temp['participants'][participantId]['phone_counter'] = duplicatePhones.includes(phone) ? 2 : 1;
 
+
         let ageDetails = calculateAgeDetails(participant['year_of_birth']);
+        let weightDetails = calculateWeightDetails(parseFloat(participant['weight_kg']));
+        let heightDetails = calculateHeightDetails(parseFloat(participant['height_cm']));
+        //if (participant['identificationFile']) {
+        //getDownloadURL(ref(storage, `foraker/participants/${participantId}/identification/${participant['identificationFile'][0]['name']}`))
+        //.then(url => {
+
+        //realtimeDb.ref("/participants/" + participantId.toString()).update({ pptId_url: url.split("https://firebasestorage.googleapis.com/v0/b/tiai-registrations.appspot.com/o/foraker")[1] })
+        //})
+        //}
+
+
+
+
 
         let ageRange = ageDetails['ageRange'];
+        let weightRange = weightDetails['weightRange'];
+        let heightRange = heightDetails['heightRange'];
+
         temp['participants'][participantId]['age_range'] = ageRange;
+        temp['participants'][participantId]['weight_range'] = weightRange;
+        temp['participants'][participantId]['height_range'] = heightRange;
+
 
         let gender = participant['gender'];
 
-        if (Object.keys(Constants['demoBinsGenders']).includes(gender) &&
-          Object.keys(Constants['demoBinsAgeRanges']).includes(ageRange)) {
-          temp['participants'][participantId]['demo_bin'] = calculateDemoBin(ageRange, gender);
-          temp['participants'][participantId]['open_demo_bin'] = temp['demo_bins'][gender][ageRange] === 0;
+
+
+
+
+        if (Object.keys(Constants['demoBinsGenders']).includes(gender) && Object.keys(Constants['demoBinsWeightRanges']).includes(weightRange)) {
+          temp['participants'][participantId]['demo_bin'] = calculateDemoBin(weightRange, heightRange, gender);
+          temp['participants'][participantId]['open_demo_bin'] = temp['demo_bins'][gender][heightRange][weightRange] === 0;
         } else {
           temp['participants'][participantId]['demo_bin'] = "#NA";
           temp['participants'][participantId]['open_demo_bin'] = false;
@@ -185,10 +216,17 @@ function App() {
 
         if (!participantId) continue;
         const participant = temp['participants'][participantId];
+
         const ageDetails = calculateAgeDetails(participant['year_of_birth'], sessionId.substring(0, 4) + "-" + sessionId.substring(4, 6) + "-" + sessionId.substring(6, 8));
+        const weightDetails = calculateWeightDetails(parseFloat(participant['weight_kg']));
+        const heightDetails = calculateHeightDetails(parseFloat(participant['height_cm']));
         const ageRange = ageDetails['ageRange'];
+        const weightRange = weightDetails['weightRange'];
+        const heightRange = heightDetails['heightRange'];
         const gender = participant['gender'];
-        const demoBin = calculateDemoBin(ageRange, gender);
+        const demoBin = calculateDemoBin(weightRange, heightRange, gender);
+
+
         temp['timeslots'][sessionId]['age_range'] = ageRange;
         temp['timeslots'][sessionId]['demo_bin'] = demoBin;
 
@@ -218,14 +256,22 @@ function App() {
     }
   }, [user])
 
-  function calculateDemoBin(ageRange, gender) {
-    if (!Object.keys(Constants['demoBinsAgeRanges']).includes(ageRange) ||
-      !Object.keys(Constants['demoBinsGenders']).includes(gender)) return "#NA";
 
-    const demoAgeRange = Constants['demoBinsAgeRanges'][ageRange];
+  function calculateDemoBin(weightRange, heights, gender) {
+    var demoBin = [];
+    const demoWeightRange = Constants['demoBinsWeightRanges'][weightRange];
     const demoGender = Constants['demoBinsGenders'][gender];
-    return demoAgeRange + demoGender;
-    ;
+
+
+    let demoHeight = Constants['demoBinsHeights'][heights.trim()];
+    if (demoHeight && demoGender && demoWeightRange) {
+      const demoStr = demoHeight + demoWeightRange + demoGender;
+      if (!demoBin.includes(demoStr)) demoBin.push(demoStr);
+    } else {
+      demoBin.push("#NA");
+    }
+
+    return demoBin.join(',');
   }
 
   function calculateAgeDetails(dateOfBirth, baseDate) {
@@ -236,22 +282,67 @@ function App() {
     const age = Math.abs(year - 1970);
 
     let ageRange = "";
-    if (age < 20) {
-      ageRange = "<20"
-    } else if (age >= 20 && age <= 25) {
-      ageRange = "20-25"
-    } else if (age >= 26 && age <= 34) {
-      ageRange = "26-34"
-    } else if (age >= 35 && age <= 49) {
-      ageRange = "35-49"
+    if (age < 18) {
+      ageRange = "<18";
+    }
+    else if (age >= 18 && age <= 29) {
+      ageRange = "18-29"
+    } else if (age >= 30 && age <= 50) {
+      ageRange = "30-50"
+    } else if (age >= 51 && age <= 65) {
+      ageRange = "51-65"
     } else if (age > 50) {
-      ageRange = "50+"
+      ageRange = "65+"
     }
 
     return {
       ageRange: ageRange,
       age: age
     };
+  }
+
+  function calculateWeightDetails(weight) {
+
+    let weightrange;
+    if (weight < 50) {
+      weightrange = "<=49";
+    } else if (weight >= 50 && weight < 70) {
+      weightrange = "50-69";
+    } else if (weight >= 70 && weight < 90) {
+      weightrange = "70-89";
+    } else if (weight >= 90 && weight <= 110) {
+      weightrange = "90-110"
+    } else if (weight > 110) {
+      weightrange = ">110"
+    }
+
+    return {
+      weightRange: weightrange,
+      weight: weight
+    }
+  }
+
+  function calculateHeightDetails(height) {
+    let heightrange;
+    if (height < 150) {
+      heightrange = "<150";
+    } else if (height >= 150 && height < 161) {
+      heightrange = "150-160";
+    } else if (height >= 161 && height < 171) {
+      heightrange = "161-170";
+    } else if (height >= 171 && height < 181) {
+      heightrange = "171-180";
+    } else if (height >= 181 && height < 191) {
+      heightrange = "181-190";
+    } else if (height >= 191) {
+      heightrange = ">190"
+    }
+
+    return {
+      heightRange: heightrange,
+      height: height
+    }
+
   }
 
   if (database['users'] && auth.currentUser && role === null) {
@@ -274,6 +365,8 @@ function App() {
           role={role}
           updateSession={updateSession}
           setUpdateSession={setUpdateSession}
+          checkDocuments={checkDocuments}
+          setCheckDocuments={setCheckDocuments}
           filterDataFromStats={filterDataFromStats}
           setFilterDataFromStats={setFilterDataFromStats}
           setActivityLog={setActivityLog}
@@ -286,6 +379,8 @@ function App() {
         return <Scheduler database={database} setUpdateSession={setUpdateSession} />;
       case "/scheduler-overview":
         return <SchedulerOverview database={database} />;
+      case "/scheduler-external":
+        return <SchedulerExternal database={database} />;
       default:
         return null;
     }
@@ -300,6 +395,7 @@ function App() {
           setRole={setRole}
           setUserRights={setUserRights}
           setShowStats={setShowStats}
+          setShowStatsSkintones={setShowStatsSkintones}
           setShowStatsSessions={setShowStatsSessions}
           setShowBins={setShowBins}
           setActivityLog={setActivityLog}
@@ -312,13 +408,16 @@ function App() {
           <Route path="/participants" element={getElement("/participants")} />
           <Route path="/scheduler" element={getElement("/scheduler")} />
           <Route path="/scheduler-overview" element={getElement("/scheduler-overview")} />
+          <Route path="/scheduler-external" element={getElement("/scheduler-external")} />
         </Routes>
       </> : null : (loading ? null : <LoginPage />)
       }
 
       {activityLog && <ActivityLog database={database} setActivityLog={setActivityLog} participantId={idforLog} timeslotforLog={timeslotforLog} setTimeslotforLog={setTimeslotforLog} />}
       {updateSession && <UpdateSession database={database} updateSession={updateSession} setUpdateSession={setUpdateSession} checkDocuments={checkDocuments} setCheckDocuments={setCheckDocuments} setActivityLog={setActivityLog} setIdForLog={setIdForLog} setTimeslotforLog={setTimeslotforLog} timeslotforLog={timeslotforLog} />}
+      {checkDocuments && <CheckDocuments database={database} checkDocuments={checkDocuments} setCheckDocuments={setCheckDocuments} />}
       {showStats && <Stats database={database} setShowStats={setShowStats} setFilterDataFromStats={setFilterDataFromStats} role={role} />}
+      {showStatsSkintones && <SkintoneStats database={database} setShowStatsSkintones={setShowStatsSkintones} setFilterDataFromStats={setFilterDataFromStats} role={role} />}
       {showStatsSessions && <StatsSessions database={database} setShowStatsSessions={setShowStatsSessions} setFilterDataFromStats={setFilterDataFromStats} />}
       {showBins && <Bins database={database} setShowBins={setShowBins} />}
 

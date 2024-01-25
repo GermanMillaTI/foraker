@@ -15,7 +15,11 @@ const filterReducer = (state, event) => {
       statuses: ["Blank", ...Constants['participantStatuses']],
       icfs: ['Yes', 'No'],
       demoBinStatuses: Constants['demoBinStatuses'],
-      highlighted: ['Yes', 'No']
+      highlighted: ['Yes', 'No'],
+      skinTones: Constants['skinTone'],
+      hairlength: Constants['hairlength'],
+      weightRanges: Constants['listOfWeights'],
+      heightRanges: Constants['listOfHeights']
     }
   }
 
@@ -74,6 +78,10 @@ function ParticipantFilter({ database, setShownParticipants, filterDataFromStats
     icfs: ['Yes', 'No'],
     demoBinStatuses: Constants['demoBinStatuses'],
     highlighted: ['Yes', 'No'],
+    skinTones: Constants['skinTone'],
+    hairlength: Constants['hairlength'],
+    weightRanges: Constants['listOfWeights'],
+    heightRanges: Constants['listOfHeights']
   });
 
   useEffect(() => {
@@ -86,12 +94,16 @@ function ParticipantFilter({ database, setShownParticipants, filterDataFromStats
 
   function resetFilterStats() {
     return {
-      ageRanges: Object.assign({}, ...[...['<20', ...Constants['listOfAgeRanges']]].map(k => ({ [k]: 0 }))),
+      ageRanges: Object.assign({}, ...[...['<18', ...Constants['listOfAgeRanges']]].map(k => ({ [k]: 0 }))),
       genders: Object.assign({}, ...Constants['genders'].map(k => ({ [k]: 0 }))),
       statuses: Object.assign({}, ...Constants['participantStatuses'].map(k => ({ [k || "Blank"]: 0 }))),
       icfs: { Yes: 0, No: 0 },
       demoBinStatuses: Object.assign({}, ...Constants['demoBinStatuses'].map(k => ({ [k]: 0 }))),
+      skinTones: Object.assign({}, ...Constants['skinTone'].map(k => ({ [k]: 0 }))),
       highlighted: { 'Yes': 0, 'No': 0 },
+      hairlength: Object.assign({}, ...Constants['hairlength'].map(k => ({ [k]: 0 }))),
+      weightRanges: Object.assign({}, ...Constants['listOfWeights'].map(k => ({ [k]: 0 }))),
+      heightRanges: Object.assign({}, ...Constants['listOfHeights'].map(k => ({ [k]: 0 }))),
     }
   }
 
@@ -105,6 +117,8 @@ function ParticipantFilter({ database, setShownParticipants, filterDataFromStats
     let lastName = participantInfo['last_name'].toLowerCase();
     let gender = participantInfo['gender'];
     let ageRange = participantInfo['age_range'];
+    let weightRange = participantInfo['weight_range'];
+    let heightRange = participantInfo['height_range'];
     let email = participantInfo['email'].toLowerCase();
     let phone = participantInfo['phone'].toLowerCase();
     let demoBinStatus = participantInfo['open_demo_bin'] ? 'Open' : 'Closed';
@@ -159,13 +173,19 @@ function ParticipantFilter({ database, setShownParticipants, filterDataFromStats
     let icfSigned = participantInfo['icf'] ? "Yes" : "No";
     let icfSignedIsOk = filterData['icfs'].includes(icfSigned);
     let status = participantInfo['status'] || "Blank";
+    let skinTone = participantInfo['skinTone'];
+    let hairlength = participantInfo['haiLength'];
 
     return dateOk &&
       sessionDateOk &&
       filterData['genders'].includes(gender) &&
       filterData['ageRanges'].includes(ageRange) &&
+      filterData['weightRanges'].includes(weightRange) &&
+      filterData['heightRanges'].includes(heightRange) &&
       icfSignedIsOk &&
       filterData['statuses'].includes(status) &&
+      filterData['skinTones'].includes(skinTone) &&
+      filterData['hairlength'].includes(hairlength) &&
       filterData['demoBinStatuses'].includes(demoBinStatus) &&
       filterData['highlighted'].includes(highlighted) &&
       (!filterData['participantId'] || participantId.includes(filterData['participantId'])) &&
@@ -188,17 +208,25 @@ function ParticipantFilter({ database, setShownParticipants, filterDataFromStats
       let participantInfo = database['participants'][participantId];
       let gender = participantInfo['gender'];
       let ageRange = participantInfo['age_range'];
+      let heightRange = participantInfo['height_range'];
+      let weightRange = participantInfo['weight_range'];
       let demoBinStatus = participantInfo['open_demo_bin'] ? 'Open' : 'Closed';
       let highlighted = participantInfo['highlighted'] ? 'Yes' : 'No';
 
       let icfSigned = participantInfo['icf'] ? "Yes" : "No";
       let status = participantInfo['status'] || "Blank";
+      let skinTone = participantInfo['skinTone'];
+      let hairlength = participantInfo['haiLength'];
 
       output['genders'][gender]++;
       output['demoBinStatuses'][demoBinStatus]++;
       output['ageRanges'][ageRange]++;
+      output['weightRanges'][weightRange]++;
+      output['heightRanges'][heightRange]++;
       output['icfs'][icfSigned]++;
       output['statuses'][status]++;
+      output['skinTones'][skinTone]++;
+      output['hairlength'][hairlength]++;
       output['highlighted'][highlighted]++;
     })
     setFilterStats(output);
@@ -245,7 +273,7 @@ function ParticipantFilter({ database, setShownParticipants, filterDataFromStats
     <div className="filter-container">
       <div className="filter-element">
         <span className="filter-container-header">Age range</span>
-        {[...['<20', ...Constants['listOfAgeRanges']]].map((val, i) => {
+        {[...['<18', ...Constants['listOfAgeRanges']]].map((val, i) => {
           return <div key={"filter-age" + i} className="filter-object">
             <input id={"filter-" + val} name={val} type="checkbox" alt="ageRanges" onChange={setFilterData} checked={filterData['ageRanges'].includes(val)} />
             <label htmlFor={"filter-" + val}>{val + " (" + filterStats['ageRanges'][val] + ")"}</label>
@@ -253,9 +281,58 @@ function ParticipantFilter({ database, setShownParticipants, filterDataFromStats
           </div>
         })}
       </div>
+
     </div>
 
     <div className="filter-container">
+      <div className="filter-element">
+        <span className="filter-container-header">Height range (cm)</span>
+        {Constants['listOfHeights'].map((val, i) => {
+          return <div key={"filter-height" + i} className="filter-object">
+            <input id={"filter-" + val} name={val} type="checkbox" alt="heightRanges" onChange={setFilterData} checked={filterData['heightRanges'].includes(val)} />
+            <label htmlFor={"filter-" + val}>{val + " (" + filterStats['heightRanges'][val] + ")"}</label>
+            <button name={val} alt="heightRanges" className="filter-this-button" onClick={setFilterData}>!</button>
+          </div>
+        })}
+      </div>
+
+      <div className="filter-element">
+        <span className="filter-container-header">Weight range (kg)</span>
+        {Constants['listOfWeights'].map((val, i) => {
+          return <div key={"filter-weight" + i} className="filter-object">
+            <input id={"filter-" + val} name={val} type="checkbox" alt="weightRanges" onChange={setFilterData} checked={filterData['weightRanges'].includes(val)} />
+            <label htmlFor={"filter-" + val}>{val + " (" + filterStats['weightRanges'][val] + ")"}</label>
+            <button name={val} alt="weightRanges" className="filter-this-button" onClick={setFilterData}>!</button>
+          </div>
+        })}
+      </div>
+    </div>
+
+    <div className="filter-container">
+      <div className="filter-element">
+        <span className="filter-container-header">Skin tones</span>
+        {Constants['skinTone'].map((val, i) => {
+          return <div key={"filter-skinTones" + i} className="filter-object">
+            <input id={"filter-" + val} name={val} type="checkbox" alt="skinTones" onChange={setFilterData} checked={filterData['skinTones'].includes(val)} />
+            <label htmlFor={"filter-" + val}>{val + " (" + filterStats['skinTones'][val] + ")"}</label>
+            <button name={val} alt="skinTones" className="filter-this-button" onClick={setFilterData}>!</button>
+          </div>
+        })}
+      </div>
+    </div>
+    <div className="filter-container">
+
+      <div className="filter-element">
+        <span className="filter-container-header">Hair Length</span>
+        {Constants['hairlength'].map((val, i) => {
+          return <div key={"filter-hairlength" + i} className="filter-object">
+            <input id={"filter-" + val} name={val} type="checkbox" alt="hairlength" onChange={setFilterData} checked={filterData['hairlength'].includes(val)} />
+            <label htmlFor={"filter-" + val}>{val + " (" + filterStats['hairlength'][val] + ")"}</label>
+            <button name={val} alt="hairlength" className="filter-this-button" onClick={setFilterData}>!</button>
+          </div>
+        })}
+      </div>
+
       <div className="filter-element">
         <span className="filter-container-header">Gender</span>
         {Constants['genders'].map((val, i) => {
@@ -280,6 +357,8 @@ function ParticipantFilter({ database, setShownParticipants, filterDataFromStats
         })}
       </div>
     </div>
+
+
 
     <div className="filter-container">
       <div className="filter-element">
@@ -324,7 +403,6 @@ function ParticipantFilter({ database, setShownParticipants, filterDataFromStats
           <button name={"No"} alt="highlighted" className="filter-this-button" onClick={setFilterData}>!</button>
         </div>
       </div>
-
     </div>
   </div >);
 }

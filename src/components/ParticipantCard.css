@@ -4,13 +4,23 @@
     gap: .5em;
     padding: .5em;
     border-radius: 1em;
+    margin-bottom: 10px;
+    background-color: rgba(1, 69, 94, 0.04);
 }
 
 .participant-card:hover {
     background-color: rgba(1, 69, 94, 0.05);
-    width: fit-content
 }
 
+.signature-image {
+    display: none;
+    /* Hide the image by default */
+}
+
+.signature-link:hover .signature-image {
+    display: block;
+    /* Show the image when the link is hovered */
+}
 
 
 
@@ -95,9 +105,26 @@
     text-align: center;
 }
 
+.field-list {
+    padding-left: 2.75em;
+}
+
+.health-conditions {
+    background-color: rgba(221, 12, 36, 0.1);
+    border-radius: 3px;
+}
+
+.health-conditions:hover {
+    background-color: rgba(221, 12, 36, 0.5);
+    border-radius: 3px;
+    color: white
+}
+
+
 .doc-button {
-    margin: 0em auto;
+
     padding: 0 1em;
+    padding: 0em .3em;
     font-weight: bold;
     font-size: 1em;
     border: none;
@@ -172,7 +199,7 @@
     cursor: pointer;
     margin-left: .5em;
     text-decoration: none;
-    color: red;
+    color: rgba(221, 12, 36, 1);
 }
 
 .copy-email-link {
@@ -218,7 +245,7 @@
     text-decoration: none;
     padding: 0 1em;
     border-radius: 1em;
-    background: red;
+    background: rgba(221, 12, 36, 1);
     font-weight: bold;
 }
 
@@ -248,7 +275,7 @@
 
 .icf-reminder-button {
     color: #fff;
-    background: rgb(213, 27, 27);
+    background: rgba(221, 12, 36, 1);
 }
 
 .document-request-button {
@@ -269,7 +296,7 @@
 .missing-icf {
     padding: 0 1em;
     border-radius: 1em;
-    background: red;
+    background: rgba(221, 12, 36, 1);
     color: white;
     font-weight: bold;
 }

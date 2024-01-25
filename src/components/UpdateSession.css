@@ -11,6 +11,14 @@
     z-index: 100;
 }
 
+.participant-table-right input[type=checkbox] {
+    cursor: pointer;
+    width: 1.15em;
+    height: 1.15em;
+    accent-color: rgba(1, 69, 94, 1);
+}
+
+
 .modal-book-update-session-main-container {
     height: 100%;
     min-width: 50%;

@@ -6,13 +6,16 @@ import md5 from 'md5';
 import Tooltip, { tooltipClasses } from '@mui/material/Tooltip';
 import { renderToString } from 'react-dom/server';
 
+
+
 import './ParticipantCard.css';
 import Constants from './Constants';
 import LogEvent from './Core/LogEvent';
 import ActivityLog from './ActivityLog';
 import FormattingFunctions from './Core/FormattingFunctions';
+import { select } from 'd3';
 
-function ParticipantCard({ database, role, participantId, index, setShowBookSession2, setUpdateSession, setActivityLog, activityLog, idforLog, setIdForLog, setTimeslotforLog, timeslotforLog }) {
+function ParticipantCard({ database, role, participantId, index, setShowBookSession2, setCheckDocuments, setUpdateSession, setActivityLog, activityLog, idforLog, setIdForLog, setTimeslotforLog, timeslotforLog }) {
     const [tempParticipants, setTempParticipants] = useState([]);
 
     let participantInfo = database['participants'][participantId];
@@ -23,6 +26,12 @@ function ParticipantCard({ database, role, participantId, index, setShowBookSess
     function updateValue(path, newValue) {
         realtimeDb.ref(path).update(newValue);
     }
+
+    function openDocuments(participantId) {
+        //realtimeDb.ref("/participants/" + participantId + "/documents/pending").remove();
+        setCheckDocuments(participantId);
+    }
+
 
     function sendMail(pid, kind) {
         const participant = database['participants'][pid];
@@ -63,6 +72,156 @@ function ParticipantCard({ database, role, participantId, index, setShowBookSess
             }
         })
     }
+
+    function updateHeight() {
+        const pInfo = database['participants'][participantId];
+        let height = pInfo['height_cm'];
+
+        const HTMLContent = () => {
+            return <input type="number" id="newHeight" defaultValue={height} />
+        }
+
+        const saveHeight = () => {
+            height = document.getElementById("newHeight").value;
+
+            const inches = height / 2.54;
+            const feet = Math.floor(inches / 12);
+            const remainingInches = inches % 12;
+
+
+
+            updateValue("/participants/" + participantId, { height_cm: height });
+            updateValue("/participants/" + participantId, { height_ft: parseFloat(feet) });
+            updateValue("/participants/" + participantId, { height_in: parseFloat(remainingInches) });
+
+            LogEvent({
+                pid: participantId,
+                action: "Participant height (cm): '" + height + "'"
+            })
+        }
+
+
+        Swal.fire({
+            title: "Updating Height (cm)",
+            confirmButtonText: "Save",
+            showCancelButton: true,
+            html: renderToString(<HTMLContent />)
+        }).then((result) => {
+            if (result.isConfirmed) {
+                saveHeight();
+            }
+        });
+    }
+
+    function updateWeight() {
+        const pInfo = database['participants'][participantId];
+        let weight = parseFloat(pInfo['weight_kg']).toFixed(2);
+
+        const HTMLContent = () => {
+            return <input type="number" id="newWeight" defaultValue={weight} />
+        }
+
+        const saveWeight = () => {
+            weight = document.getElementById("newWeight").value;
+            const weight_lb = weight * 2.205
+
+            updateValue("/participants/" + participantId, { weight_kg: weight });
+            updateValue("/participants/" + participantId, { weight_lbs: weight_lb });
+
+            LogEvent({
+                pid: participantId,
+                action: "Participant weight (kg): '" + weight + "'"
+            })
+        }
+
+
+        Swal.fire({
+            title: "Updating Weight (kg)",
+            confirmButtonText: "Save",
+            showCancelButton: true,
+            html: renderToString(<HTMLContent />)
+        }).then((result) => {
+            if (result.isConfirmed) {
+                saveWeight();
+            }
+        });
+    }
+    function updateSkinColor() {
+        const pInfo = database['participants'][participantId];
+        let skintone = pInfo['skinTone'];
+
+        const HTMLContent = () => {
+            return <select id="newSkinTone" defaultValue={skintone} >
+                {
+                    Object.keys(Constants['skinTone']).map((i) => {
+                        return <option value={Constants['skinTone'][i]}>{Constants['skinTone'][i]}</option>
+                    })
+                }
+            </select>
+        }
+
+        const saveSkinColor = () => {
+            skintone = document.getElementById("newSkinTone").value
+
+            updateValue("/participants/" + participantId, { skinTone: skintone });
+
+            LogEvent({
+                pid: participantId,
+                action: "Participant skin tone: '" + skintone + "'"
+            })
+        }
+
+
+        Swal.fire({
+            title: "Updating Skin tone",
+            confirmButtonText: "Save",
+            showCancelButton: true,
+            html: renderToString(<HTMLContent />)
+        }).then((result) => {
+            if (result.isConfirmed) {
+                saveSkinColor();
+            }
+        });
+    }
+
+    function updateHairLength() {
+        const pInfo = database['participants'][participantId];
+        let hairlength = pInfo['haiLength'];
+
+        const HTMLContent = () => {
+            return <select id="newHairLength" defaultValue={hairlength} >
+                {
+                    Object.keys(Constants['skinTone']).map((i) => {
+                        return <option value={Constants['hairlength'][i]}>{Constants['hairlength'][i]}</option>
+                    })
+                }
+            </select>
+        }
+
+        const saveHairLength = () => {
+            hairlength = document.getElementById("newHairLength").value
+
+            updateValue("/participants/" + participantId, { haiLength: hairlength });
+
+            LogEvent({
+                pid: participantId,
+                action: "Participant skin tone: '" + hairlength + "'"
+            })
+        }
+
+
+        Swal.fire({
+            title: "Updating Hair Length",
+            confirmButtonText: "Save",
+            showCancelButton: true,
+            html: renderToString(<HTMLContent />)
+        }).then((result) => {
+            if (result.isConfirmed) {
+                saveHairLength();
+            }
+        });
+    }
+
 
     return (
         <div className={"participant-card "}>
@@ -148,13 +307,15 @@ function ParticipantCard({ database, role, participantId, index, setShowBookSess
                     </span>
                 </div>
 
+
                 <div className="participant-attribute-container">
-                    <span className="field-label">Country of residence</span><span>{participantInfo['country_of_residence']}</span>
+                    <span className="field-label">Country of residence</span><span>{participantInfo['country_of_residence'] === "Other" ? participantInfo['countryOfResidence_other'] : participantInfo['country_of_residence']}</span>
                 </div>
 
                 <div className="participant-attribute-container">
-                    <span className="field-label">State, City</span><span>{participantInfo['state_of_residence'] + ", " + participantInfo['city_of_residence']}</span>
+                    <span className="field-label">State, City</span><span>{participantInfo['state_of_residence'] || "N/A" + ", " + participantInfo['city_of_residence']}</span>
                 </div>
+
 
 
                 <div className="participant-attribute-container">
@@ -162,14 +323,82 @@ function ParticipantCard({ database, role, participantId, index, setShowBookSess
                     </span>
                 </div>
 
+                <hr />
+
                 <div className="participant-attribute-container">
                     <span className="field-label">Age range / Gender</span><span>{participantInfo['age_range'] + " / " + participantInfo['gender']}</span>
                 </div>
 
+
+                <div className="participant-attribute-container">
+                    <span className="field-label">Skin color</span><span>{participantInfo['skinTone']}</span>
+                    <a className='copy-email-link fas fa-edit'
+                        title='Update Height'
+                        onClick={(e) => {
+                            e.preventDefault();
+                            updateSkinColor();
+                        }} target='_blank'></a>
+                </div>
+
+
+                <div className="participant-attribute-container">
+                    <span className="field-label">Hair length</span><span>{`${participantInfo['haiLength'] || "nan"}`}</span>
+                    <a className='copy-email-link fas fa-edit'
+                        title='Update Height'
+                        onClick={(e) => {
+                            e.preventDefault();
+                            updateHairLength();
+                        }} target='_blank'></a>
+                </div>
+
+                <div className="participant-attribute-container">
+                    <span className="field-label">Height (cm) / Range</span><span>{`${parseFloat(participantInfo['height_cm']).toFixed(2)} / ${participantInfo['height_range']}`}</span>
+                    <a className='copy-email-link fas fa-edit'
+                        title='Update Height'
+                        onClick={(e) => {
+                            e.preventDefault();
+                            updateHeight();
+                        }} target='_blank'></a>
+                </div>
+                <div className="participant-attribute-container">
+                    <span className="field-label">Weight (kg) / Range</span><span>{`${parseFloat(participantInfo['weight_kg']).toFixed(2)} / ${participantInfo['weight_range']}`}</span>
+                    <a className='copy-email-link fas fa-edit'
+                        title='Update Weight'
+                        onClick={(e) => {
+                            e.preventDefault();
+                            updateWeight();
+                        }} target='_blank'></a>
+                </div>
+                <hr />
+
+                <div className="participant-attribute-container">
+                    <span className="field-label">Height (ft)</span><span>{`${participantInfo['height_ft']}' ${parseFloat(participantInfo['height_in']).toFixed(2)}"`}</span>
+
+                </div>
+
+
+                <div className="participant-attribute-container">
+                    <span className="field-label">Weight (lb)</span><span>{`${parseFloat(participantInfo['weight_lbs']).toFixed(2)}`}</span>
+
+                </div>
+
+
+                <hr />
                 <div className="participant-attribute-container">
                     <span className="field-label">Industry</span>
                     <span>{participantInfo['industry']}</span>
                 </div>
+
+                {!participantInfo['healthConditions'].includes("None of the above") && !participantInfo['healthConditions'].includes("none") &&
+                    <div className="participant-attribute-container health-conditions">
+                        <span className="field-label">Health Conditions</span>
+                        <span >
+                            <ul className='field-list'>{participantInfo['healthConditions'].map(Item => (
+                                <li key={Item}>{Item}</li>
+                            ))}
+                            </ul>
+                        </span>
+                    </div>}
 
                 {participantInfo['vlog'] && <div className="participant-attribute-container">
                     <span className="field-label">Vlog</span>
@@ -183,18 +412,15 @@ function ParticipantCard({ database, role, participantId, index, setShowBookSess
                 <div className="participant-attribute-container">
                     <span className="field-label">Signatures</span>
 
-                    <a href={"https://fs30.formsite.com/LB2014/files/" + participantInfo['sla_url']} target="_blank" className="signature-link">Open SLA</a>
+                    <a href={"https://firebasestorage.googleapis.com/v0/b/tiai-registrations.appspot.com/o/foraker" + participantInfo['sla_url']} target="_blank" className="signature-link">Open SLA</a>
 
                     <span> &nbsp;/&nbsp; </span>
                     {participantInfo['icf'] ?
-                        <a href={"https://fs30.formsite.com/LB2014/files/" + participantInfo['icf']} target="_blank" className="signature-link">Open ICF</a>
+                        <a href={"https://firebasestorage.googleapis.com/v0/b/tiai-registrations.appspot.com/o/foraker" + participantInfo['icf']['icf_url']} target="_blank" className="signature-link">Open ICF</a>
                         : <>
-                            <span className="missing-icf">Missing ICF!</span>
+                            <span className="missing-icf">Missing ICF</span>
                             <a
-                                href={"https://fs30.formsite.com/LB2014/qdpfkbii6j/fill?id377=" + participantId +
-                                    "&id335=" + participantInfo['email'] +
-                                    "&id372=" + participantInfo['first_name'] +
-                                    "&id373=" + participantInfo['last_name']}
+                                href={"https://tiai-registrations.web.app/icf/" + participantId}
                                 className="copy-email-link fas fa-file-export"
                                 title="Open ICF URL"
                                 target="_blank" />
@@ -210,8 +436,20 @@ function ParticipantCard({ database, role, participantId, index, setShowBookSess
             </div>
 
             <div className={"participant-card-column" + " column-3"}>
+                <div className='participant-attribute-container'>
+
+                    <span className="field-label">Personal ID</span>
+
+                    <button
+                        className={"doc-button"}
+                        onClick={() => openDocuments(participantId)}
+                    >
+                        Open document
+                    </button>
+                </div>
                 <div className="participant-attribute-container">
                     <span className="field-label">Participant status</span>
+
 
                     <select className="participant-data-selector min-width-selector"
                         onChange={(e) => {

@@ -252,21 +252,23 @@ function UpdateSession({ database, updateSession, setUpdateSession, setActivityL
                                 </tr>
                                 <tr>
                                     <td className="participant-table-left">State, City</td>
-                                    <td className="participant-table-right">{participantInfo['state_of_residence'] + ", " + participantInfo['city_of_residence']}</td>
+                                    <td className="participant-table-right">{participantInfo['state_of_residence']}</td>
                                 </tr>
+
                                 <tr>
-                                    <td className="participant-table-left">Address</td>
-                                    <td className="participant-table-right">{participantInfo['street']}</td>
+                                    <td className="participant-table-left">Vision Correction</td>
+                                    <td className="participant-table-right">'{participantInfo['visionCorrection']}'</td>
                                 </tr>
+
                                 <tr>
                                     <td className="participant-table-left">Signatures</td>
                                     <td className="participant-table-right">
-                                        <a href={"https://fs30.formsite.com/LB2014/files/" + participantInfo['sla_url']} target="_blank" className="signature-link">Open SLA</a>
+                                        <a href={"https://firebasestorage.googleapis.com/v0/b/tiai-registrations.appspot.com/o/foraker" + participantInfo['sla_url']} target="_blank" className="signature-link" rel='noreferrer'>Open SLA</a>
 
                                         <span> &nbsp;/&nbsp; </span>
 
                                         {participantInfo['icf'] ?
-                                            <a href={"https://fs30.formsite.com/LB2014/files/" + participantInfo['icf']} target="_blank" className="signature-link">Open ICF</a>
+                                            <a href={"https://firebasestorage.googleapis.com/v0/b/tiai-registrations.appspot.com/o/foraker" + participantInfo['icf']['icf_url']} target="_blank" className="signature-link" rel='noreferrer'>Open ICF</a>
                                             : <>
                                                 <span className="missing-icf">Missing ICF!</span>
                                                 <a
@@ -289,9 +291,30 @@ function UpdateSession({ database, updateSession, setUpdateSession, setActivityL
                                     <td className="participant-table-right">{participantInfo['age_range'] + " / " + participantInfo['gender']}</td>
                                 </tr>
                                 <tr>
-                                    <td className="participant-table-left">Year / country (birth)</td>
+                                    <td className="participant-table-left">Height (cm) / Range</td>
+                                    <td className="participant-table-right">{`${participantInfo['height_cm']} / (${participantInfo['height_range']})`}</td>
+                                </tr>
+                                <tr>
+                                    <td className="participant-table-left">Weight (kg) / Range</td>
+                                    <td className="participant-table-right">{`${parseFloat(participantInfo['weight_kg']).toFixed(2)} / (${participantInfo['weight_range']})`}</td>
+                                </tr>
+
+                                <tr>
+                                    <td className="participant-table-left">Skin tone</td>
                                     <td className="participant-table-right">
-                                        {participantInfo['year_of_birth'] + " / " + participantInfo['country_of_birth']}
+                                        {participantInfo['skinTone']}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td className="participant-table-left">Hair Length</td>
+                                    <td className="participant-table-right">
+                                        {participantInfo['haiLength']}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td className="participant-table-left">Year of birth</td>
+                                    <td className="participant-table-right">
+                                        {participantInfo['year_of_birth']}
                                     </td>
                                 </tr>
                                 <tr>
@@ -301,14 +324,7 @@ function UpdateSession({ database, updateSession, setUpdateSession, setActivityL
                                 <tr>
                                     <td className="participant-table-left">&nbsp;</td>
                                 </tr>
-                                <tr>
-                                    <td className="participant-table-left">Handiness</td>
-                                    <td className="participant-table-right">{participantInfo['hand']}</td>
-                                </tr>
-                                <tr>
-                                    <td className="participant-table-left">Tattoo</td>
-                                    <td className="participant-table-right">{participantInfo['tattoo']}</td>
-                                </tr>
+
                                 <tr>
                                     <td className="participant-table-left">&nbsp;</td>
                                 </tr>
@@ -380,6 +396,85 @@ function UpdateSession({ database, updateSession, setUpdateSession, setActivityL
                                                 return <option key={"data-session-status" + i} value={s} selected={s == sessionInfo['status']}>{s}</option>
                                             })}
                                         </select>
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td className="participant-table-left">Session Clothing</td>
+                                    <td className="participant-table-right">
+                                        <select className="session-data-selector"
+                                            onChange={(e) => {
+                                                updateValue("/timeslots/" + updateSession, { clothing: e.currentTarget.value });
+                                                LogEvent({
+                                                    pid: participantId,
+                                                    timeslot: updateSession,
+                                                    action: "Session clothing: '" + (e.currentTarget.value || "Blank") + "'"
+                                                })
+                                            }}
+                                        >
+                                            {Constants['clothingCategories'].map((s, i) => {
+                                                return <option key={"data-session-clothing" + i} value={s} selected={s == sessionInfo['clothing']}>{s}</option>
+                                            })}
+                                        </select>
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td className="participant-table-left">Session Hair</td>
+                                    <td className="participant-table-right">
+                                        <select className="session-data-selector"
+                                            onChange={(e) => {
+                                                updateValue("/timeslots/" + updateSession, { hair: e.currentTarget.value });
+                                                LogEvent({
+                                                    pid: participantId,
+                                                    timeslot: updateSession,
+                                                    action: "Session hair: '" + (e.currentTarget.value || "Blank") + "'"
+                                                })
+                                            }}
+                                        >
+                                            {Constants['hairCategories'].map((s, i) => {
+                                                return <option key={"data-session-hair" + i} value={s} selected={s == sessionInfo['hair']}>{s}</option>
+                                            })}
+                                        </select>
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td className="participant-table-left">Session Facial Hair</td>
+                                    <td className="participant-table-right">
+                                        <select className="session-data-selector"
+                                            onChange={(e) => {
+                                                updateValue("/timeslots/" + updateSession, { facial_hair: e.currentTarget.value });
+                                                LogEvent({
+                                                    pid: participantId,
+                                                    timeslot: updateSession,
+                                                    action: "Session facial hair: '" + (e.currentTarget.value || "Blank") + "'"
+                                                })
+                                            }}
+                                        >
+                                            {Constants['facialHairCategories'].map((s, i) => {
+                                                return <option key={"data-session-facial-hair" + i} value={s} selected={s == sessionInfo['facial_hair']}>{s}</option>
+                                            })}
+                                        </select>
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td className="participant-table-left">Bulky clothing item</td>
+                                    <td className="participant-table-right">
+                                        <input type='checkbox'
+                                            value={true}
+                                            checked={sessionInfo['bulky_clt_item'] === 'true' ? true : false}
+                                            onChange={(e) => {
+                                                const newValue = e.currentTarget.checked ? 'true' : 'false'
+                                                updateValue("/timeslots/" + updateSession, { bulky_clt_item: newValue });
+                                                LogEvent({
+                                                    pid: participantId,
+                                                    timeslot: updateSession,
+                                                    action: "Bulky clothing item: '" + (newValue) + "'"
+                                                })
+                                            }}>
+                                        </input>
                                     </td>
                                 </tr>
 

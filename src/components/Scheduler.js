@@ -64,7 +64,7 @@ function Scheduler({ database, setUpdateSession }) {
   }, [Object.keys(database['timeslots']).length])
 
   function getCSVData() {
-    let output = [['Date', 'Station', 'Session status', 'Participant status', 'Participant ID', 'Name', 'Handedness', 'Tattoo', 'Session comments']];
+    let output = [['Date', 'Station', 'Session status', 'Participant status', 'Participant ID', 'Name', 'Weight (kg)', 'Height (cm)', 'Session comments']];
 
     let table = document.getElementById("schedulerTable");
     for (var r = 1; r < table.rows.length; r++) {
@@ -104,7 +104,7 @@ function Scheduler({ database, setUpdateSession }) {
         target="_blank"
         asyncOnClick={true}
         onClick={() => getCSVData()}
-        filename={"penelope schedule - exported at " + format(new Date(), "yyyy-MM-dd") + ".csv"}
+        filename={"foraker schedule - exported at " + format(new Date(), "yyyy-MM-dd") + ".csv"}
         data={csvData}
       >Download CSV</CSVLink>
       <div className="scheduler-table-container">
@@ -144,8 +144,8 @@ function Scheduler({ database, setUpdateSession }) {
               </th>
               <th>Participant ID</th>
               <th>Name</th>
-              <th>Handedness</th>
-              <th>Tattoo</th>
+              <th>Weight (kg)</th>
+              <th>Height (cm)</th>
               <th>Session comments</th>
               <th>Functions</th>
             </tr>

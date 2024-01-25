@@ -17,10 +17,10 @@ const Constants = {
     "Prefer not to say"
   ],
   listOfAgeRanges: [
-    "20-25",
-    "26-34",
-    "35-49",
-    "50+"
+    "18-29",
+    "30-50",
+    "51-65"
+
   ],
   tattooValues: [
     "Yes",
@@ -36,11 +36,66 @@ const Constants = {
     "Failed - Comp.",
     "Failed - No Comp."
   ],
+  clothingCategories: [
+    "",
+    "Hoodie",
+    "Collared shirt",
+    "T-Shirt",
+    "Sleeveless Shirt",
+    "Dress"
+  ],
+  hairCategories: [
+    "",
+    "Bald or Short Hair",
+    "Bun or Pony Tail",
+    "Shoulder Length or shorter worn down",
+    "Longer than shoulder length worn down"
+  ],
+  facialHairCategories: [
+    "",
+    "None",
+    "Short",
+    "Long"
+  ],
   demoBinsAgeRanges: {
-    "20-25": "1",
-    "26-34": "2",
-    "35-49": "3",
-    "50+": "4"
+    "18-29": "1",
+    "30-50": "2",
+    "51-65": "3",
+  },
+
+  demoBinsWeightRanges: {
+    "50-69": "1",
+    "70-89": "2",
+    "90-110": "3",
+    "<=49": "4",
+    ">110": "5"
+  },
+
+  demoBinsHeights: {
+    "150-160": "1",
+    "161-170": "2",
+    "171-180": "3",
+    "181-190": "4",
+    "<150": "5",
+    ">190": "6",
+  },
+
+  listOfWeightsBinsAgeRanges: {
+    "<=49": "1",
+    "50-69": "2",
+    "70-89": "3",
+    "90-110": "4",
+    ">110": "5",
+  },
+
+
+  demoBinsSkintoneRanges: {
+    'Type-I: light pale white': "1",
+    'Type-II: white, fair': "2",
+    'Type-III: medium, white to light brown': "2",
+    'Type-IV: olive, moderate brown': "3",
+    'Type-V: brown, dark brown': "4",
+    'Type-VI: very dark brown to black': "5",
   },
   demoBinsGenders: {
     "Female": "0",
@@ -62,7 +117,37 @@ const Constants = {
     'axel.romeo@telusinternational.com',
     'jessica.tucker@telusinternational.com',
     'sheiby.molina@telusinternational.com'
+  ],
+  skinTone: [
+    'Type-I: light pale white',
+    'Type-II: white, fair',
+    'Type-III: medium, white to light brown',
+    'Type-IV: olive, moderate brown',
+    'Type-V: brown, dark brown',
+    'Type-VI: very dark brown to black',
+  ],
+  hairlength: [
+    'None',
+    'Short',
+    'Medium',
+    'Long'
+  ],
+  listOfWeights: [
+    "<=49",
+    "50-69",
+    "70-89",
+    "90-110",
+    ">110"
+  ],
+  listOfHeights: [
+    "<150",
+    "150-160",
+    "161-170",
+    "171-180",
+    "181-190",
+    ">190"
   ]
+
 }
 
 export default Constants;

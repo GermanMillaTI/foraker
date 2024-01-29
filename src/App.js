@@ -18,6 +18,7 @@ import SchedulerOverview from './components/SchedulerOverview';
 import ListOfOldParticipants from './components/ListOfOldParticipants';
 import CheckDocuments from './components/CheckDocuments';
 import SchedulerExternal from './components/SchedulerExternal';
+import AgeStats from './components/AgeStats';
 
 function App() {
   const [user, setUser] = useState(null);
@@ -27,6 +28,7 @@ function App() {
   const [checkDocuments, setCheckDocuments] = useState("");
   const [showStats, setShowStats] = useState(false);
   const [showStatsSkintones, setShowStatsSkintones] = useState(false);
+  const [showStatsAges, setShowStatsAges] = useState(false);
   const [showStatsSessions, setShowStatsSessions] = useState(false);
   const [filterDataFromStats, setFilterDataFromStats] = useState(false);
   const [showBins, setShowBins] = useState(false);
@@ -397,6 +399,7 @@ function App() {
           setShowStats={setShowStats}
           setShowStatsSkintones={setShowStatsSkintones}
           setShowStatsSessions={setShowStatsSessions}
+          setShowStatsAges={setShowStatsAges}
           setShowBins={setShowBins}
           setActivityLog={setActivityLog}
           setIdForLog={setIdForLog}
@@ -418,6 +421,7 @@ function App() {
       {checkDocuments && <CheckDocuments database={database} checkDocuments={checkDocuments} setCheckDocuments={setCheckDocuments} />}
       {showStats && <Stats database={database} setShowStats={setShowStats} setFilterDataFromStats={setFilterDataFromStats} role={role} />}
       {showStatsSkintones && <SkintoneStats database={database} setShowStatsSkintones={setShowStatsSkintones} setFilterDataFromStats={setFilterDataFromStats} role={role} />}
+      {showStatsAges && <AgeStats database={database} setShowStatsAges={setShowStatsAges} setFilterDataFromStats={setFilterDataFromStats} role={role} />}
       {showStatsSessions && <StatsSessions database={database} setShowStatsSessions={setShowStatsSessions} setFilterDataFromStats={setFilterDataFromStats} />}
       {showBins && <Bins database={database} setShowBins={setShowBins} />}
 

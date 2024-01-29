@@ -51,9 +51,10 @@
     display: block;
     height: 50em;
     width: 50em;
+
 }
 
-img {
-    width: auto;
-    height: 100%;
+.document-preview img {
+    width: 400px;
+    height: auto;
 }

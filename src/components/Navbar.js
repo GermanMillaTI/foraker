@@ -8,7 +8,7 @@ import { useNavigate } from "react-router-dom";
 
 import './Navbar.css';
 
-function Navbar({ database, setDatabase, setRole, setUserRights, setShowStats, setShowStatsSessions, setShowStatsSkintones, setShowBins, setActivityLog, setIdForLog, setTimeslotforLog, role }) {
+function Navbar({ database, setDatabase, setRole, setShowStatsAges, setUserRights, setShowStats, setShowStatsSessions, setShowStatsSkintones, setShowBins, setActivityLog, setIdForLog, setTimeslotforLog, role }) {
   const navigate = useNavigate();
 
   // Logout
@@ -55,6 +55,7 @@ function Navbar({ database, setDatabase, setRole, setUserRights, setShowStats, s
       {['admin', 'apple'].includes(role) && <button className="navbar-button" onClick={(e) => { e.preventDefault(); navigate("/scheduler-overview"); }}>Overview</button>}
       {['admin', 'manager'].includes(role) && <button className="navbar-button" onClick={() => setShowStats(true)}>Participant stats</button>}
       {['admin', 'manager'].includes(role) && <button className="navbar-button" onClick={() => setShowStatsSkintones(true)}>Skin tone stats</button>}
+      {['admin', 'manager'].includes(role) && <button className="navbar-button" onClick={() => setShowStatsAges(true)}>Age stats</button>}
       {/*<button className="navbar-button" onClick={() => setShowStatsSessions(true)}>Session stats</button>*/}
       {['admin'].includes(role) && <button className="navbar-button" onClick={() => setShowBins(true)}>Demo bins</button>}
       {['admin', 'apple'].includes(role) && <button className="navbar-button" onClick={(e) => { e.preventDefault(); navigate("/scheduler-external"); }}>Scheduler external</button>}

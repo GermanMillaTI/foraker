@@ -116,7 +116,8 @@ const Constants = {
     'sari.kiiskinen@telusinternational.com',
     'axel.romeo@telusinternational.com',
     'jessica.tucker@telusinternational.com',
-    'sheiby.molina@telusinternational.com'
+    'sheiby.molina@telusinternational.com',
+    'zoltan.bathori@telusinternational.com'
   ],
   skinTone: [
     'Type-I: light pale white',

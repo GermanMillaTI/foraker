@@ -70,6 +70,8 @@ function SkintoneStats({ database, setShowStatsSkintones, setFilterDataFromStats
             let skintone = participant['skinTone'];
             let status = participant['status'] || "Blank";
             if (!Constants['skinTone'].includes(skintone)) return;
+            if (!Constants['listOfAgeRanges'].includes(participant['age_range'])) return;
+
             tempStats[skintone][gender][status] += 1;
         })
 

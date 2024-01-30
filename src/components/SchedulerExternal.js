@@ -49,7 +49,6 @@ function SchedulerExternal({ database }) {
                             <th>Height (kg)</th>
                             <th>Skin Color</th>
                             <th>Hair Length</th>
-                            <th>Demo Bin</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -102,10 +101,6 @@ function SchedulerExternal({ database }) {
 
                                         <td className="center-tag">
                                             {database['participants'][database['timeslots'][key]['participant_id']]['haiLength']}
-                                        </td>
-
-                                        <td className="center-tag">
-                                            {database['timeslots'][key]['demo_bin']}
                                         </td>
                                     </tr>
                                 )

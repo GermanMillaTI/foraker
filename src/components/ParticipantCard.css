@@ -33,7 +33,7 @@
 }
 
 .participant-card-column:hover {
-    background-color: rgba(1, 69, 94, 0.15);
+    background-color: rgba(1, 69, 94, 0.08);
 }
 
 
@@ -114,11 +114,7 @@
     border-radius: 3px;
 }
 
-.health-conditions:hover {
-    background-color: rgba(221, 12, 36, 0.5);
-    border-radius: 3px;
-    color: white
-}
+
 
 
 .doc-button {

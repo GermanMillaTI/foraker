@@ -79,7 +79,7 @@ function Participants({
             target="_blank"
             asyncOnClick={true}
             onClick={getCSVdata}
-            filename={"penelope-participants_" + new Date().toISOString().split("T")[0] + ".csv"}
+            filename={"foraker-participants_" + new Date().toISOString().split("T")[0] + ".csv"}
             data={pptCsvData}
           >Download filtered results</CSVLink>
 

@@ -296,7 +296,7 @@ function ParticipantFilter({ database, setShownParticipants, filterDataFromStats
         })}
       </div>
 
-      <div className="filter-element">
+      <div className="filter-element gap">
         <span className="filter-container-header">Weight range (kg)</span>
         {Constants['listOfWeights'].map((val, i) => {
           return <div key={"filter-weight" + i} className="filter-object">
@@ -333,7 +333,7 @@ function ParticipantFilter({ database, setShownParticipants, filterDataFromStats
         })}
       </div>
 
-      <div className="filter-element">
+      <div className="filter-element gap">
         <span className="filter-container-header">Gender</span>
         {Constants['genders'].map((val, i) => {
           return <div key={"filter-gender" + i} className="filter-object">

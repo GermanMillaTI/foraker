@@ -82,8 +82,26 @@
     padding: 0em 2em;
 }
 
+.stats-filter-skins {
+    margin: .2em;
+    margin-top: 1em;
+    display: inline-flex;
+    gap: 1em;
+    flex-direction: row;
+    padding: 0em 2em;
+}
+
+.stats-filter-skins div {
+    display: flex;
+    padding-right: 15px;
+}
+
 .stats-filter-element div {
     display: flex;
+}
+
+.stats-filter-skins span {
+    font-weight: bold;
 }
 
 .stats-filter-element span {

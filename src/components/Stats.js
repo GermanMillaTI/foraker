@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 
 import './Stats.css';
 import Constants from './Constants';
+import { filter } from 'd3';
 
 const filterReducer = (state, event) => {
     let newState = JSON.parse(JSON.stringify(state));
@@ -26,7 +27,8 @@ function Stats({ database, setShowStats, setFilterDataFromStats, role }) {
     const [stats, setStats] = useState(getDefaultNumbers());
     const [filterData, setFilterData] = useReducer(filterReducer, {
         statuses: ["Blank", "Not Selected"],
-        statuses2: ["Contacted", "Scheduled", "Completed"]
+        statuses2: ["Contacted", "Scheduled", "Completed"],
+        skinTones: Constants['skinTone']
     });
 
 
@@ -55,7 +57,7 @@ function Stats({ database, setShowStats, setFilterDataFromStats, role }) {
             icfs: ['Yes', 'No'],
             demoBinStatuses: Constants['demoBinStatuses'],
             highlighted: ['Yes', 'No'],
-            skinTones: Constants['skinTone'],
+            skinTones: filterData['skinTones'],
             hairlength: Constants['hairlength'],
         });
 
@@ -67,23 +69,32 @@ function Stats({ database, setShowStats, setFilterDataFromStats, role }) {
     useEffect(() => {
         // Fill stats
         let tempStats = getDefaultNumbers();
+        let blankArray = 0
 
         let participants = database['participants'];
         Object.values(participants).map(participant => {
+
+
             let gender = participant['gender'];
             let weightRange = participant['weight_range'];
             let heightRange = participant['height_range'];
             let ethValue = 1
             let status = participant['status'] || "Blank";
+            let skinTone = participant['skinTone'];
+            if (!filterData['skinTones'].includes(skinTone)) return;
 
 
+            if (status == "Blank") {
+                blankArray = blankArray + 1;
+                console.log(participant['email'], status)
+            }
             if (!Constants['listOfWeights'].includes(weightRange)) return;
+            if (!Constants['listOfAgeRanges'].includes(participant['age_range'])) return;
             tempStats[heightRange][weightRange][gender][status] += ethValue;
 
         })
-
         setStats(tempStats);
-    }, [])
+    }, [filterData['skinTones']])
 
 
     useEffect(() => {
@@ -118,6 +129,19 @@ function Stats({ database, setShowStats, setFilterDataFromStats, role }) {
                         </div>
                     })}
                 </div>
+
+                {role == 'admin' &&
+                    <div className='stats-filter-skins'>
+                        <div className="still-interested-participants-only-filter">
+                            <div><span className="skinTones-row">Skin tones:</span></div>
+                            {Constants['skinTone'].map((val, i) => {
+                                return <div key={"filter-status-" + i}>
+                                    <input id={"stats-filter-skinTones-" + val} name={val} type="checkbox" alt="skinTones" onChange={setFilterData} checked={filterData['skinTones'].includes(val)} />
+                                    <label className="skinTones-row" htmlFor={"stats-filter-skinTones-" + val}>{val}</label>
+                                </div>
+                            })}
+                        </div>
+                    </div>}
 
                 <div className="modal-stats-content">
                     {['Male', 'Female'].map(gender => {
@@ -159,7 +183,6 @@ function Stats({ database, setShowStats, setFilterDataFromStats, role }) {
                                             return <td className={"stats-demo-bin-cell " + (binClassTag)}>
                                                 <span className="first-number" onClick={() => selectDemoBin(filterData['statuses'], eth, [ageRange], gender)}>{output}</span>
                                                 <span className="second-number" onClick={() => selectDemoBin(filterData['statuses2'], eth, [ageRange], gender)}>{output2}</span>
-                                                {columnName != "Total" && <label className="stats-demo-bin">{Constants['demoBinsHeights'][eth] + Constants['demoBinsWeightRanges'][ageRange] + Constants['demoBinsGenders'][gender]}</label>}
                                             </td>
                                         })}
                                     </tr>

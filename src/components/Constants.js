@@ -64,19 +64,19 @@ const Constants = {
   },
 
   demoBinsWeightRanges: {
-    "50-69": "1",
-    "70-89": "2",
-    "90-110": "3",
-    "<=49": "4",
+    "<=49": "1",
+    "50-69": "2",
+    "70-89": "3",
+    "90-110": "4",
     ">110": "5"
   },
 
   demoBinsHeights: {
-    "150-160": "1",
-    "161-170": "2",
-    "171-180": "3",
-    "181-190": "4",
-    "<150": "5",
+    "<150": "1",
+    "150-160": "2",
+    "161-170": "3",
+    "171-180": "4",
+    "181-190": "5",
     ">190": "6",
   },
 
@@ -127,6 +127,14 @@ const Constants = {
     'Type-V: brown, dark brown',
     'Type-VI: very dark brown to black',
   ],
+  skintonesFilter: {
+    'Type-I': 'Type-I: light pale white',
+    'Type-II': 'Type-II: white, fair',
+    'Type-III': 'Type-III: medium, white to light brown',
+    'Type-IV': 'Type-IV: olive, moderate brown',
+    'Type-V': 'Type-V: brown, dark brown',
+    'Type-VI': 'Type-VI: very dark brown to black',
+  },
   hairlength: [
     'None',
     'Short',

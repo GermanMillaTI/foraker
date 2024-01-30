@@ -307,13 +307,8 @@ function ParticipantCard({ database, role, participantId, index, setShowBookSess
                     </span>
                 </div>
 
-
                 <div className="participant-attribute-container">
-                    <span className="field-label">Country of residence</span><span>{participantInfo['country_of_residence'] === "Other" ? participantInfo['countryOfResidence_other'] : participantInfo['country_of_residence']}</span>
-                </div>
-
-                <div className="participant-attribute-container">
-                    <span className="field-label">State, City</span><span>{participantInfo['state_of_residence'] || "N/A" + ", " + participantInfo['city_of_residence']}</span>
+                    <span className="field-label">State, City / Country</span><span>{participantInfo['city_of_residence'] + ", " + participantInfo['state_of_residence'] + " / " + (participantInfo['country_of_residence'] === "Other" ? participantInfo['countryOfResidence_other'] : participantInfo['country_of_residence'])}</span>
                 </div>
 
 
@@ -402,7 +397,7 @@ function ParticipantCard({ database, role, participantId, index, setShowBookSess
 
                 {participantInfo['vlog'] && <div className="participant-attribute-container">
                     <span className="field-label">Vlog</span>
-                    <span><a href={participantInfo['vlog']} target="_blank" className="vlog-link">Open vlog link</a></span>
+                    <span><a href={"http://" + participantInfo['vlog']} target="_blank" className="vlog-link">Open vlog link</a></span>
                 </div>}
 
                 <div className="participant-attribute-container">
@@ -472,7 +467,7 @@ function ParticipantCard({ database, role, participantId, index, setShowBookSess
                     </select>
                 </div>
 
-                {participantInfo['old_ppt'].length > 0 &&
+                {/* {participantInfo['old_ppt'].length > 0 &&
                     <div className="participant-attribute-container">
                         <span className="old-penelope-participant">
                             {"Penelope <6 participant"}
@@ -484,7 +479,7 @@ function ParticipantCard({ database, role, participantId, index, setShowBookSess
                                 <span> (Email)</span>}
                         </span>
                     </div>
-                }
+                } */}
 
                 {((participantInfo['email_counter'] > 1 || participantInfo['phone_counter'] > 1) && participantInfo['status'] != "Duplicate") && <div className="participant-attribute-container">
                     <span className="field-label">Not duplicate</span>
@@ -503,8 +498,8 @@ function ParticipantCard({ database, role, participantId, index, setShowBookSess
                 </div>}
 
                 <div className="participant-attribute-container">
-                    <span className="field-label">Demo bin</span>
-                    <span>{participantInfo['demo_bin']} {participantInfo['open_demo_bin'] ? " (open)" : "(closed)"}</span>
+                    <span className="field-label">Demo bin status</span>
+                    <span>{participantInfo['open_demo_bin'] ? " (open)" : "(closed)"}</span>
                 </div>
 
 
@@ -517,7 +512,7 @@ function ParticipantCard({ database, role, participantId, index, setShowBookSess
                                 <a className="copy-booking-link fas fa-copy" onClick={(e) => {
                                     e.preventDefault();
 
-                                    let url = "https://odyssey-9248a.web.app/#" + md5('p_' + participantId) + "&" + participantId
+                                    let url = "https://forakerappointments.web.app/#" + md5('p_' + participantId) + "&" + participantId
                                     navigator.clipboard.writeText(url);
 
                                     Swal.fire({

@@ -30,7 +30,7 @@ function AgeStats({ database, setShowStatsAges, setFilterDataFromStats, role }) 
     });
 
     function getDefaultNumbers() {
-        let temp = Object.assign({}, ...Constants['skinTone'].map(k => ({
+        let temp = Object.assign({}, ...Constants['listOfAgeRanges'].map(k => ({
             [k]: Object.assign({}, ...Constants['genders'].map(k => ({
                 [k]: Object.assign({}, ...Constants['participantStatuses'].map(k => ({ [k || "Blank"]: 0 })))
             })))
@@ -45,7 +45,7 @@ function AgeStats({ database, setShowStatsAges, setFilterDataFromStats, role }) 
         setFilterDataFromStats({
             fromStats: true,
             genders: [gender],
-            ageRange: ageRange,
+            ageRanges: ageRange,
             statuses: statuses,
             icfs: ['Yes', 'No'],
             demoBinStatuses: Constants['demoBinStatuses'],
@@ -69,8 +69,10 @@ function AgeStats({ database, setShowStatsAges, setFilterDataFromStats, role }) 
             let gender = participant['gender'];
             let ageRange = participant['age_range'];
             let status = participant['status'] || "Blank";
-            if (!Constants['listOfAgeRanges'].includes(ageRange)) return;
+            if (!Constants['listOfWeights'].includes(participant['weight_range'])) return;
+            if (!Constants['listOfAgeRanges'].includes(participant['age_range'])) return;
             tempStats[ageRange][gender][status] += 1;
+            console.log(participant['email'], tempStats[ageRange][gender][status])
         })
         setStats(tempStats);
     }, [])

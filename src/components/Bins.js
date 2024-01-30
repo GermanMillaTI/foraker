@@ -52,7 +52,7 @@ function Bins({ database, setShowBins }) {
 
                                                 <>
                                                     {Constants['demoBinStatusDictionary'][currentValue]}
-                                                    {columnName != "Total" && <label className="stats-demo-bin">{Constants['demoBinsHeights'][hgt] + Constants['demoBinsWeightRanges'][weightRange] + Constants['demoBinsGenders'][gender]}</label>}
+                                                    {/* {columnName != "Total" && <label className="stats-demo-bin">{Constants['demoBinsHeights'][hgt] + Constants['demoBinsWeightRanges'][weightRange] + Constants['demoBinsGenders'][gender]}</label>} */}
 
                                                 </>
                                             </td>

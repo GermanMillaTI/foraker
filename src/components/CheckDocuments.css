@@ -17,7 +17,7 @@
     display: flex;
     flex-direction: column;
     margin-left: 2em;
-    background: #E4E9F7;
+    background: #F7F7F1;
     position: absolute;
     right: 0;
     border-radius: .2em;
@@ -30,7 +30,8 @@
     padding: .2em;
     font-weight: bold;
     text-align: center;
-    background-color: #a3bcff;
+    background-color: #01455E;
+    color: #F7F7F1;
     font-size: 1.3em;
 }
 
@@ -50,11 +51,6 @@
     margin: 0em auto 1em auto;
     display: block;
     height: 50em;
-    width: 50em;
+    width: auto;
 
-}
-
-.document-preview img {
-    width: 400px;
-    height: auto;
 }

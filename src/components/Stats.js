@@ -84,10 +84,6 @@ function Stats({ database, setShowStats, setFilterDataFromStats, role }) {
             if (!filterData['skinTones'].includes(skinTone)) return;
 
 
-            if (status == "Blank") {
-                blankArray = blankArray + 1;
-                console.log(participant['email'], status)
-            }
             if (!Constants['listOfWeights'].includes(weightRange)) return;
             if (!Constants['listOfAgeRanges'].includes(participant['age_range'])) return;
             tempStats[heightRange][weightRange][gender][status] += ethValue;

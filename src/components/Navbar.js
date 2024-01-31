@@ -59,6 +59,7 @@ function Navbar({ database, setDatabase, setRole, setShowStatsAges, setUserRight
       {/*<button className="navbar-button" onClick={() => setShowStatsSessions(true)}>Session stats</button>*/}
       {['admin'].includes(role) && <button className="navbar-button" onClick={() => setShowBins(true)}>Demo bins</button>}
       {['admin', 'apple'].includes(role) && <button className="navbar-button" onClick={(e) => { e.preventDefault(); navigate("/scheduler-external"); }}>Scheduler external</button>}
+      {['admin', 'apple'].includes(role) && <button className="navbar-button" onClick={(e) => { e.preventDefault(); navigate("/external"); }}>External Reporting</button>}
       {['admin'].includes(role) && <button className='navbar-button' onClick={() => {
         setActivityLog(true);
         setIdForLog("");

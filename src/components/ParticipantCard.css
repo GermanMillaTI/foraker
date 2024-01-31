@@ -297,6 +297,22 @@
     font-weight: bold;
 }
 
+.closed {
+    padding: 0 1em;
+    border-radius: 0.5em;
+    background: rgba(221, 12, 36, 1);
+    color: white;
+    font-weight: bold;
+}
+
+.open {
+    padding: 0 1em;
+    border-radius: 0.5em;
+    background: #346C36;
+    color: white;
+    font-weight: bold;
+}
+
 .old-penelope-participant {
     display: inline-block;
     width: 100%;

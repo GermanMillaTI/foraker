@@ -93,7 +93,7 @@
 
 .stats-filter-skins div {
     display: flex;
-    padding-right: 15px;
+    padding-right: 10px;
 }
 
 .stats-filter-element div {
@@ -111,6 +111,16 @@
 
 .stats-filter-element input[type=checkbox] {
     cursor: pointer;
+}
+
+.stats-filter-skins input[type=checkbox] {
+    cursor: pointer;
+}
+
+.stats-filter-skins label {
+    padding-left: .3em;
+    cursor: pointer;
+    user-select: none;
 }
 
 .stats-filter-element label {

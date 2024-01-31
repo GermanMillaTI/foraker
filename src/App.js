@@ -19,6 +19,7 @@ import ListOfOldParticipants from './components/ListOfOldParticipants';
 import CheckDocuments from './components/CheckDocuments';
 import SchedulerExternal from './components/SchedulerExternal';
 import AgeStats from './components/AgeStats';
+import External from './components/External';
 
 function App() {
   const [user, setUser] = useState(null);
@@ -383,6 +384,8 @@ function App() {
         return <SchedulerOverview database={database} />;
       case "/scheduler-external":
         return <SchedulerExternal database={database} />;
+      case "/external":
+        return <External database={database} />
       default:
         return null;
     }
@@ -412,6 +415,7 @@ function App() {
           <Route path="/scheduler" element={getElement("/scheduler")} />
           <Route path="/scheduler-overview" element={getElement("/scheduler-overview")} />
           <Route path="/scheduler-external" element={getElement("/scheduler-external")} />
+          <Route path="/external" element={getElement("/external")} />
         </Routes>
       </> : null : (loading ? null : <LoginPage />)
       }

@@ -499,7 +499,7 @@ function ParticipantCard({ database, role, participantId, index, setShowBookSess
 
                 <div className="participant-attribute-container">
                     <span className="field-label">Demo bin status</span>
-                    <span>{participantInfo['open_demo_bin'] ? " (open)" : "(closed)"}</span>
+                    <span className={participantInfo['open_demo_bin'] ? " open" : "closed"}>{participantInfo['open_demo_bin'] ? " Open" : "Closed"}</span>
                 </div>
 
 

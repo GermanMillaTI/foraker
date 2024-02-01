@@ -69,7 +69,7 @@
 }
 
 .highlighted-span {
-    background: rgba(205, 113, 123, 0.5);
+    background: rgba(221, 12, 36, 0.20);
 }
 
 .multiple-ethnicities {
@@ -110,7 +110,7 @@
 }
 
 .health-conditions {
-    background-color: rgba(221, 12, 36, 0.1);
+    background-color: rgba(221, 12, 36, 0.20);
     border-radius: 3px;
 }
 

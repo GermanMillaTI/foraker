@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { CSVLink } from 'react-csv';
 
-import './SchedulerExternal.css';
+import './External.css';
 import * as React from 'react';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -235,12 +235,12 @@ function External({ database }) {
 
     console.log(facialHairStats)
     return (
-        <>
+        <div>
             <TableContainer style={{ width: "1200px", marginLeft: "auto", marginRight: "auto", marginTop: "2em", padding: "0.5em" }} component={Paper}>
                 <Table sx={{ minWidth: 450, border: "1px solid rgba(224, 224, 224, 1)" }} aria-label="simple table">
                     <TableHead>
                         <TableRow>
-                            <TableCell align="center" colSpan={13}>
+                            <TableCell align="center" colSpan={13} >
                                 <strong>Height / Weight / Gender</strong>
                             </TableCell>
                         </TableRow>
@@ -290,7 +290,11 @@ function External({ database }) {
                                 </TableCell>
                                 {heights.map(height => {
                                     return ["Male", "Female"].map(gender => {
-                                        return <TableCell style={{ backgroundColor: stats[height][weight][gender]['Completed'] > 0 ? 'rgba(1, 69, 94, 0.20)' : 'inherit' }} align="center">{stats[height][weight][gender]['Completed']}</TableCell>
+                                        return <TableCell style={{
+                                            backgroundColor: stats[height][weight][gender]['Completed'] > 0 ? 'rgba(1, 69, 94, 0.20)' : 'inherit',
+                                            color: stats[height][weight][gender]['Completed'] === 0 ? '#999' : 'inherit',
+                                            fontWeight: stats[height][weight][gender]['Completed'] === 0 ? 'lighter' : 'bolder',
+                                        }} align="center">{stats[height][weight][gender]['Completed']}</TableCell>
                                     })
                                 })}
 
@@ -301,7 +305,7 @@ function External({ database }) {
                 </Table>
                 <Grid container spacing={2} style={{ marginTop: "10em" }}>
                     <Grid item sm={6}>
-                        <Table sx={{ minWidth: 450, border: "1px solid rgba(224, 224, 224, 1)" }} aria-label="simple table">
+                        <Table sx={{ minWidth: 450, border: "1px solid rgba(240, 240, 240, 1)" }} aria-label="simple table">
                             <TableHead>
                                 <TableRow>
                                     <StyledTableCell align="center" colSpan={2}>
@@ -743,7 +747,7 @@ function External({ database }) {
 
 
 
-        </>
+        </div>
     );
 }
 

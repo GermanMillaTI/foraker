@@ -328,7 +328,7 @@ function ParticipantCard({ database, role, participantId, index, setShowBookSess
                 <div className="participant-attribute-container">
                     <span className="field-label">Skin color</span><span>{participantInfo['skinTone']}</span>
                     <a className='copy-email-link fas fa-edit'
-                        title='Update Height'
+                        title='Update Skin tone'
                         onClick={(e) => {
                             e.preventDefault();
                             updateSkinColor();
@@ -499,15 +499,26 @@ function ParticipantCard({ database, role, participantId, index, setShowBookSess
 
                 <div className="participant-attribute-container">
                     <span className="field-label">Demo bin status</span>
-                    <span className={participantInfo['open_demo_bin'] ? " open" : "closed"}>{participantInfo['open_demo_bin'] ? " Open" : "Closed"}</span>
+                    <span className={"participant-attribute-container"}>{participantInfo['open_demo_bin'] ? " Open" : "Closed"}</span>
                 </div>
 
+                {!participantInfo['icf'] &&
+                    !["Duplicate", "Rejected", "Withdrawn", "Not Selected"].includes(participantInfo['status']) && participantInfo['unsubscribed_comms'] !== "Yes" &&
+                    <div className="participant-attribute-container">
+                        <span className="field-label">Communication</span>
+                        <button className="email-button icf-reminder-button" onClick={() => sendMail(participantId, "ICF Reminder", "")}>ICF Reminder</button>
+                    </div>
+                }
 
-                {!["Rejected", "Withdrawn", "Completed", "Not Selected", "Duplicate"].includes(participantInfo['status']) &&
+
+
+                {participantInfo['icf'] && !["Rejected", "Withdrawn", "Completed", "Not Selected", "Duplicate"].includes(participantInfo['status']) &&
                     <div className="participant-attribute-container">
                         <span className="field-label">Communication</span>
                         {(participantInfo['open_demo_bin'] === true || tempParticipants.includes(participantId)) ?
                             <>
+
+
                                 <button className="email-button handoff-button" onClick={() => sendMail(participantId, "Handoff")}>Send handoff email</button>
                                 <a className="copy-booking-link fas fa-copy" onClick={(e) => {
                                     e.preventDefault();

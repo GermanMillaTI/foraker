@@ -100,70 +100,153 @@ function UpdateSession({ database, updateSession, setUpdateSession, setActivityL
     }
 
 
-    function updateEthnicity() {
-        const HTMLContent = () => {
-            const pInfo = database['participants'][participantId];
-            const ethnicities = pInfo['ethnicities'];
-            const unlistedEthnicity = pInfo['unlisted_ethnicity'];
+    function updateHeight() {
+        const pInfo = database['participants'][participantId];
+        let height = pInfo['height_cm'];
 
-            return <>
-                {Constants['ethnicities'].map((val, i) => {
-                    return val != 'Other' && <div key={"popup-filter-eth" + i} className="update-ethnicity-row">
-                        <input id={"popup-filter-" + val} name={val} type="checkbox" checked={ethnicities.includes(val) ? true : false} />
-                        <label htmlFor={"popup-filter-" + val}>{val}</label>
-                    </div>
-                })}
-                <div className="update-ethnicity-row2">
-                    <label>Other ethnicity:</label>
-                    <input id="otherEthnicity" type="textbox" defaultValue={unlistedEthnicity} />
-                </div>
-            </>
+        const HTMLContent = () => {
+            return <input type="number" id="newHeight" defaultValue={height} />
+        }
+
+        const saveHeight = () => {
+            height = document.getElementById("newHeight").value;
+
+            const inches = height / 2.54;
+            const feet = Math.floor(inches / 12);
+            const remainingInches = inches % 12;
+
+
+
+            updateValue("/participants/" + participantId, { height_cm: height });
+            updateValue("/participants/" + participantId, { height_ft: parseFloat(feet) });
+            updateValue("/participants/" + participantId, { height_in: parseFloat(remainingInches) });
+
+            LogEvent({
+                pid: participantId,
+                action: "Participant height (cm): '" + height + "'"
+            })
         }
 
 
-        const pInfo = database['participants'][participantId];
-        const currentEthnicities = pInfo['ethnicities'];
-        const currentUnlistedEthnicity = pInfo['unlisted_ethnicity'];
-
         Swal.fire({
-            title: "Updating ethnicities",
+            title: "Updating Height (cm)",
             confirmButtonText: "Save",
             showCancelButton: true,
             html: renderToString(<HTMLContent />)
         }).then((result) => {
             if (result.isConfirmed) {
-                let checkboxes = document.querySelectorAll("[id^='popup-filter-']");
-                let list = "";
-                checkboxes.forEach(x => list += (x.checked ? x.name + ", " : ""));
-
-                let otherEthnicity = document.getElementById('otherEthnicity').value.trim();
-                if (otherEthnicity) list += "Other,"
-
-                list = list.trim();
-                list = list.substring(0, list.length - 1);
-
-                if (list) {
-                    if (list != currentEthnicities) {
-                        if (!pInfo['original_ethnicities']) updateValue("/participants/" + participantId, { original_ethnicities: currentEthnicities });
-                        updateValue("/participants/" + participantId, { ethnicities: list });
-
-                        LogEvent({
-                            pid: participantId,
-                            action: "Ethnicities: '" + list + "'"
-                        })
-                    }
-
-                    if (otherEthnicity != currentUnlistedEthnicity) {
-                        if (!pInfo['original_unlisted_ethnicity'] && currentUnlistedEthnicity) updateValue("/participants/" + participantId, { original_unlisted_ethnicity: currentUnlistedEthnicity });
-                        updateValue("/participants/" + participantId, { unlisted_ethnicity: otherEthnicity });
-                        LogEvent({
-                            pid: participantId,
-                            action: "Unlisted ethnicity: '" + otherEthnicity + "'"
-                        })
-                    }
-                }
+                saveHeight();
             }
-        })
+        });
+    }
+
+    function updateWeight() {
+        const pInfo = database['participants'][participantId];
+        let weight = parseFloat(pInfo['weight_kg']).toFixed(2);
+
+        const HTMLContent = () => {
+            return <input type="number" id="newWeight" defaultValue={weight} />
+        }
+
+        const saveWeight = () => {
+            weight = document.getElementById("newWeight").value;
+            const weight_lb = weight * 2.205
+
+            updateValue("/participants/" + participantId, { weight_kg: weight });
+            updateValue("/participants/" + participantId, { weight_lbs: weight_lb });
+
+            LogEvent({
+                pid: participantId,
+                action: "Participant weight (kg): '" + weight + "'"
+            })
+        }
+
+
+        Swal.fire({
+            title: "Updating Weight (kg)",
+            confirmButtonText: "Save",
+            showCancelButton: true,
+            html: renderToString(<HTMLContent />)
+        }).then((result) => {
+            if (result.isConfirmed) {
+                saveWeight();
+            }
+        });
+    }
+    function updateSkinColor() {
+        const pInfo = database['participants'][participantId];
+        let skintone = pInfo['skinTone'];
+
+        const HTMLContent = () => {
+            return <select id="newSkinTone" defaultValue={skintone} >
+                {
+                    Object.keys(Constants['skinTone']).map((i) => {
+                        return <option value={Constants['skinTone'][i]}>{Constants['skinTone'][i]}</option>
+                    })
+                }
+            </select>
+        }
+
+        const saveSkinColor = () => {
+            skintone = document.getElementById("newSkinTone").value
+
+            updateValue("/participants/" + participantId, { skinTone: skintone });
+
+            LogEvent({
+                pid: participantId,
+                action: "Participant skin tone: '" + skintone + "'"
+            })
+        }
+
+
+        Swal.fire({
+            title: "Updating Skin tone",
+            confirmButtonText: "Save",
+            showCancelButton: true,
+            html: renderToString(<HTMLContent />)
+        }).then((result) => {
+            if (result.isConfirmed) {
+                saveSkinColor();
+            }
+        });
+    }
+
+    function updateHairLength() {
+        const pInfo = database['participants'][participantId];
+        let hairlength = pInfo['haiLength'];
+
+        const HTMLContent = () => {
+            return <select id="newHairLength" defaultValue={hairlength} >
+                {
+                    Object.keys(Constants['skinTone']).map((i) => {
+                        return <option value={Constants['hairlength'][i]}>{Constants['hairlength'][i]}</option>
+                    })
+                }
+            </select>
+        }
+
+        const saveHairLength = () => {
+            hairlength = document.getElementById("newHairLength").value
+
+            updateValue("/participants/" + participantId, { haiLength: hairlength });
+
+            LogEvent({
+                pid: participantId,
+                action: "Participant skin tone: '" + hairlength + "'"
+            })
+        }
+
+
+        Swal.fire({
+            title: "Updating Hair Length",
+            confirmButtonText: "Save",
+            showCancelButton: true,
+            html: renderToString(<HTMLContent />)
+        }).then((result) => {
+            if (result.isConfirmed) {
+                saveHairLength();
+            }
+        });
     }
 
     useEffect(() => {
@@ -292,34 +375,57 @@ function UpdateSession({ database, updateSession, setUpdateSession, setActivityL
                                 </tr>
                                 <tr>
                                     <td className="participant-table-left">Height (cm) / Range</td>
-                                    <td className="participant-table-right">{`${participantInfo['height_cm']} / (${participantInfo['height_range']})`}</td>
+                                    <td className="participant-table-right">{`${participantInfo['height_cm']} / (${participantInfo['height_range']})`}
+                                        <a className='copy-email-link fas fa-edit'
+                                            title='Update Height'
+                                            onClick={(e) => {
+                                                e.preventDefault();
+                                                updateHeight();
+                                            }} target='_blank'></a>
+                                    </td>
+
                                 </tr>
                                 <tr>
                                     <td className="participant-table-left">Weight (kg) / Range</td>
-                                    <td className="participant-table-right">{`${parseFloat(participantInfo['weight_kg']).toFixed(2)} / (${participantInfo['weight_range']})`}</td>
+                                    <td className="participant-table-right">{`${parseFloat(participantInfo['weight_kg']).toFixed(2)} / (${participantInfo['weight_range']})`}                    <a className='copy-email-link fas fa-edit'
+                                        title='Update Weight'
+                                        onClick={(e) => {
+                                            e.preventDefault();
+                                            updateWeight();
+                                        }} target='_blank'></a>
+                                    </td>
                                 </tr>
 
                                 <tr>
                                     <td className="participant-table-left">Skin tone</td>
                                     <td className="participant-table-right">
                                         {participantInfo['skinTone']}
+                                        <a className='copy-email-link fas fa-edit'
+                                            title='Update Skin tone'
+                                            onClick={(e) => {
+                                                e.preventDefault();
+                                                updateSkinColor();
+                                            }} target='_blank'></a>
                                     </td>
+
                                 </tr>
                                 <tr>
                                     <td className="participant-table-left">Hair Length</td>
                                     <td className="participant-table-right">
                                         {participantInfo['haiLength']}
+                                        <a className='copy-email-link fas fa-edit'
+                                            title='Update Height'
+                                            onClick={(e) => {
+                                                e.preventDefault();
+                                                updateHairLength();
+                                            }} target='_blank'></a>
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td className="participant-table-left">Year of birth</td>
+                                    <td className="participant-table-left">Date of birth</td>
                                     <td className="participant-table-right">
-                                        {participantInfo['year_of_birth']}
+                                        {participantInfo['date_of_birth']}
                                     </td>
-                                </tr>
-                                <tr>
-                                    <td className="participant-table-left">Demo bin</td>
-                                    <td className="participant-table-right">{sessionInfo['demo_bin']}</td>
                                 </tr>
                                 <tr>
                                     <td className="participant-table-left">&nbsp;</td>

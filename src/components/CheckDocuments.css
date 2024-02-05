@@ -22,6 +22,7 @@
     right: 0;
     border-radius: .2em;
     overflow: hidden;
+    background-color: #333;
 }
 
 .modal-check-documents-header {
@@ -30,13 +31,19 @@
     padding: .2em;
     font-weight: bold;
     text-align: center;
-    background-color: #01455E;
-    color: #F7F7F1;
+    background-color: #F7F7F1;
+    color: #333;
     font-size: 1.3em;
 }
 
 .documents-container {
     overflow: auto;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: auto;
+    margin-bottom: auto;
+
 }
 
 .document-upload-date {

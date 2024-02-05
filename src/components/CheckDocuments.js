@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import ReactDOM from 'react-dom';
+import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
 
 import './CheckDocuments.css';
 
@@ -21,8 +22,13 @@ function CheckDocuments({ database, checkDocuments, setCheckDocuments }) {
 
                     <>
                         {
-                            database['participants'][checkDocuments]['pptId_url'].includes(".jpg") || database['participants'][checkDocuments]['pptId_url'].includes(".jpeg") || database['participants'][checkDocuments]['pptId_url'].includes(".png") ?
-                                <img className="document-preview" style={{ width: "750px", height: "auto" }} src={"https://firebasestorage.googleapis.com/v0/b/tiai-registrations.appspot.com/o/foraker" + database['participants'][checkDocuments]['pptId_url']} title='documents' alt='preview' />
+                            database['participants'][checkDocuments]['pptId_url'].includes(".jpg") || database['participants'][checkDocuments]['pptId_url'].includes(".jpeg") || database['participants'][checkDocuments]['pptId_url'].includes(".JPG") || database['participants'][checkDocuments]['pptId_url'].includes(".png") ?
+                                <TransformWrapper defaultScale={1}>
+                                    <TransformComponent style={{ display: "block", marginLeft: "auto", marginRight: "auto" }}>
+                                        <img className="document-preview" style={{ maxWidth: "50vh", height: "fit-content", marginRight: "auto", marginLeft: "auto" }} src={"https://firebasestorage.googleapis.com/v0/b/tiai-registrations.appspot.com/o/foraker" + database['participants'][checkDocuments]['pptId_url']} title='documents' alt='preview' />
+                                    </TransformComponent>
+                                </TransformWrapper>
+
                                 : <iframe className="document-preview" src={"https://firebasestorage.googleapis.com/v0/b/tiai-registrations.appspot.com/o/foraker" + database['participants'][checkDocuments]['pptId_url']} title='documents' />
 
 

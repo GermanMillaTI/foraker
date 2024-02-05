@@ -15,10 +15,21 @@ const DateFromLog = (rawString) => {
         }
     }
 
-    formattedKey = "20" + formattedKey + "T" + formattedTime;
+    formattedKey = "20" + formattedKey + "T" + formattedTime + "Z";
     const parsedDate = new Date(formattedKey);
-    parsedDate.setHours(parsedDate.getUTCHours() - 6);
-    return format(parsedDate, "yyyy-MM-dd  hh:mm a");
+
+    const laTime = parsedDate.toLocaleString('en-US', {
+        timeZone: 'America/Los_Angeles',
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
+        hour12: true,
+    });
+
+    return laTime
 }
 
 const StationFromSlot = (timeslot) => {

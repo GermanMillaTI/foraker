@@ -17,12 +17,9 @@ import { Grid } from '@mui/material';
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.head}`]: {
-        backgroundColor: "rgba(1, 69, 94, 1)",
+        backgroundColor: "#444",
         color: theme.palette.common.white,
-    },
-    [`&.${tableCellClasses.body}`]: {
-        fontSize: 14,
-    },
+    }
 }));
 
 
@@ -240,18 +237,18 @@ function External({ database }) {
                 <Table sx={{ minWidth: 450, border: "1px solid rgba(224, 224, 224, 1)" }} aria-label="simple table">
                     <TableHead>
                         <TableRow>
-                            <TableCell align="center" colSpan={13} >
+                            <TableCell align="center" colSpan={13} sx={{ border: "1px solid black" }} >
                                 <strong>Height / Weight / Gender</strong>
                             </TableCell>
                         </TableRow>
                         <TableRow>
-                            <TableCell align="center">
+                            <TableCell align="center" sx={{ border: "1px solid black" }}>
                                 <strong>Height Range (cm)</strong>
                             </TableCell>
 
                             {
                                 heights.map(header => (
-                                    <TableCell align="center" colSpan={2}>
+                                    <TableCell align="center" colSpan={2} sx={{ border: "1px solid black" }}>
                                         <strong>{header}</strong>
                                     </TableCell>
                                 ))
@@ -260,23 +257,23 @@ function External({ database }) {
 
                         <TableRow>
 
-                            <StyledTableCell>Gender</StyledTableCell>
+                            <StyledTableCell sx={{ border: "1px solid black" }}>Gender</StyledTableCell>
                             {
                                 [...Array(6)].map((_, index) => (
                                     ['Male', 'Female'].map((gender) => (
-                                        <StyledTableCell key={index} align="center">{gender}</StyledTableCell>
+                                        <StyledTableCell key={index} align="center" sx={{ borderBottom: "1px solid black", borderRight: gender === "Female" ? "1px solid black" : "none" }}>{gender}</StyledTableCell>
                                     ))
                                 ))
                             }
                         </TableRow>
                         <TableRow>
-                            <TableCell align="center">
-                                <strong>Weigth Range (kg)</strong>
+                            <TableCell align="center" sx={{ borderRight: "1px solid black", borderLeft: "1px solid black" }}>
+                                <strong>Weight Range (kg)</strong>
                             </TableCell>
                             {
                                 [...Array(6)].map((_, index) => (
                                     ['Male', 'Female'].map((gender) => (
-                                        <TableCell key={index} align="center"> </TableCell>
+                                        <TableCell key={index} align="center" sx={{ borderRight: gender === "Female" ? "1px solid black" : "none" }}> </TableCell>
                                     ))
                                 ))
                             }
@@ -284,16 +281,23 @@ function External({ database }) {
                     </TableHead>
                     <TableBody>
                         {weights.map(weight => {
-                            return <TableRow sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
-                                <TableCell component="th" scope="row">
+                            return <TableRow>
+                                <TableCell component="th" scope="row" sx={{
+                                    borderRight: "1px solid black",
+                                    borderLeft: "1px solid black",
+                                    borderBottom: weight === ">110" ? "1px solid black" : ""
+                                }}
+                                >
                                     {weight}
                                 </TableCell>
                                 {heights.map(height => {
                                     return ["Male", "Female"].map(gender => {
                                         return <TableCell style={{
-                                            backgroundColor: stats[height][weight][gender]['Completed'] > 0 ? 'rgba(1, 69, 94, 0.20)' : 'inherit',
-                                            color: stats[height][weight][gender]['Completed'] === 0 ? '#999' : 'inherit',
+                                            backgroundColor: stats[height][weight][gender]['Completed'] > 0 ? 'rgb(120, 240, 120, 0.5)' : 'inherit',
+                                            color: stats[height][weight][gender]['Completed'] === 0 ? 'rgb(220, 220, 220)' : 'inherit',
                                             fontWeight: stats[height][weight][gender]['Completed'] === 0 ? 'lighter' : 'bolder',
+                                            borderRight: gender === "Female" ? "1px solid black" : "none",
+                                            borderBottom: weight === ">110" ? "1px solid black" : ""
                                         }} align="center">{stats[height][weight][gender]['Completed']}</TableCell>
                                     })
                                 })}
@@ -303,444 +307,280 @@ function External({ database }) {
                         })}
                     </TableBody>
                 </Table>
-                <Grid container spacing={2} style={{ marginTop: "10em" }}>
-                    <Grid item sm={6}>
-                        <Table sx={{ minWidth: 450, border: "1px solid rgba(240, 240, 240, 1)" }} aria-label="simple table">
-                            <TableHead>
-                                <TableRow>
-                                    <StyledTableCell align="center" colSpan={2}>
-                                        Age (N =  150)
-                                    </StyledTableCell>
-                                </TableRow>
-                                <TableRow>
-                                    <TableCell align="center" >
-                                        <strong>Age</strong>
+                <Grid item sx={{ marginTop: "10em" }}>
+                    <Table sx={{ width: 650, border: "1px solid rgba(240, 240, 240, 1)", marginLeft: "auto", marginRight: "auto" }} aria-label="simple table">
+                        <TableHead>
+                            <TableRow>
+                                <StyledTableCell align="center" colSpan={3} sx={{ border: "1px solid black" }}>
+                                    Age (N =  150)
+                                </StyledTableCell>
+                            </TableRow>
+                            <TableRow>
+                                <TableCell align="center" sx={{ border: "1px solid black" }}>
+                                    <strong>Age</strong>
+                                </TableCell>
+                                <TableCell align="center" sx={{ border: "1px solid black" }}>
+                                    <strong>N</strong>
+                                </TableCell>
+                                <TableCell align="center" sx={{ border: "1px solid black" }}>
+                                    <strong>%</strong>
+                                </TableCell>
+                            </TableRow>
+                        </TableHead>
+                        <TableBody>
+                            {ages.map(age => {
+                                return <TableRow sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
+                                    <TableCell component="th" scope="row" sx={{ borderRight: "1px solid black", borderLeft: "1px solid black" }}>
+                                        {age}
                                     </TableCell>
-                                    <TableCell align="center" >
-                                        <strong>N</strong>
-                                    </TableCell>
-                                </TableRow>
-                            </TableHead>
-                            <TableBody>
-                                {ages.map(age => {
-                                    return <TableRow sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
-                                        <TableCell component="th" scope="row">
-                                            {age}
+                                    {
+                                        <TableCell align='center' sx={{ borderRight: "1px solid black", borderLeft: "1px solid black" }}>
+                                            {ageStats[age]['Completed']}
                                         </TableCell>
-                                        {
-                                            <TableCell align='center'>
-                                                {ageStats[age]['Completed']}
-                                            </TableCell>
-                                        }
-                                    </TableRow>
-                                })}
-                                <TableRow>
-                                    <TableCell>
-                                        <strong>Total:</strong>
-                                    </TableCell>
-                                    <TableCell align='center'>
-                                        <strong>{ageStats['total']}</strong>
 
-                                    </TableCell>
-                                </TableRow>
-                            </TableBody>
-                        </Table>
-                    </Grid>
-                    <Grid item sm={6}>
-                        <Table sx={{ minWidth: 450, border: "1px solid rgba(224, 224, 224, 1)" }} aria-label="simple table">
-                            <TableHead>
-                                <TableRow>
-                                    <StyledTableCell align="center" colSpan={2}>
-                                        Age (N =  150)
-                                    </StyledTableCell>
-                                </TableRow>
-                                <TableRow>
-                                    <TableCell align="center" >
-                                        <strong>Age</strong>
-                                    </TableCell>
-                                    <TableCell align="center" >
-                                        <strong>N</strong>
-                                    </TableCell>
-                                </TableRow>
-                            </TableHead>
-                            <TableBody>
-                                {ages.map(age => {
-                                    return <TableRow sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
-                                        <TableCell component="th" scope="row">
-                                            {age}
+                                    }
+                                    {
+                                        <TableCell align='center' sx={{ borderRight: "1px solid black", borderLeft: "1px solid black" }}>
+                                            {((ageStats[age]['Completed']) / 50 * 100).toFixed(2)} %
                                         </TableCell>
-                                        {
-                                            <TableCell align='center'>
-                                                {((ageStats[age]['Completed']) / 50 * 100).toFixed(2)} %
-                                            </TableCell>
-                                        }
-
-                                    </TableRow>
-                                })}
-                                <TableRow>
-                                    <TableCell>
-                                        <strong>Total:</strong>
-                                    </TableCell>
-                                    <TableCell align='center'>
-                                        <strong>{(ageStats['total'] / 150 * 100).toFixed(2)} %</strong>
-
-                                    </TableCell>
+                                    }
                                 </TableRow>
-                            </TableBody>
-                        </Table>
-                    </Grid>
+                            })}
+                            <TableRow>
+                                <TableCell sx={{ borderTop: "3px solid black", borderBottom: "1px solid black", borderRight: "1px solid black", borderLeft: "1px solid black", backgroundColor: "rgb(240,240,240)" }}>
+                                    <strong>Total:</strong>
+                                </TableCell>
+                                <TableCell align="center" sx={{ borderTop: "3px solid black", borderBottom: "1px solid black", borderRight: "1px solid black", borderLeft: "1px solid black", backgroundColor: "rgb(240,240,240)" }}>
+                                    <strong>{ageStats['total']}</strong>
+
+                                </TableCell>
+                                <TableCell align="center" sx={{ borderTop: "3px solid black", borderBottom: "1px solid black", borderRight: "1px solid black", borderLeft: "1px solid black", backgroundColor: "rgb(240,240,240)" }}>
+                                    <strong>{(ageStats['total'] / 150 * 100).toFixed(2)} %</strong>
+
+                                </TableCell>
+                            </TableRow>
+                        </TableBody>
+                    </Table>
                 </Grid>
-                <Grid container spacing={2} style={{ marginTop: "10em" }}>
-                    <Grid item sm={6}>
-                        <Table sx={{ minWidth: 450, border: "1px solid rgba(224, 224, 224, 1)" }} aria-label="simple table">
-                            <TableHead>
-                                <TableRow>
-                                    <StyledTableCell align="center" colSpan={2}>
-                                        Skin Tone (N =  120)
-                                    </StyledTableCell>
-                                </TableRow>
-                                <TableRow>
-                                    <TableCell align="center" >
-                                        <strong>Skin Tone</strong>
+
+                <Grid item sx={{ marginTop: "10em" }}>
+                    <Table sx={{ width: 650, border: "1px solid rgba(240, 240, 240, 1)", marginLeft: "auto", marginRight: "auto" }} aria-label="simple table">
+                        <TableHead>
+                            <TableRow>
+                                <StyledTableCell align="center" colSpan={3} sx={{ border: "1px solid black" }}>
+                                    Skin Tone (N =  120)
+                                </StyledTableCell>
+                            </TableRow>
+                            <TableRow>
+                                <TableCell align="center" sx={{ border: "1px solid black" }}>
+                                    <strong>Skin Tone</strong>
+                                </TableCell>
+                                <TableCell align="center" sx={{ border: "1px solid black" }}>
+                                    <strong>N</strong>
+                                </TableCell>
+                                <TableCell align="center" sx={{ border: "1px solid black" }}>
+                                    <strong>%</strong>
+                                </TableCell>
+                            </TableRow>
+                        </TableHead>
+                        <TableBody>
+                            {skinTones.map(skin => {
+                                return <TableRow sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
+                                    <TableCell component="th" scope="row" sx={{ borderRight: "1px solid black", borderLeft: "1px solid black" }}>
+                                        {skin}
                                     </TableCell>
-                                    <TableCell align="center" >
-                                        <strong>N</strong>
-                                    </TableCell>
-                                </TableRow>
-                            </TableHead>
-                            <TableBody>
-                                {skinTones.map(skin => {
-                                    return <TableRow sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
-                                        <TableCell component="th" scope="row">
-                                            {skin}
+                                    {
+                                        <TableCell align="center" component="th" scope="row" sx={{ borderRight: "1px solid black", borderLeft: "1px solid black" }}>
+                                            {skinStats[skin]['Completed']}
                                         </TableCell>
-                                        {
-                                            <TableCell align='center'>
-                                                {skinStats[skin]['Completed']}
-                                            </TableCell>
-                                        }
-
-                                    </TableRow>
-                                })}
-                                <TableRow>
-                                    <TableCell>
-                                        <strong>Total:</strong>
-                                    </TableCell>
-                                    <TableCell align='center'>
-                                        <strong>{skinStats['total']}</strong>
-
-                                    </TableCell>
-                                </TableRow>
-                            </TableBody>
-                        </Table>
-                    </Grid>
-                    <Grid item sm={6}>
-                        <Table sx={{ minWidth: 450, border: "1px solid rgba(224, 224, 224, 1)" }} aria-label="simple table">
-                            <TableHead>
-                                <TableRow>
-                                    <StyledTableCell align="center" colSpan={2}>
-                                        Skin Tone (N =  120)
-                                    </StyledTableCell>
-                                </TableRow>
-                                <TableRow>
-                                    <TableCell align="center" >
-                                        <strong>Skin Tone</strong>
-                                    </TableCell>
-                                    <TableCell align="center" >
-                                        <strong>N</strong>
-                                    </TableCell>
-                                </TableRow>
-                            </TableHead>
-                            <TableBody>
-                                {skinTones.map(skin => {
-                                    return <TableRow sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
-                                        <TableCell component="th" scope="row">
-                                            {skin}
+                                    }
+                                    {
+                                        <TableCell align='center' component="th" scope="row" sx={{ borderRight: "1px solid black", borderLeft: "1px solid black" }}>
+                                            {(skinStats[skin]['Completed'] / 20 * 100).toFixed(2)} %
                                         </TableCell>
-                                        {
-                                            <TableCell align='center'>
-                                                {(skinStats[skin]['Completed'] / 20 * 100).toFixed(2)} %
-                                            </TableCell>
-                                        }
-
-                                    </TableRow>
-                                })}
-                                <TableRow>
-                                    <TableCell>
-                                        <strong>Total:</strong>
-                                    </TableCell>
-                                    <TableCell align='center'>
-                                        <strong>{(skinStats['total'] / 120 * 100).toFixed(2)} %</strong>
-
-                                    </TableCell>
+                                    }
                                 </TableRow>
-                            </TableBody>
-                        </Table>
-                    </Grid>
+                            })}
+                            <TableRow>
+                                <TableCell sx={{ borderTop: "3px solid black", borderBottom: "1px solid black", borderRight: "1px solid black", borderLeft: "1px solid black", backgroundColor: "rgb(240,240,240)" }}>
+                                    <strong>Total:</strong>
+                                </TableCell>
+                                <TableCell align='center' sx={{ borderTop: "3px solid black", borderBottom: "1px solid black", borderRight: "1px solid black", borderLeft: "1px solid black", backgroundColor: "rgb(240,240,240)" }}>
+                                    <strong>{skinStats['total']}</strong>
+
+                                </TableCell>
+                                <TableCell align='center' sx={{ borderTop: "3px solid black", borderBottom: "1px solid black", borderRight: "1px solid black", borderLeft: "1px solid black", backgroundColor: "rgb(240,240,240)" }}>
+                                    <strong>{(skinStats['total'] / 120 * 100).toFixed(2)} %</strong>
+                                </TableCell>
+                            </TableRow>
+                        </TableBody>
+                    </Table>
                 </Grid>
-                <Grid container spacing={2} style={{ marginTop: "10em" }}>
-                    <Grid item sm={6}>
-                        <Table sx={{ minWidth: 450, border: "1px solid rgba(224, 224, 224, 1)" }} aria-label="simple table">
-                            <TableHead>
-                                <TableRow>
-                                    <StyledTableCell align="center" colSpan={2}>
-                                        Hair (N = 40)
-                                    </StyledTableCell>
-                                </TableRow>
-                                <TableRow>
-                                    <TableCell align="center" >
-                                        <strong>Hair</strong>
+
+                <Grid item sx={{ marginTop: "10em" }}>
+                    <Table sx={{ width: 650, border: "1px solid rgba(240, 240, 240, 1)", marginLeft: "auto", marginRight: "auto" }} aria-label="simple table">
+                        <TableHead>
+                            <TableRow>
+                                <StyledTableCell align="center" colSpan={3} sx={{ border: "1px solid black" }}>
+                                    Hair (N = 40)
+                                </StyledTableCell>
+                            </TableRow>
+                            <TableRow>
+                                <TableCell align="center" sx={{ border: "1px solid black" }}>
+                                    <strong>Hair</strong>
+                                </TableCell>
+                                <TableCell align="center" sx={{ border: "1px solid black" }}>
+                                    <strong>N</strong>
+                                </TableCell>
+                                <TableCell align="center" sx={{ border: "1px solid black" }}>
+                                    <strong>%</strong>
+                                </TableCell>
+                            </TableRow>
+                        </TableHead>
+                        <TableBody>
+                            {hairCategories.filter(cat => cat !== "").map(hair => {
+                                return <TableRow sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
+                                    <TableCell scope="row" sx={{ borderRight: "1px solid black", borderLeft: "1px solid black" }}>
+                                        {hair.slice(0, 1) + hair.toLowerCase().slice(1)}
                                     </TableCell>
-                                    <TableCell align="center" >
-                                        <strong>N</strong>
-                                    </TableCell>
-                                </TableRow>
-                            </TableHead>
-                            <TableBody>
-                                {hairCategories.filter(cat => cat !== "").map(hair => {
-                                    return <TableRow sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
-                                        <TableCell component="th" scope="row">
-                                            {hair}
+                                    {
+                                        <TableCell align='center' scope="row" sx={{ borderRight: "1px solid black", borderLeft: "1px solid black" }}>
+                                            {hairStats[hair]['Completed']}
                                         </TableCell>
-                                        {
-                                            <TableCell align='center'>
-                                                {hairStats[hair]['Completed']}
-                                            </TableCell>
-                                        }
-
-                                    </TableRow>
-                                })}
-                                <TableRow>
-                                    <TableCell>
-                                        <strong>Total:</strong>
-                                    </TableCell>
-                                    <TableCell align='center'>
-                                        <strong>{hairStats['total']}</strong>
-
-                                    </TableCell>
-                                </TableRow>
-                            </TableBody>
-                        </Table>
-                    </Grid>
-                    <Grid item sm={6}>
-                        <Table sx={{ minWidth: 450, border: "1px solid rgba(224, 224, 224, 1)" }} aria-label="simple table">
-                            <TableHead>
-                                <TableRow>
-                                    <StyledTableCell align="center" colSpan={2}>
-                                        Hair (N = 40)
-                                    </StyledTableCell>
-                                </TableRow>
-                                <TableRow>
-                                    <TableCell align="center" >
-                                        <strong>Hair</strong>
-                                    </TableCell>
-                                    <TableCell align="center" >
-                                        <strong>N</strong>
-                                    </TableCell>
-                                </TableRow>
-                            </TableHead>
-                            <TableBody>
-                                {hairCategories.filter(cat => cat !== "").map(hair => {
-                                    return <TableRow sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
-                                        <TableCell component="th" scope="row">
-                                            {hair}
+                                    }
+                                    {
+                                        <TableCell align='center' scope="row" sx={{ borderRight: "1px solid black", borderLeft: "1px solid black" }}>
+                                            {(hairStats[hair]['Completed'] / 10 * 100).toFixed(2)} %
                                         </TableCell>
-                                        {
-                                            <TableCell align='center'>
-                                                {(hairStats[hair]['Completed'] / 10 * 100).toFixed(2)} %
-                                            </TableCell>
-                                        }
+                                    }
 
-                                    </TableRow>
-                                })}
-                                <TableRow>
-                                    <TableCell>
-                                        <strong>Total:</strong>
-                                    </TableCell>
-                                    <TableCell align='center'>
-                                        <strong>{(hairStats['total'] / 40 * 100).toFixed(2)} %</strong>
-
-                                    </TableCell>
                                 </TableRow>
-                            </TableBody>
-                        </Table>
-                    </Grid>
+                            })}
+                            <TableRow>
+                                <TableCell sx={{ borderTop: "3px solid black", borderBottom: "1px solid black", borderRight: "1px solid black", borderLeft: "1px solid black", backgroundColor: "rgb(240,240,240)" }}>
+                                    <strong>Total:</strong>
+                                </TableCell>
+                                <TableCell align='center' sx={{ borderTop: "3px solid black", borderBottom: "1px solid black", borderRight: "1px solid black", borderLeft: "1px solid black", backgroundColor: "rgb(240,240,240)" }}>
+                                    <strong>{hairStats['total']}</strong>
+                                </TableCell>
+                                <TableCell align='center' sx={{ borderTop: "3px solid black", borderBottom: "1px solid black", borderRight: "1px solid black", borderLeft: "1px solid black", backgroundColor: "rgb(240,240,240)" }}>
+                                    <strong>{(hairStats['total'] / 40 * 100).toFixed(2)} %</strong>
+                                </TableCell>
+                            </TableRow>
+                        </TableBody>
+                    </Table>
                 </Grid>
-                <Grid container spacing={2} style={{ marginTop: "10em" }}>
-                    <Grid item sm={6}>
-                        <Table sx={{ minWidth: 450, border: "1px solid rgba(224, 224, 224, 1)" }} aria-label="simple table">
-                            <TableHead>
-                                <TableRow>
-                                    <StyledTableCell align="center" colSpan={2}>
-                                        Facial Hair (N = 30)
-                                    </StyledTableCell>
-                                </TableRow>
-                                <TableRow>
-                                    <TableCell align="center" >
-                                        <strong>Facial Hair</strong>
+
+                <Grid item sx={{ marginTop: "10em" }}>
+                    <Table sx={{ width: 650, border: "1px solid rgba(240, 240, 240, 1)", marginLeft: "auto", marginRight: "auto" }} aria-label="simple table">
+                        <TableHead>
+                            <TableRow>
+                                <StyledTableCell align="center" colSpan={3} sx={{ border: "1px solid black" }}>
+                                    Facial Hair (N = 30)
+                                </StyledTableCell>
+                            </TableRow>
+                            <TableRow>
+                                <TableCell align="center" sx={{ border: "1px solid black" }}>
+                                    <strong>Facial Hair</strong>
+                                </TableCell>
+                                <TableCell align="center" sx={{ border: "1px solid black" }}>
+                                    <strong>N</strong>
+                                </TableCell>
+                                <TableCell align="center" sx={{ border: "1px solid black" }}>
+                                    <strong>%</strong>
+                                </TableCell>
+                            </TableRow>
+                        </TableHead>
+                        <TableBody>
+                            {facialhairCategories.filter(cat => cat !== "").map(hair => {
+                                return <TableRow sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
+                                    <TableCell scope="row" sx={{ borderRight: "1px solid black", borderLeft: "1px solid black" }}>
+                                        {hair}
                                     </TableCell>
-                                    <TableCell align="center" >
-                                        <strong>N</strong>
-                                    </TableCell>
-                                </TableRow>
-                            </TableHead>
-                            <TableBody>
-                                {facialhairCategories.filter(cat => cat !== "").map(hair => {
-                                    return <TableRow sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
-                                        <TableCell component="th" scope="row">
-                                            {hair}
+                                    {
+                                        <TableCell align='center' scope="row" sx={{ borderRight: "1px solid black", borderLeft: "1px solid black" }}>
+                                            {facialHairStats[hair]['Completed']}
                                         </TableCell>
-                                        {
-                                            <TableCell align='center'>
-                                                {facialHairStats[hair]['Completed']}
-                                            </TableCell>
-                                        }
-
-                                    </TableRow>
-                                })}
-                                <TableRow>
-                                    <TableCell>
-                                        <strong>Total:</strong>
-                                    </TableCell>
-                                    <TableCell align='center'>
-                                        <strong>{facialHairStats['total']}</strong>
-
-                                    </TableCell>
-                                </TableRow>
-                            </TableBody>
-                        </Table>
-                    </Grid>
-                    <Grid item sm={6}>
-                        <Table sx={{ minWidth: 450, border: "1px solid rgba(224, 224, 224, 1)" }} aria-label="simple table">
-                            <TableHead>
-                                <TableRow>
-                                    <StyledTableCell align="center" colSpan={2}>
-                                        Facial Hair (N = 30)
-                                    </StyledTableCell>
-                                </TableRow>
-                                <TableRow>
-                                    <TableCell align="center" >
-                                        <strong>Facial Hair</strong>
-                                    </TableCell>
-                                    <TableCell align="center" >
-                                        <strong>N</strong>
-                                    </TableCell>
-                                </TableRow>
-                            </TableHead>
-                            <TableBody>
-                                {facialhairCategories.filter(cat => cat !== "").map(hair => {
-                                    return <TableRow sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
-                                        <TableCell component="th" scope="row">
-                                            {hair}
+                                    }
+                                    {
+                                        <TableCell align='center' scope="row" sx={{ borderRight: "1px solid black", borderLeft: "1px solid black" }}>
+                                            {(facialHairStats[hair]['Completed'] / 10 * 100).toFixed(2)} %
                                         </TableCell>
-                                        {
-                                            <TableCell align='center'>
-                                                {(facialHairStats[hair]['Completed'] / 10 * 100).toFixed(2)} %
-                                            </TableCell>
-                                        }
+                                    }
 
-                                    </TableRow>
-                                })}
-                                <TableRow>
-                                    <TableCell>
-                                        <strong>Total:</strong>
-                                    </TableCell>
-                                    <TableCell align='center'>
-                                        <strong>{(facialHairStats['total'] / 30 * 100).toFixed(2)} %</strong>
-
-                                    </TableCell>
                                 </TableRow>
-                            </TableBody>
-                        </Table>
-                    </Grid>
+                            })}
+                            <TableRow>
+                                <TableCell sx={{ borderTop: "3px solid black", borderBottom: "1px solid black", borderRight: "1px solid black", borderLeft: "1px solid black", backgroundColor: "rgb(240,240,240)" }}>
+                                    <strong>Total:</strong>
+                                </TableCell>
+                                <TableCell align='center' sx={{ borderTop: "3px solid black", borderBottom: "1px solid black", borderRight: "1px solid black", borderLeft: "1px solid black", backgroundColor: "rgb(240,240,240)" }}>
+                                    <strong>{facialHairStats['total']}</strong>
+
+                                </TableCell>
+                                <TableCell align='center' sx={{ borderTop: "3px solid black", borderBottom: "1px solid black", borderRight: "1px solid black", borderLeft: "1px solid black", backgroundColor: "rgb(240,240,240)" }}>
+                                    <strong>{(facialHairStats['total'] / 30 * 100).toFixed(2)} %</strong>
+
+                                </TableCell>
+                            </TableRow>
+                        </TableBody>
+                    </Table>
                 </Grid>
-                <Grid container spacing={2} style={{ marginTop: "10em" }}>
-                    <Grid item sm={6}>
-                        <Table sx={{ minWidth: 450, border: "1px solid rgba(224, 224, 224, 1)" }} aria-label="simple table">
-                            <TableHead>
-                                <TableRow>
-                                    <StyledTableCell align="center" colSpan={2}>
-                                        Clothing (N = 50)
-                                    </StyledTableCell>
-                                </TableRow>
-                                <TableRow>
-                                    <TableCell align="center" >
-                                        <strong>Clothing</strong>
+
+                <Grid item sx={{ marginTop: "10em" }}>
+                    <Table sx={{ width: 650, border: "1px solid rgba(240, 240, 240, 1)", marginLeft: "auto", marginRight: "auto" }} aria-label="simple table">
+                        <TableHead>
+                            <TableRow>
+                                <StyledTableCell align="center" colSpan={3} sx={{ border: "1px solid black" }}>
+                                    Clothing (N = 50)
+                                </StyledTableCell>
+                            </TableRow>
+                            <TableRow>
+                                <TableCell align="center" sx={{ border: "1px solid black" }}>
+                                    <strong>Clothing</strong>
+                                </TableCell>
+                                <TableCell align="center" sx={{ border: "1px solid black" }}>
+                                    <strong>N</strong>
+                                </TableCell>
+                                <TableCell align="center" sx={{ border: "1px solid black" }}>
+                                    <strong>%</strong>
+                                </TableCell>
+                            </TableRow>
+                        </TableHead>
+                        <TableBody>
+                            {clothingCategories.filter(clt => clt !== "").map(clothing => {
+                                return <TableRow sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
+                                    <TableCell scope="row" sx={{ borderRight: "1px solid black", borderLeft: "1px solid black" }}>
+                                        {clothing.slice(0, 1) + clothing.toLowerCase().slice(1)}
                                     </TableCell>
-                                    <TableCell align="center" >
-                                        <strong>N</strong>
-                                    </TableCell>
-                                </TableRow>
-                            </TableHead>
-                            <TableBody>
-                                {clothingCategories.filter(clt => clt !== "").map(clothing => {
-                                    return <TableRow sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
-                                        <TableCell component="th" scope="row">
-                                            {clothing}
+                                    {
+                                        <TableCell align='center' scope="row" sx={{ borderRight: "1px solid black", borderLeft: "1px solid black" }}>
+                                            {clothingStats[clothing]['Completed']}
                                         </TableCell>
-                                        {
-                                            <TableCell align='center'>
-                                                {clothingStats[clothing]['Completed']}
-                                            </TableCell>
-                                        }
-
-                                    </TableRow>
-                                })}
-                                <TableRow>
-                                    <TableCell>
-                                        <strong>Total:</strong>
-                                    </TableCell>
-                                    <TableCell align='center'>
-                                        <strong>{clothingStats['total']}</strong>
-
-                                    </TableCell>
-                                </TableRow>
-                            </TableBody>
-                        </Table>
-                    </Grid>
-                    <Grid item sm={6}>
-                        <Table sx={{ minWidth: 450, border: "1px solid rgba(224, 224, 224, 1)" }} aria-label="simple table">
-                            <TableHead>
-                                <TableRow>
-                                    <StyledTableCell align="center" colSpan={2}>
-                                        Clothing (N = 50)
-                                    </StyledTableCell>
-                                </TableRow>
-                                <TableRow>
-                                    <TableCell align="center" >
-                                        <strong>Clothing</strong>
-                                    </TableCell>
-                                    <TableCell align="center" >
-                                        <strong>N</strong>
-                                    </TableCell>
-                                </TableRow>
-                            </TableHead>
-                            <TableBody>
-                                {clothingCategories.filter(clt => clt !== "").map(clothing => {
-                                    return <TableRow sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
-                                        <TableCell component="th" scope="row">
-                                            {clothing}
+                                    }
+                                    {
+                                        <TableCell align='center' scope="row" sx={{ borderRight: "1px solid black", borderLeft: "1px solid black" }}>
+                                            {(clothingStats[clothing]['Completed'] / 10 * 100).toFixed(2)} %
                                         </TableCell>
-                                        {
-                                            <TableCell align='center'>
-                                                {(clothingStats[clothing]['Completed'] / 10 * 100).toFixed(2)} %
-                                            </TableCell>
-                                        }
+                                    }
 
-                                    </TableRow>
-                                })}
-                                <TableRow>
-                                    <TableCell>
-                                        <strong>Total:</strong>
-                                    </TableCell>
-                                    <TableCell align='center'>
-                                        <strong>{(clothingStats['total'] / 50 * 100).toFixed(2)} %</strong>
-
-                                    </TableCell>
                                 </TableRow>
-                            </TableBody>
-                        </Table>
-                    </Grid>
+                            })}
+                            <TableRow>
+                                <TableCell sx={{ borderTop: "3px solid black", borderBottom: "1px solid black", borderRight: "1px solid black", borderLeft: "1px solid black", backgroundColor: "rgb(240,240,240)" }}>
+                                    <strong>Total:</strong>
+                                </TableCell>
+                                <TableCell align='center' sx={{ borderTop: "3px solid black", borderBottom: "1px solid black", borderRight: "1px solid black", borderLeft: "1px solid black", backgroundColor: "rgb(240,240,240)" }}>
+                                    <strong>{clothingStats['total']}</strong>
+
+                                </TableCell>
+                                <TableCell align='center' sx={{ borderTop: "3px solid black", borderBottom: "1px solid black", borderRight: "1px solid black", borderLeft: "1px solid black", backgroundColor: "rgb(240,240,240)" }}>
+                                    <strong>{(clothingStats['total'] / 50 * 100).toFixed(2)} %</strong>
+
+                                </TableCell>
+                            </TableRow>
+                        </TableBody>
+                    </Table>
                 </Grid>
 
             </TableContainer>

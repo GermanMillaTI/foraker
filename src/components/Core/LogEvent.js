@@ -32,17 +32,23 @@ function LogEvent(input) {
     realtimeDb.ref(path).update(data);
 }
 
+function secureRandom(max) {
+    let array = new Uint32Array(1);
+    window.crypto.getRandomValues(array);
+    return array[0] % max;
+}
+
 function makeid(length) {
     let result = '';
     const characters = 'abcdefghijklmnopqrstuvwxyz';
     const charactersLength = characters.length;
     let counter = 0;
     while (counter < length) {
-        result += characters.charAt(Math.floor(Math.random() * charactersLength));
+        const randomIndex = secureRandom(charactersLength);
+        result += characters.charAt(randomIndex);
         counter += 1;
     }
     return result;
 }
-
 
 export default LogEvent;

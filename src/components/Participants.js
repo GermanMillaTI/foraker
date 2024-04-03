@@ -84,7 +84,6 @@ function Participants({
           >Download filtered results</CSVLink>
 
         </span>
-        <hr style={{ width: "99%", margin: "auto", marginBottom: "1em", marginTop: "1em" }} />
         {Object.keys(database['participants'])
           .filter(pid => shownParticipants.includes(pid))
           .sort((a, b) => {

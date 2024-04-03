@@ -233,7 +233,7 @@ function External({ database }) {
     console.log(facialHairStats)
     return (
         <div>
-            <TableContainer style={{ width: "1200px", marginLeft: "auto", marginRight: "auto", marginTop: "2em", padding: "0.5em" }} component={Paper}>
+            <TableContainer style={{ width: "1200px", marginLeft: "auto", marginRight: "auto", marginTop: "4.5em", padding: "0.5em" }} component={Paper}>
                 <Table sx={{ minWidth: 450, border: "1px solid rgba(224, 224, 224, 1)" }} aria-label="simple table">
                     <TableHead>
                         <TableRow>

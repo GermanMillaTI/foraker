@@ -42,7 +42,7 @@ function TableFilter({ filterName, alt, values, filterData, setFilterData, selec
 
     return (
         <div ref={myRef}>
-            <label>{filterName}</label>
+            <label style={{ color: 'white' }}>{filterName}</label>
             <button
                 onClick={() => setFilterIsOpen(!filterIsOpen)}
                 className={"filter-button fas fa-filter filter-button-" +

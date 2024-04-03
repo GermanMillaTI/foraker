@@ -11,6 +11,7 @@ import LogEvent from './Core/LogEvent';
 import FormattingFunctions from './Core/FormattingFunctions';
 
 function UpdateSession({ database, updateSession, setUpdateSession, setActivityLog, setIdForLog }) {
+    const [selectedContribution, setSelectedContribution] = useState("");
     const sessionInfo = database['timeslots'][updateSession];
     const participantId = sessionInfo['participant_id'];
     const participantInfo = database['participants'][participantId];
@@ -367,6 +368,36 @@ function UpdateSession({ database, updateSession, setUpdateSession, setActivityL
                                     </td>
                                 </tr>
                                 <tr>
+                                    <td className="participant-table-left">Participant comment</td>
+                                </tr>
+                                <tr>
+                                    <td className="participant-table-left" colSpan="2">
+                                        <textarea
+                                            className="ppt-comment"
+                                            defaultValue={participantInfo['comment']}
+                                            onBlur={(e) => {
+                                                const newComment = e.currentTarget.value;
+                                                if (newComment != participantInfo['comment']) {
+                                                    updateValue("/participants/" + participantId, { comment: newComment });
+                                                    LogEvent({
+                                                        pid: participantId,
+                                                        action: "Participant comment: '" + newComment + "'"
+                                                    })
+                                                }
+                                            }}
+                                            placeholder="Comments about the participant..."
+                                            onInput={(e) => {
+                                                let height = e.currentTarget.offsetHeight;
+                                                let newHeight = e.currentTarget.scrollHeight;
+                                                if (newHeight > height) {
+                                                    e.currentTarget.style.height = 0;
+                                                    e.currentTarget.style.height = newHeight + "px";
+                                                }
+                                            }}
+                                        />
+                                    </td>
+                                </tr>
+                                <tr>
                                     <td className="participant-table-left">&nbsp;</td>
                                 </tr>
                                 <tr>
@@ -434,36 +465,98 @@ function UpdateSession({ database, updateSession, setUpdateSession, setActivityL
                                 <tr>
                                     <td className="participant-table-left">&nbsp;</td>
                                 </tr>
+
+                                {
+                                    database['timeslots'][updateSession]['status'] === "Completed" && <tr className='client-info-container'>
+                                        <td className="participant-table-center" colSpan="2">Client Info: {participantId}</td>
+
+                                    </tr>
+                                }
+
                                 <tr>
-                                    <td className="participant-table-left">Participant comment</td>
+                                    <td className="participant-table-left">&nbsp;</td>
                                 </tr>
+
+
+                                {database['timeslots'][updateSession]['status'] === "Completed" && <tr className='client-info-container'>
+
+                                    {
+                                        typeof database['client'][participantId] !== "undefined" ?
+                                            <>
+                                                <td className="participant-table-center" colSpan="2">
+                                                    {
+
+                                                        Object.keys(database['client'][participantId]).map(tag => {
+                                                            const formatted = FormattingFunctions.TimeSlotFormat(updateSession).slice(0, 10)
+                                                            const sameDay = formatted === tag;
+                                                            if (selectedContribution == "" && sameDay) setSelectedContribution(tag);
+
+                                                            return <>
+                                                                <button
+                                                                    key={"client-info-button-" + formatted}
+                                                                    className={"client-contribution-button" + (tag == selectedContribution ? " same-day-contribution" : "")}
+                                                                    onClick={() => setSelectedContribution(tag)}
+                                                                >
+                                                                    {sameDay ? formatted + " < Same day" : formatted}
+                                                                </button>
+                                                                <br />
+                                                            </>
+                                                        })
+                                                    }
+                                                </td>
+                                            </>
+
+                                            : <td className="not-matching-client-data" colSpan="2">Session not in client's data</td>
+
+                                    }
+                                </tr>}
                                 <tr>
-                                    <td className="participant-table-left" colSpan="2">
-                                        <textarea
-                                            className="ppt-comment"
-                                            defaultValue={participantInfo['comment']}
-                                            onBlur={(e) => {
-                                                const newComment = e.currentTarget.value;
-                                                if (newComment != participantInfo['comment']) {
-                                                    updateValue("/participants/" + participantId, { comment: newComment });
-                                                    LogEvent({
-                                                        pid: participantId,
-                                                        action: "Participant comment: '" + newComment + "'"
-                                                    })
-                                                }
-                                            }}
-                                            placeholder="Comments about the participant..."
-                                            onInput={(e) => {
-                                                let height = e.currentTarget.offsetHeight;
-                                                let newHeight = e.currentTarget.scrollHeight;
-                                                if (newHeight > height) {
-                                                    e.currentTarget.style.height = 0;
-                                                    e.currentTarget.style.height = newHeight + "px";
-                                                }
-                                            }}
-                                        />
-                                    </td>
+                                    <td className="participant-table-left">&nbsp;</td>
                                 </tr>
+                                {
+                                    selectedContribution != "" && <>
+                                        <tr className='client-info-container'>
+                                            <td className="participant-table-center" colSpan="2">Contribution {selectedContribution}</td>
+                                        </tr>
+                                        <tr className='client-info-container'>
+                                            <td className="participant-table-left">
+                                                Height
+                                            </td>
+                                            <td className={
+                                                "participant-table-right" + (database['client'][participantId][selectedContribution]['height'] != database['participants'][participantId]['height_cm'] ? " not-matching-client-data" : "")}>
+                                                {database['client'][participantId][selectedContribution]['height']}
+                                            </td>
+                                        </tr>
+                                        <tr className='client-info-container'>
+                                            <td className="participant-table-left">
+                                                Weight
+                                            </td>
+                                            <td className={
+                                                "participant-table-right" + (database['client'][participantId][selectedContribution]['weight'] != database['participants'][participantId]['weight_kg'] ? " not-matching-client-data" : "")}>
+                                                {database['client'][participantId][selectedContribution]['weight']}
+                                            </td>
+                                        </tr>
+                                        <tr className='client-info-container'>
+                                            <td className="participant-table-left">
+                                                Hair Length
+                                            </td>
+                                            <td className={
+                                                "participant-table-right" + (database['client'][participantId][selectedContribution]['hair_length'] != database['participants'][participantId]['haiLength'].toLowerCase() ? " not-matching-client-data" : "")}>
+                                                {database['client'][participantId][selectedContribution]['hair_length']}
+                                            </td>
+                                        </tr>
+                                        <tr className='client-info-container'>
+                                            <td className="participant-table-left">
+                                                Skin Tone
+                                            </td>
+                                            <td className={
+                                                "participant-table-right" + (database['client'][participantId][selectedContribution]['skin_tone'] != database['participants'][participantId]['skinTone'] ? " not-matching-client-data" : "")}>
+                                                {database['client'][participantId][selectedContribution]['skin_tone']}
+                                            </td>
+                                        </tr>
+                                    </>
+                                }
+
                             </tbody>
                         </table>
                     </div>
@@ -647,6 +740,7 @@ function UpdateSession({ database, updateSession, setUpdateSession, setActivityL
                                         <button className="cancel-session-button" onClick={() => cancelSession(updateSession)}>Cancel session</button>
                                     </td>
                                 </tr>
+
                             </tbody>
                         </table>
                     </div>

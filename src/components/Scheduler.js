@@ -64,7 +64,7 @@ function Scheduler({ database, setUpdateSession }) {
   }, [Object.keys(database['timeslots']).length])
 
   function getCSVData() {
-    let output = [['Date', 'Station', 'Session status', 'Participant status', 'Participant ID', 'Name', 'Weight (kg)', 'Height (cm)', 'Session comments']];
+    let output = [['Date', 'Station', 'Session status', 'Participant status', 'Participant ID', 'Name', 'Email', 'Weight (kg)', 'Height (cm)', 'Session comments']];
 
     let table = document.getElementById("schedulerTable");
     for (var r = 1; r < table.rows.length; r++) {
@@ -144,6 +144,7 @@ function Scheduler({ database, setUpdateSession }) {
               </th>
               <th>Participant ID</th>
               <th>Name</th>
+              <th>Email</th>
               <th>Weight (kg)</th>
               <th>Height (cm)</th>
               <th>Session comments</th>

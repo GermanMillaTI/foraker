@@ -45,6 +45,10 @@
 }
 
 .scheduler-overview-table tr:nth-child(even) {
+    background: #ECE7EF;
+}
+
+.scheduler-overview-table tr:nth-child(odd) {
     background: rgba(255, 255, 255, 0.644);
 }
 

@@ -56,9 +56,11 @@ function Stats({ database, setShowStats, setFilterDataFromStats, role }) {
             statuses: statuses,
             icfs: ['Yes', 'No'],
             demoBinStatuses: Constants['demoBinStatuses'],
+            sources: Object.keys(Constants['sources']),
             highlighted: ['Yes', 'No'],
             skinTones: filterData['skinTones'],
             hairlength: Constants['hairlength'],
+            session1stat: ["N/A", ...Constants['sessionStatuses']],
         });
 
         navigate('participants');

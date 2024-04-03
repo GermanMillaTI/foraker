@@ -6,8 +6,8 @@
     border-radius: 1em;
     width: fit-content;
     padding-bottom: 1em;
-    background-color: rgba(1, 69, 94, 0.08);
-    margin-top: 0.6em;
+    background-color: white;
+    margin-top: 2.30em;
 }
 
 
@@ -19,29 +19,28 @@
     gap: .3em;
     padding: .5em;
     border-radius: 1em;
-    color: rgba(1, 69, 94, 1);
+    color: #333;
 }
 
 .filter-container:hover {
-    background-color: rgba(1, 69, 94, 0.10);
+    background-color: rgba(178, 212, 126, 0.20);
     width: fit-content
 }
 
 .filter-container .gap {
     margin-top: .5em;
-    color: rgba(1, 69, 94, 1);
+    color: #333;
 }
 
 .filter-container-header {
     font-weight: bold;
     text-align: center;
-    color: rgba(1, 69, 94, 1);
 }
 
 .filter-object {
     display: flex;
     flex-direction: row;
-    color: rgba(1, 69, 94, 1);
+    color: #333;
     padding: 0.15em;
 }
 
@@ -64,7 +63,7 @@
 
 .filter-element input[type=checkbox] {
     cursor: pointer;
-    accent-color: rgba(1, 69, 94, 1);
+    accent-color: #8BE234;
 }
 
 
@@ -96,7 +95,7 @@
     font-weight: bold;
     font-size: .9em;
     border: none;
-    background-color: rgba(1, 69, 94, 1);
+    background-color: #333;
     color: #F7F7F1;
     padding: .2em 1em;
     cursor: pointer;
@@ -121,7 +120,7 @@
 }
 
 .filter-this-button:hover {
-    background-color: rgba(1, 69, 94, 1);
+    background-color: #57A708;
 }
 
 .red-highlighted-filter {

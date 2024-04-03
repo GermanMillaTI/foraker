@@ -49,6 +49,9 @@ function SchedulerExternal({ database }) {
                             <th>Height (kg)</th>
                             <th>Skin Color</th>
                             <th>Hair Length</th>
+                            <th>Session Hair</th>
+                            <th>Clothing</th>
+                            <th>Facial Hair</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -101,6 +104,15 @@ function SchedulerExternal({ database }) {
 
                                         <td className="center-tag">
                                             {database['participants'][database['timeslots'][key]['participant_id']]['haiLength']}
+                                        </td>
+                                        <td className="center-tag">
+                                            {database['timeslots'][key]['hair']}
+                                        </td>
+                                        <td className="center-tag">
+                                            {database['timeslots'][key]['clothing']}
+                                        </td>
+                                        <td className="center-tag">
+                                            {database['timeslots'][key]['facial_hair']}
                                         </td>
                                     </tr>
                                 )

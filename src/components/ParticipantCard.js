@@ -28,9 +28,10 @@ function ParticipantCard({ database, role, participantId, index, setShowBookSess
     }
 
     function openDocuments(participantId) {
-        //realtimeDb.ref("/participants/" + participantId + "/documents/pending").remove();
+        realtimeDb.ref("/participants/" + participantId + "/documents/pending").remove();
         setCheckDocuments(participantId);
     }
+
 
 
     function sendMail(pid, kind) {
@@ -397,7 +398,7 @@ function ParticipantCard({ database, role, participantId, index, setShowBookSess
 
                 {participantInfo['vlog'] && <div className="participant-attribute-container">
                     <span className="field-label">Vlog</span>
-                    <span><a href={"http://" + participantInfo['vlog']} target="_blank" className="vlog-link">Open vlog link</a></span>
+                    <span><a href={"https://" + participantInfo['vlog']} target="_blank" className="vlog-link">Open vlog link</a></span>
                 </div>}
 
                 <div className="participant-attribute-container">
@@ -432,15 +433,37 @@ function ParticipantCard({ database, role, participantId, index, setShowBookSess
 
             <div className={"participant-card-column" + " column-3"}>
                 <div className='participant-attribute-container'>
+                    <span className="field-label">Documents</span>
 
-                    <span className="field-label">Personal ID</span>
+                    <select className="participant-data-selector"
+                        //disabled={nrOfTimeslotsOfParticipant > 0 || participantInfo['status'] == 'Denali PPT'}
+                        onChange={(e) => {
+                            updateValue("/participants/" + participantId, { document_approval: e.currentTarget.value });
+                            LogEvent({
+                                pid: participantId,
+                                action: "Document approval: '" + (e.currentTarget.value || "Blank") + "'"
+                            })
+                        }}
+                    >
+                        {Constants['documentStatuses'].map((s, i) => (
+                            <option key={"documents" + i} value={s} selected={s == participantInfo['document_approval']}>{s}</option>
+                        ))}
+                    </select>
+
 
                     <button
-                        className={"doc-button"}
+                        className={"doc-button" + (participantInfo['documents']['pending'] ? " pending-doc" : "")}
                         onClick={() => openDocuments(participantId)}
                     >
-                        Open document
+                        Open
+                        ({Object.keys(participantInfo['documents'][participantId]).length})
+
                     </button>
+
+                    <a className="mark-unchecked fas fa-bookmark" onClick={(e) => {
+                        e.preventDefault();
+                        realtimeDb.ref("/participants/" + participantId + "/documents").update({ pending: true });
+                    }} target="_blank" />
                 </div>
                 <div className="participant-attribute-container">
                     <span className="field-label">Participant status</span>
@@ -510,9 +533,20 @@ function ParticipantCard({ database, role, participantId, index, setShowBookSess
                     </div>
                 }
 
+                {participantInfo['icf'] &&
+                    participantInfo['document_approval'] != "Pass" &&
+                    !["Contacted", "Rejected", "Withdrawn", "Completed", "Not Selected", "Duplicate"].includes(participantInfo['status']) &&
+                    <div className="participant-attribute-container">
+                        <span className="field-label">Communication</span>
+                        {
+                            <button className="email-button document-request-button" onClick={() => sendMail(participantId, "Document Request: " + (Object.keys(participantInfo['documents'][participantId]).length + 1), "")}>Document Request</button>
+                        }
+                    </div>
+                }
 
 
                 {participantInfo['icf'] && !["Rejected", "Withdrawn", "Completed", "Not Selected", "Duplicate"].includes(participantInfo['status']) &&
+                    participantInfo['document_approval'] == "Pass" &&
                     <div className="participant-attribute-container">
                         <span className="field-label">Communication</span>
                         {(participantInfo['open_demo_bin'] === true || tempParticipants.includes(participantId)) ?

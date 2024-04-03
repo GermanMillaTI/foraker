@@ -9,6 +9,12 @@ const Constants = {
     "Duplicate",
     "Withdrawn"
   ],
+  documentStatuses: [
+    "",
+    "Pass",
+    "Pending",
+    "Rejected"
+  ],
   genders: [
     "Male",
     "Female",
@@ -16,6 +22,10 @@ const Constants = {
     "None of the above",
     "Prefer not to say"
   ],
+  sources: {
+    "Respondent": "Respondent",
+    "Other": "Other"
+  },
   listOfAgeRanges: [
     "18-29",
     "30-50",
@@ -92,10 +102,10 @@ const Constants = {
   demoBinsSkintoneRanges: {
     'Type-I: light pale white': "1",
     'Type-II: white, fair': "2",
-    'Type-III: medium, white to light brown': "2",
-    'Type-IV: olive, moderate brown': "3",
-    'Type-V: brown, dark brown': "4",
-    'Type-VI: very dark brown to black': "5",
+    'Type-III: medium, white to light brown': "3",
+    'Type-IV: olive, moderate brown': "4",
+    'Type-V: brown, dark brown': "5",
+    'Type-VI: very dark brown to black': "6",
   },
   demoBinsGenders: {
     "Female": "0",

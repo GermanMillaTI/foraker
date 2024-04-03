@@ -70,7 +70,7 @@ function ActivityLog({ database, setActivityLog, participantId, timeslotforLog }
 
   useMemo(() => {
     let temp = [];
-    for (var timestampId in database['log']) {
+    for (let timestampId in database['log']) {
       let timestampDate =
         "20" +
         timestampId.substring(0, 2) +
@@ -101,7 +101,7 @@ function ActivityLog({ database, setActivityLog, participantId, timeslotforLog }
   function getCSVdata() {
     let output = [['Date', 'Timeslot', 'Station', 'Participant', 'Action', 'User']]
 
-    var data = Object.keys(database['log']).
+    let data = Object.keys(database['log']).
       filter((id) => filterFunction(id))
       .map((key) => [
         FormattingFunctions.DateFromLog(key),
@@ -165,7 +165,7 @@ function ActivityLog({ database, setActivityLog, participantId, timeslotforLog }
                         filterData={filterData}
                         setFilterData={setFilterData}
                         selectedEach={true}
-                      /> : <div>Date</div>}
+                      /> : <div style={{ color: 'white' }}>Date</div>}
 
                     </th>
                     <th>Timeslot</th>
@@ -184,7 +184,7 @@ function ActivityLog({ database, setActivityLog, participantId, timeslotforLog }
                       })
                       .map((key) => {
                         return (
-                          <tr>
+                          <tr key={key}>
                             <td className="center-tag no-wrap">
                               {FormattingFunctions.DateFromLog(key)}
                             </td>

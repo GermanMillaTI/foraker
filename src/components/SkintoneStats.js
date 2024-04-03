@@ -53,7 +53,10 @@ function SkintoneStats({ database, setShowStatsSkintones, setFilterDataFromStats
             ageRanges: Constants['listOfAgeRanges'],
             hairlength: Constants['hairlength'],
             weightRanges: Constants['listOfWeights'],
-            heightRanges: Constants['listOfHeights']
+            heightRanges: Constants['listOfHeights'],
+            session1stat: ["N/A", ...Constants['sessionStatuses']],
+            sources: Object.keys(Constants['sources']),
+
         });
 
         navigate('participants');

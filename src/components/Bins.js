@@ -1,12 +1,9 @@
-import React, { useEffect, useState, useReducer } from 'react';
+import React, { useEffect } from 'react';
 import ReactDOM from 'react-dom';
-import { auth, realtimeDb } from '../firebase/config';
-import { format } from 'date-fns';
-import Swal from 'sweetalert2';
+import { realtimeDb } from '../firebase/config';
 
 import './Bins.css';
 import Constants from './Constants';
-import LogEvent from './Core/LogEvent';
 
 function Bins({ database, setShowBins }) {
 

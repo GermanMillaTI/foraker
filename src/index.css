@@ -8,9 +8,9 @@
 
 :root {
   /* ===== Colors ===== */
-  --body-color: rgba(247, 247, 241, 0.25);
+  --body-color: rgba(226, 226, 226, 0.75);
   ;
-  --font-color: #2F2F30;
+  --font-color: #333;
 
   /* ====== Fontsize ====== */
   --font-size: 13px;

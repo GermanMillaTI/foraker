@@ -49,11 +49,13 @@ function AgeStats({ database, setShowStatsAges, setFilterDataFromStats, role }) 
             statuses: statuses,
             icfs: ['Yes', 'No'],
             demoBinStatuses: Constants['demoBinStatuses'],
+            sources: Object.keys(Constants['sources']),
             highlighted: ['Yes', 'No'],
             skinTones: Constants['skinTone'],
             hairlength: Constants['hairlength'],
             weightRanges: Constants['listOfWeights'],
-            heightRanges: Constants['listOfHeights']
+            heightRanges: Constants['listOfHeights'],
+            session1stat: ["N/A", ...Constants['sessionStatuses']],
         });
 
         navigate('participants');
@@ -71,8 +73,9 @@ function AgeStats({ database, setShowStatsAges, setFilterDataFromStats, role }) 
             let status = participant['status'] || "Blank";
             if (!Constants['listOfWeights'].includes(participant['weight_range'])) return;
             if (!Constants['listOfAgeRanges'].includes(participant['age_range'])) return;
+            if (!Constants['listOfHeights'].includes(participant['height_range'])) return;
+
             tempStats[ageRange][gender][status] += 1;
-            console.log(participant['email'], tempStats[ageRange][gender][status])
         })
         setStats(tempStats);
     }, [])

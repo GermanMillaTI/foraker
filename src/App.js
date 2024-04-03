@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import { Route, Routes } from 'react-router-dom';
 import { onAuthStateChanged } from 'firebase/auth';
 import { realtimeDb, auth } from './firebase/config';
 import { format } from 'date-fns';
@@ -56,14 +56,14 @@ function App() {
     if (user !== null) realtimeDb.ref('/').on('value', snapshot => {
       let temp = snapshot.val();
 
-      var allEmails = [];
-      var duplicateEmails = [];
-      var allPhones = [];
-      var duplicatePhones = [];
+      let allEmails = [];
+      let duplicateEmails = [];
+      let allPhones = [];
+      let duplicatePhones = [];
 
-      var emailCollection = {};
-      var phoneCollection = {};
-      var nameCollection = {};
+      let emailCollection = {};
+      let phoneCollection = {};
+      let nameCollection = {};
 
 
       for (let participantId in temp['participants']) {
@@ -246,6 +246,14 @@ function App() {
 
         if (!participant['sessions']) participant['sessions'] = {};
         participant['sessions'][sessionId] = status;
+
+        if (!participant['session_counter']) participant['session_counter'] = {};
+
+        if (['Scheduled', 'Checked In', 'Completed'].includes(status)) {
+          const nr = Object.keys(participant['session_counter']).length + 1;
+          participant['session_counter'][sessionId] = nr;
+        }
+
       }
 
       setDatabase(temp);
@@ -261,7 +269,7 @@ function App() {
 
 
   function calculateDemoBin(weightRange, heights, gender) {
-    var demoBin = [];
+    let demoBin = [];
     const demoWeightRange = Constants['demoBinsWeightRanges'][weightRange];
     const demoGender = Constants['demoBinsGenders'][gender];
 

@@ -5,11 +5,18 @@ import { signOut } from 'firebase/auth';
 import appInfo from '../../package.json';
 import Swal from 'sweetalert2';
 import { useNavigate } from "react-router-dom";
+import { styled, createTheme, ThemeProvider } from '@mui/material/styles';
+import Button from '@mui/material/Button';
+import telusLogo from './Core/telusLogo.png'
+
 
 import './Navbar.css';
+import { Toolbar, IconButton, AppBar } from '@mui/material';
+
 
 function Navbar({ database, setDatabase, setRole, setShowStatsAges, setUserRights, setShowStats, setShowStatsSessions, setShowStatsSkintones, setShowBins, setActivityLog, setIdForLog, setTimeslotforLog, role }) {
   const navigate = useNavigate();
+  const [selectedBtn, SetSelectedBtn] = useState('');
 
   // Logout
   const handleLogout = async () => {
@@ -48,25 +55,59 @@ function Navbar({ database, setDatabase, setRole, setShowStatsAges, setUserRight
     }
   }, [hostedVersion])
 
+  const theme = createTheme({
+    palette: {
+      telus: {
+        main: '#49166D',
+        black: '#444',
+        green: '#8BE234',
+        lightpurple: '#C8BBD0',
+        lightblack: "#666"
+      },
+    },
+  });
+
+  const customButtonStyle = {
+    fontSize: '14px',
+    color: 'telus.lightblack',
+    bgcolor: 'white',
+    fontWeight: 600,
+    '&:hover': {
+      bgcolor: 'telus.main',
+      color: 'white'
+    },
+    textTransform: 'none',
+    marginRight: '1em'
+  };
+
   return (
-    <div className="navbar">
-      {['admin', 'manager'].includes(role) && <button className="navbar-button" onClick={(e) => { e.preventDefault(); navigate("/participants"); }}>Participants</button>}
-      {['admin', 'manager'].includes(role) && <button className="navbar-button" onClick={(e) => { e.preventDefault(); navigate("/scheduler"); }}>Scheduler</button>}
-      {['admin', 'apple'].includes(role) && <button className="navbar-button" onClick={(e) => { e.preventDefault(); navigate("/scheduler-overview"); }}>Overview</button>}
-      {['admin', 'manager'].includes(role) && <button className="navbar-button" onClick={() => setShowStats(true)}>Participant stats</button>}
-      {['admin', 'manager'].includes(role) && <button className="navbar-button" onClick={() => setShowStatsSkintones(true)}>Skin tone stats</button>}
-      {['admin', 'manager'].includes(role) && <button className="navbar-button" onClick={() => setShowStatsAges(true)}>Age stats</button>}
-      {/*<button className="navbar-button" onClick={() => setShowStatsSessions(true)}>Session stats</button>*/}
-      {['admin'].includes(role) && <button className="navbar-button" onClick={() => setShowBins(true)}>Demo bins</button>}
-      {['admin', 'apple'].includes(role) && <button className="navbar-button" onClick={(e) => { e.preventDefault(); navigate("/scheduler-external"); }}>Scheduler external</button>}
-      {['admin', 'apple'].includes(role) && <button className="navbar-button" onClick={(e) => { e.preventDefault(); navigate("/external"); }}>External Reporting</button>}
-      {['admin'].includes(role) && <button className='navbar-button' onClick={() => {
-        setActivityLog(true);
-        setIdForLog("");
-        setTimeslotforLog("");
-      }}>Activity log</button>}
-      {['admin', 'apple'].includes(role) && <button className="navbar-button" onClick={(e) => { e.preventDefault(); handleLogout(); }}>Logout</button>}
-    </div>
+    <ThemeProvider theme={theme}>
+      <AppBar sx={{ bgcolor: 'white' }}>   <Toolbar sx={{ pr: '24px' }} variant='dense'>
+        <img src={telusLogo} style={{ height: '25px', width: 'auto', marginRight: '5px' }} ></img>
+        <div style={{ marginRight: '30px' }}>| Foraker</div>
+
+        {['admin', 'manager'].includes(role) && <Button size='small' sx={customButtonStyle} style={{ backgroundColor: selectedBtn == "Participants" ? "#49166D" : "", color: selectedBtn == "Participants" ? "white" : "" }} onClick={(e) => { e.preventDefault(); navigate("/participants"); SetSelectedBtn('Participants'); }}>Participants</Button>}
+        {['admin', 'manager'].includes(role) && <Button size='small' sx={customButtonStyle} style={{ backgroundColor: selectedBtn == "Scheduler" ? "#49166D" : "", color: selectedBtn == "Scheduler" ? "white" : "" }} onClick={(e) => { e.preventDefault(); navigate("/scheduler"); SetSelectedBtn('Scheduler'); }}>Scheduler</Button>}
+        {['admin', 'apple'].includes(role) && <Button size='small' sx={customButtonStyle} style={{ backgroundColor: selectedBtn == "Overview" ? "#49166D" : "", color: selectedBtn == "Overview" ? "white" : "" }} onClick={(e) => { e.preventDefault(); navigate("/scheduler-overview"); SetSelectedBtn('Overview'); }}>Overview</Button>}
+        {['admin', 'manager'].includes(role) && <Button size='small' sx={customButtonStyle} onClick={() => setShowStats(true)}>Participant Stats</Button>}
+        {['admin', 'manager'].includes(role) && <Button size='small' sx={customButtonStyle} onClick={() => setShowStatsSkintones(true)}>Skin tone Stats</Button>}
+        {['admin', 'manager'].includes(role) && <Button size='small' sx={customButtonStyle} onClick={() => setShowStatsAges(true)}>Age Stats</Button>}
+        {/*<button className="navbar-button" onClick={() => setShowStatsSessions(true)}>Session stats</button>*/}
+        {['admin'].includes(role) && <Button size='small' sx={customButtonStyle} onClick={() => setShowBins(true)}>Demo bins</Button>}
+        {['admin', 'apple'].includes(role) && <Button sx={customButtonStyle} style={{ backgroundColor: selectedBtn == "External" ? "#49166D" : "", color: selectedBtn == "External" ? "white" : "" }} onClick={(e) => { e.preventDefault(); navigate("/scheduler-external"); SetSelectedBtn("External") }}>Scheduler external</Button>}
+        {['admin', 'apple'].includes(role) && <Button sx={customButtonStyle} style={{ backgroundColor: selectedBtn == "Reporting" ? "#49166D" : "", color: selectedBtn == "Reporting" ? "white" : "" }} onClick={(e) => { e.preventDefault(); navigate("/external"); SetSelectedBtn('Reporting') }}>External Reporting</Button>}
+        {['admin'].includes(role) && <Button sx={customButtonStyle} size='small' onClick={() => {
+          setActivityLog(true);
+          setIdForLog("");
+          setTimeslotforLog("");
+        }}>Activity log</Button>}
+        {['admin', 'apple'].includes(role) && <Button size='small' sx={customButtonStyle} onClick={(e) => { e.preventDefault(); handleLogout(); }}>Logout</Button>}
+      </Toolbar>
+      </AppBar>
+    </ThemeProvider>
+
+
+
 
   );
 }

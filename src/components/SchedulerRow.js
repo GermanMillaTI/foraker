@@ -153,6 +153,9 @@ function SchedulerRow({ database, sessionId, index, array, setUpdateSession }) {
     <td >
       {participantId ? (participantInfo['full_name']) : ""}
     </td>
+    <td >
+      {participantId ? (participantInfo['email']) : ""}
+    </td>
     <td className="center-tag">
       {participantId ? (parseFloat(participantInfo['weight_kg']).toFixed(2)) : ""}
     </td>

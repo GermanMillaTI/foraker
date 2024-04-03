@@ -5,12 +5,10 @@
     padding: .5em;
     border-radius: 1em;
     margin-bottom: 10px;
-    background-color: rgba(1, 69, 94, 0.04);
+    background-color: white;
+    width: 90%;
 }
 
-.participant-card:hover {
-    background-color: rgba(1, 69, 94, 0.05);
-}
 
 .signature-image {
     display: none;
@@ -33,7 +31,7 @@
 }
 
 .participant-card-column:hover {
-    background-color: rgba(1, 69, 94, 0.08);
+    background-color: rgba(178, 212, 126, 0.20);
 }
 
 
@@ -132,8 +130,8 @@
 }
 
 .pending-doc {
-    color: #FED95D;
-    background-color: #01455E;
+    background-color: #FED95D;
+    color: #01455E;
 }
 
 .min-width-selector {
@@ -173,7 +171,7 @@
     box-shadow: 1px 2px 5px rgba(0, 0, 0, .31);
     cursor: pointer;
     outline: none;
-    background-color: #01455E;
+    background-color: #333;
 }
 
 .book-session-button {
@@ -182,7 +180,7 @@
     font-weight: bold;
     font-size: 1em;
     border: none;
-    background-color: #FED340;
+    background-color: #B2D47E;
     color: #2F2F30;
     padding: .2em 1em;
     cursor: pointer;

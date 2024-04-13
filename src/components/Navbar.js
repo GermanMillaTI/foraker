@@ -11,7 +11,8 @@ import telusLogo from './Core/telusLogo.png'
 
 
 import './Navbar.css';
-import { Toolbar, IconButton, AppBar } from '@mui/material';
+import { Toolbar, IconButton, AppBar, Tabs, Tab } from '@mui/material';
+
 
 
 function Navbar({ database, setDatabase, setRole, setShowStatsAges, setUserRights, setShowStats, setShowStatsSessions, setShowStatsSkintones, setShowBins, setActivityLog, setIdForLog, setTimeslotforLog, role }) {
@@ -68,10 +69,11 @@ function Navbar({ database, setDatabase, setRole, setShowStatsAges, setUserRight
   });
 
   const customButtonStyle = {
-    fontSize: '14px',
+    fontSize: '12px',
     color: 'telus.lightblack',
     bgcolor: 'white',
     fontWeight: 600,
+    height: 30,
     '&:hover': {
       bgcolor: 'telus.main',
       color: 'white'
@@ -82,9 +84,9 @@ function Navbar({ database, setDatabase, setRole, setShowStatsAges, setUserRight
 
   return (
     <ThemeProvider theme={theme}>
-      <AppBar sx={{ bgcolor: 'white' }}>   <Toolbar sx={{ pr: '24px' }} variant='dense'>
-        <img src={telusLogo} style={{ height: '25px', width: 'auto', marginRight: '5px' }} ></img>
-        <div style={{ marginRight: '30px' }}>| Foraker</div>
+      <div className='navbar'>
+        <img src={telusLogo} style={{ height: '25px', width: 'auto', position: "absolute", left: "0" }} ></img>
+
 
         {['admin', 'manager'].includes(role) && <Button size='small' sx={customButtonStyle} style={{ backgroundColor: selectedBtn == "Participants" ? "#49166D" : "", color: selectedBtn == "Participants" ? "white" : "" }} onClick={(e) => { e.preventDefault(); navigate("/participants"); SetSelectedBtn('Participants'); }}>Participants</Button>}
         {['admin', 'manager'].includes(role) && <Button size='small' sx={customButtonStyle} style={{ backgroundColor: selectedBtn == "Scheduler" ? "#49166D" : "", color: selectedBtn == "Scheduler" ? "white" : "" }} onClick={(e) => { e.preventDefault(); navigate("/scheduler"); SetSelectedBtn('Scheduler'); }}>Scheduler</Button>}
@@ -102,8 +104,7 @@ function Navbar({ database, setDatabase, setRole, setShowStatsAges, setUserRight
           setTimeslotforLog("");
         }}>Activity log</Button>}
         {['admin', 'apple'].includes(role) && <Button size='small' sx={customButtonStyle} onClick={(e) => { e.preventDefault(); handleLogout(); }}>Logout</Button>}
-      </Toolbar>
-      </AppBar>
+      </div>
     </ThemeProvider>
 
 

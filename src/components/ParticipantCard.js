@@ -5,6 +5,7 @@ import Swal from 'sweetalert2';
 import md5 from 'md5';
 import Tooltip, { tooltipClasses } from '@mui/material/Tooltip';
 import { renderToString } from 'react-dom/server';
+import Card from '@mui/material/Card';
 
 
 
@@ -13,7 +14,6 @@ import Constants from './Constants';
 import LogEvent from './Core/LogEvent';
 import ActivityLog from './ActivityLog';
 import FormattingFunctions from './Core/FormattingFunctions';
-import { select } from 'd3';
 
 function ParticipantCard({ database, role, participantId, index, setShowBookSession2, setCheckDocuments, setUpdateSession, setActivityLog, activityLog, idforLog, setIdForLog, setTimeslotforLog, timeslotforLog }) {
     const [tempParticipants, setTempParticipants] = useState([]);
@@ -225,7 +225,7 @@ function ParticipantCard({ database, role, participantId, index, setShowBookSess
 
 
     return (
-        <div className={"participant-card "}>
+        <Card className={"participant-card "}>
             <div className={"participant-card-column" + " column-1"}>
 
                 <div className="participant-attribute-container">
@@ -669,7 +669,7 @@ function ParticipantCard({ database, role, participantId, index, setShowBookSess
                 </div>
             }
 
-        </div >
+        </Card>
     );
 }
 

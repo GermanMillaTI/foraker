@@ -3,6 +3,7 @@ import { useState, useEffect, useReducer } from 'react';
 
 import './ParticipantFilter.css';
 import Constants from './Constants';
+import Card from '@mui/material/Card';
 
 const filterReducer = (state, event) => {
   // If the filter is called from stats
@@ -248,7 +249,7 @@ function ParticipantFilter({ database, setShownParticipants, filterDataFromStats
     setFilterStats(output);
   }, [filterData])
 
-  return (<div className="filter-main-container">
+  return (<Card className="filter-main-container">
 
     <div className="filter-container">
       <span className="filter-container-header">Filter</span>
@@ -447,7 +448,7 @@ function ParticipantFilter({ database, setShownParticipants, filterDataFromStats
         </div>
       </div>
     </div>
-  </div >);
+  </Card>);
 }
 
 export default ParticipantFilter;

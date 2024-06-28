@@ -50,6 +50,7 @@ function TableFilter({ filterName, alt, values, filterData, setFilterData, selec
             />
             {filterIsOpen &&
                 <div id={"tableFilter" + filterName.toString().toLowerCase()} className="table-filter-container" onScroll={(e) => setScroller(e.currentTarget.scrollTop)}>
+
                     <button
                         className="check-all-button"
                         name="checkAll"

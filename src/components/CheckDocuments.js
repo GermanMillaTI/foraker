@@ -39,7 +39,7 @@ function CheckDocuments({ database, checkDocuments, setCheckDocuments }) {
 
                                     } else {
                                         return (
-                                            <iframe className='document-preview' src={docUrl} />
+                                            <iframe className='document-preview-2' src={docUrl} />
                                         )
 
                                     }

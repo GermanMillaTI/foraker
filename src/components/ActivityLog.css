@@ -16,7 +16,7 @@
     display: flex;
     flex-direction: column;
     margin-left: 2em;
-    background: #F7F7F1;
+    background: #E0E0E2;
     position: absolute;
     border-radius: .2em;
     overflow: hidden;
@@ -29,7 +29,7 @@
     font-weight: bold;
     text-align: center;
     font-size: 1.3em;
-    background-color: #01455E;
+    background-color: #4B286D;
     color: #F7F7F1;
 }
 
@@ -51,7 +51,8 @@
 }
 
 .activityLog-table {
-    margin: 0 auto 2.5em auto;
+
+    margin: 1em auto 1.5em auto;
     width: 95vw;
     border-collapse: collapse;
     box-shadow: 1px 2px 5px rgba(0, 0, 0, .31);
@@ -90,6 +91,8 @@
     max-width: 100%;
     /* Ensure the content doesn't exceed the cell's width */
 }
+
+
 
 
 .activityLog-table tr:nth-child(even) {

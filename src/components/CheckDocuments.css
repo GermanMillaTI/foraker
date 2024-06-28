@@ -61,3 +61,11 @@
     width: auto;
 
 }
+
+.document-preview-2 {
+
+    display: flex;
+    height: 40em;
+    max-width: 100%;
+
+}

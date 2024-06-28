@@ -73,21 +73,21 @@ function Navbar({ database, setDatabase, setRole, setShowStatsAges, setUserRight
     color: 'telus.lightblack',
     bgcolor: 'white',
     fontWeight: 600,
-    height: 30,
+    height: 25,
     '&:hover': {
       bgcolor: 'telus.main',
       color: 'white'
     },
     textTransform: 'none',
-    marginRight: '1em'
   };
 
   return (
     <ThemeProvider theme={theme}>
       <div className='navbar'>
-        <img src={telusLogo} style={{ height: '25px', width: 'auto', position: "absolute", left: "0" }} ></img>
+        <img src={telusLogo} style={{ height: '22px', width: 'auto', position: "absolute", left: "0" }} ></img>
+        <span className="navbarTitle" style={{ verticalAlign: "center" }}>Foraker </span>
 
-
+        {['german.milla01@telusinternational.com'].includes(auth.currentUser.email) && <Button size='small' sx={customButtonStyle} style={{ backgroundColor: selectedBtn == "Files" ? "#49166D" : "", color: selectedBtn == "Files" ? "white" : "" }} onClick={(e) => { e.preventDefault(); navigate("/files"); SetSelectedBtn('Files'); }}>Files</Button>}
         {['admin', 'manager'].includes(role) && <Button size='small' sx={customButtonStyle} style={{ backgroundColor: selectedBtn == "Participants" ? "#49166D" : "", color: selectedBtn == "Participants" ? "white" : "" }} onClick={(e) => { e.preventDefault(); navigate("/participants"); SetSelectedBtn('Participants'); }}>Participants</Button>}
         {['admin', 'manager'].includes(role) && <Button size='small' sx={customButtonStyle} style={{ backgroundColor: selectedBtn == "Scheduler" ? "#49166D" : "", color: selectedBtn == "Scheduler" ? "white" : "" }} onClick={(e) => { e.preventDefault(); navigate("/scheduler"); SetSelectedBtn('Scheduler'); }}>Scheduler</Button>}
         {['admin', 'apple'].includes(role) && <Button size='small' sx={customButtonStyle} style={{ backgroundColor: selectedBtn == "Overview" ? "#49166D" : "", color: selectedBtn == "Overview" ? "white" : "" }} onClick={(e) => { e.preventDefault(); navigate("/scheduler-overview"); SetSelectedBtn('Overview'); }}>Overview</Button>}

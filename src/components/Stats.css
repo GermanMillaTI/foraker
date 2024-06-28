@@ -15,7 +15,8 @@
     display: flex;
     flex-direction: column;
     margin-left: 2em;
-    background: #F7F7F1;
+    background: #F7F7F8;
+    ;
     position: absolute;
     border-radius: .2em;
     overflow: hidden;
@@ -28,7 +29,7 @@
     padding: .2em;
     font-weight: bold;
     text-align: center;
-    background-color: #01455E;
+    background-color: #49166D;
     color: #F7F7F1;
     font-size: 1.3em;
 }

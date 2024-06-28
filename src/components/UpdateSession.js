@@ -741,6 +741,53 @@ function UpdateSession({ database, updateSession, setUpdateSession, setActivityL
                                     </td>
                                 </tr>
 
+                                {(sessionInfo['bonus'] || !participantInfo['bonus_amount']) &&
+                                    <tr>
+                                        <td className="participant-table-left">Bonuses</td>
+                                    </tr>
+                                }
+                                {sessionInfo['bonus'] &&
+                                    <tr>
+                                        <td className="participant-table-right bonus-container" colSpan="2">
+                                            {Object.keys(sessionInfo['bonus']).map(bonusId => {
+                                                let bonus = sessionInfo['bonus'][bonusId];
+                                                let bonusName = Constants['bonuses'][bonusId];
+                                                let amount = bonus['p'];
+
+                                                let today = parseInt(format(new Date(), "yyyyMMdd"));
+                                                let disabled = parseInt(updateSession.substring(0, 8)) + 3 < today;
+
+                                                return <>
+                                                    <input
+                                                        key={"bonus-" + bonusId}
+                                                        id={"bonus-" + bonusId}
+                                                        type="checkbox"
+                                                        checked={database['timeslots'][updateSession]["bonus"][bonusId]['a']}
+                                                        onChange={(e) => {
+                                                            updateValue("/timeslots/" + updateSession + "/bonus/" + bonusId, { a: e.currentTarget.checked });
+                                                            LogEvent({
+                                                                pid: participantId,
+                                                                timeslot: updateSession,
+                                                                action: (e.currentTarget.checked ? "Adding bonus: '" : "Removing bonus: '") + bonusName + "($ " + amount + ")" + "'"
+                                                            })
+                                                        }}
+                                                        disabled={disabled}
+                                                    /> <label htmlFor={"bonus-" + bonusId}>{bonusName} ($ {amount})</label><br />
+                                                </>
+                                            })}
+                                        </td>
+                                    </tr>
+                                }
+
+                                {participantInfo['bonus_amount'] &&
+                                    <tr>
+                                        <td className="participant-table-right bonus-container" colSpan="2">
+                                            <input type="checkbox" checked={['Scheduled', 'Checked In', 'Completed'].includes(database['timeslots'][updateSession]['status'])} disabled />
+                                            <label> Extra bonus ($ {participantInfo['bonus_amount']}) <i>Offered during the handoff</i></label>
+                                        </td>
+                                    </tr>
+                                }
+
                             </tbody>
                         </table>
                     </div>

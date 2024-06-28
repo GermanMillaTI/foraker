@@ -154,7 +154,7 @@ function ActivityLog({ database, setActivityLog, participantId, timeslotforLog }
               <div className="">
                 <table
                   className="activityLog-table"
-                  style={{ width: "50vw", marginTop: "2vw" }}
+                  style={{ width: "50vw" }}
                 >
                   <thead>
                     <th>

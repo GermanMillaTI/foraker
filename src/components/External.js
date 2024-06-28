@@ -230,10 +230,9 @@ function External({ database }) {
     }, []);
 
 
-    console.log(facialHairStats)
     return (
-        <div>
-            <TableContainer style={{ width: "1200px", marginLeft: "auto", marginRight: "auto", marginTop: "4.5em", padding: "0.5em" }} component={Paper}>
+        <div className="external-container">
+            <TableContainer style={{ width: "1200px", marginLeft: "auto", marginRight: "auto"   , padding: "0.5em" }} component={Paper}>
                 <Table sx={{ minWidth: 450, border: "1px solid rgba(224, 224, 224, 1)" }} aria-label="simple table">
                     <TableHead>
                         <TableRow>
@@ -307,7 +306,7 @@ function External({ database }) {
                         })}
                     </TableBody>
                 </Table>
-                <Grid item sx={{ marginTop: "10em" }}>
+                <Grid item sx={{ marginTop: "5em" }}>
                     <Table sx={{ width: 650, border: "1px solid rgba(240, 240, 240, 1)", marginLeft: "auto", marginRight: "auto" }} aria-label="simple table">
                         <TableHead>
                             <TableRow>
@@ -363,7 +362,7 @@ function External({ database }) {
                     </Table>
                 </Grid>
 
-                <Grid item sx={{ marginTop: "10em" }}>
+                <Grid item sx={{ marginTop: "5em" }}>
                     <Table sx={{ width: 650, border: "1px solid rgba(240, 240, 240, 1)", marginLeft: "auto", marginRight: "auto" }} aria-label="simple table">
                         <TableHead>
                             <TableRow>
@@ -417,7 +416,7 @@ function External({ database }) {
                     </Table>
                 </Grid>
 
-                <Grid item sx={{ marginTop: "10em" }}>
+                <Grid item sx={{ marginTop: "5em" }}>
                     <Table sx={{ width: 650, border: "1px solid rgba(240, 240, 240, 1)", marginLeft: "auto", marginRight: "auto" }} aria-label="simple table">
                         <TableHead>
                             <TableRow>
@@ -471,7 +470,7 @@ function External({ database }) {
                     </Table>
                 </Grid>
 
-                <Grid item sx={{ marginTop: "10em" }}>
+                <Grid item sx={{ marginTop: "5em" }}>
                     <Table sx={{ width: 650, border: "1px solid rgba(240, 240, 240, 1)", marginLeft: "auto", marginRight: "auto" }} aria-label="simple table">
                         <TableHead>
                             <TableRow>
@@ -527,7 +526,7 @@ function External({ database }) {
                     </Table>
                 </Grid>
 
-                <Grid item sx={{ marginTop: "10em" }}>
+                <Grid item sx={{ marginTop: "5em" }}>
                     <Table sx={{ width: 650, border: "1px solid rgba(240, 240, 240, 1)", marginLeft: "auto", marginRight: "auto" }} aria-label="simple table">
                         <TableHead>
                             <TableRow>

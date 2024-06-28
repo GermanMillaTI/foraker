@@ -20,6 +20,7 @@ import CheckDocuments from './components/CheckDocuments';
 import SchedulerExternal from './components/SchedulerExternal';
 import AgeStats from './components/AgeStats';
 import External from './components/External';
+import FilesView from './components/FilesView';
 
 function App() {
   const [user, setUser] = useState(null);
@@ -388,12 +389,15 @@ function App() {
         />;
       case "/scheduler":
         return <Scheduler database={database} setUpdateSession={setUpdateSession} />;
+      case "/files":
+        return <FilesView database={database} />;
       case "/scheduler-overview":
         return <SchedulerOverview database={database} />;
       case "/scheduler-external":
         return <SchedulerExternal database={database} />;
       case "/external":
-        return <External database={database} />
+        return <External database={database} />;
+
       default:
         return null;
     }
@@ -424,6 +428,7 @@ function App() {
           <Route path="/scheduler-overview" element={getElement("/scheduler-overview")} />
           <Route path="/scheduler-external" element={getElement("/scheduler-external")} />
           <Route path="/external" element={getElement("/external")} />
+          <Route path="/files" element={getElement("/files")} />
         </Routes>
       </> : null : (loading ? null : <LoginPage />)
       }

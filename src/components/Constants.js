@@ -24,6 +24,8 @@ const Constants = {
   ],
   sources: {
     "Respondent": "Respondent",
+    "recruiter1": "Recruiter 1",
+    "recruiter2": "Recruiter 2",
     "Other": "Other"
   },
   listOfAgeRanges: [
@@ -166,8 +168,12 @@ const Constants = {
     "171-180",
     "181-190",
     ">190"
-  ]
+  ],
+  bonuses: {
+    b1: "Bonus",
+  },
 
 }
+
 
 export default Constants;

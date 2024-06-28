@@ -90,7 +90,7 @@ function AgeStats({ database, setShowStatsAges, setFilterDataFromStats, role }) 
         <div className="modal-stats-backdrop" onClick={(e) => { if (e.target.className == "modal-stats-backdrop") setShowStatsAges("") }}>
             <div className="modal-stats-main-container">
                 <div className="modal-stats-header">
-                    Skin tone stats
+                    Age stats
                 </div>
 
                 <div className="stats-filter-element">

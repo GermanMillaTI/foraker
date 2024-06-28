@@ -283,7 +283,7 @@ function ParticipantFilter({ database, setShownParticipants, filterDataFromStats
         <input name="dateOfSessionsTo" type="date" className="main-input" onChange={setFilterData} min="2023-04-15" max="2024-12-31" value={filterData['dateOfSessionsTo'] || ""} />
       </div>
       <div className="filter-element">
-        <button name="resetFilter" className="reset-filter-button" onClick={setFilterData}>Reset filter</button>
+        <button id="resetFilter" className="reset-filter-button" name="resetFilter" onClick={setFilterData}>Reset filter</button>
       </div>
     </div>
 

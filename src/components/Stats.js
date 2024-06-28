@@ -99,7 +99,7 @@ function Stats({ database, setShowStats, setFilterDataFromStats, role }) {
         const handleEsc = (event) => { if (event.keyCode === 27) setShowStats(""); };
         window.addEventListener('keydown', handleEsc);
         return () => { window.removeEventListener('keydown', handleEsc) };
-    }, []);
+    }, [setShowStats]);
 
     return ReactDOM.createPortal((
         <div className="modal-stats-backdrop" onClick={(e) => { if (e.target.className == "modal-stats-backdrop") setShowStats("") }}>
